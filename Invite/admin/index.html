@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#200810">
+  <meta name="referrer" content="no-referrer">
+  <title>Payment review | Royal Wedding Cards</title>
+  <link rel="stylesheet" href="../dashboard/style.css">
+</head>
+<body>
+  <header class="topbar"><a href="../" class="brand"><span>✦</span> Royal Wedding Cards</a><span class="private-label">Authorized staff only</span></header>
+  <main class="dashboard">
+    <section id="login-panel" class="state-card" hidden>
+      <p class="eyebrow">Administrator sign-in</p><h1>Payment review</h1>
+      <p>Sign in using an active administrator account. Order references are not login credentials.</p>
+      <form id="login-form">
+        <label class="field">Administrator email<input name="email" type="email" autocomplete="email" required></label>
+        <button class="button button-primary" type="submit">Email me a secure sign-in link</button>
+      </form>
+      <p id="login-message" role="status"></p>
+    </section>
+    <section id="queue-panel" hidden>
+      <section class="welcome"><div><p class="eyebrow">Authorized administration</p><h1>Payment verification</h1><p>Review UPI claims and cash settlements. Verified values update the financial ledger.</p></div><button id="signout" type="button" class="button button-gold">Sign out</button></section>
+      <div class="panel">
+        <div class="panel-head"><div><p class="eyebrow">Pending review</p><h2>Payment queue</h2></div><button id="refresh" type="button" class="button button-outline button-small">Refresh</button></div>
+        <p class="financial-note">A submitted UTR or image does not prove settlement. Verify funds independently before recording any amount.</p>
+        <div id="admin-error" class="form-error" role="alert" hidden></div>
+        <div id="payment-queue"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><p class="eyebrow">Manual follow-up</p><h2>Cash quote requests</h2></div></div>
+        <p class="financial-note">These are inquiry requests, not confirmed or provisioned orders. Contact the customer, agree a package and price, then update the request status.</p>
+        <div id="cash-request-queue"></div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
