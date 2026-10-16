@@ -558,7 +558,11 @@ form.addEventListener('submit', async event => {
     const dashboardLink = document.getElementById('dashboard-link');
     if (dashboardLink) {
       dashboardLink.hidden = false;
-      dashboardLink.href = `../dashboard/?order=${encodeURIComponent(result.order_reference || '')}`;
+      // Pass both order and token directly in URL
+      const token = result.dashboard_token || 'demo-token';
+      dashboardLink.href = `../dashboard/?order=${encodeURIComponent(result.order_reference)}&token=${encodeURIComponent(token)}`;
+      sessionStorage.setItem('customer-dashboard-token', token);
+      sessionStorage.setItem('customer-dashboard-order', result.order_reference);
     }
   } catch (error) {
     showError(error.message || 'Could not connect to service. Please retry.');
