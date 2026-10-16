@@ -65,11 +65,11 @@ async function dashboardRequest(action, extra = {}) {
 
   const result = await response.json();
   if (!response.ok || result.success !== true) {
-    throw new Error(result.error || 'Dashboard request failed.');
+    const errorText = result.message || result.error || 'Failed to communicate with database';
+    throw new Error(errorText);
   }
   return result.dashboard ?? result;
 }
-
 function renderGuests(guests) {
   const table = guests && guests.length
     ? `<table><thead><tr><th>Guest</th><th>Category</th><th>Invited count</th><th>Phone</th><th>Private code</th><th>Share</th><th>Manage</th></tr></thead><tbody>
