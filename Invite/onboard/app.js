@@ -666,14 +666,24 @@ form.addEventListener('submit', async event => {
     const requestKey = sessionStorage.getItem('cash-quote-idempotency-key') || crypto.randomUUID();
     sessionStorage.setItem('cash-quote-idempotency-key', requestKey);
     try {
-      const response = await fetch(ONBOARDING_CONFIG.onboardingEndpoint, {
+      // Derive Supabase REST RPC URL from project URL
+      const supabaseBase = ONBOARDING_CONFIG.supabaseUrl 
+        || (ONBOARDING_CONFIG.onboardingEndpoint ? ONBOARDING_CONFIG.onboardingEndpoint.split('/functions/')[0] : 'https://skpcxbdrmsnwmggjodkz.supabase.co');
+      const rpcUrl = `${supabaseBase}/rest/v1/rpc/submit_customer_onboarding`;
+
+      const response = await fetch(rpcUrl, {
         method: 'POST',
         headers: {
-          apikey: ONBOARDING_CONFIG.publishableKey,
-          'Content-Type': 'application/json',
-          'idempotency-key': requestKey
+          'apikey': ONBOARDING_CONFIG.publishableKey,
+          'Authorization': `Bearer ${ONBOARDING_CONFIG.publishableKey}`,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ intent: 'cash_quote_request', input: validation.value }),
+        body: JSON.stringify({
+          p_payload: {
+            intent: 'cash_quote_request',
+            input: validation.value
+          }
+        }),
         cache: 'no-store'
       });
       let result;
