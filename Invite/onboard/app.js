@@ -480,8 +480,18 @@ async function loadConfiguration() {
   const timeout = setTimeout(() => controller.abort(), 15000);
   let response;
   try {
-    response = await fetch(ONBOARDING_CONFIG.onboardingEndpoint, {
-      headers: { apikey: ONBOARDING_CONFIG.publishableKey },
+    const supabaseBase = ONBOARDING_CONFIG.supabaseUrl 
+      || (ONBOARDING_CONFIG.onboardingEndpoint ? ONBOARDING_CONFIG.onboardingEndpoint.split('/functions/')[0] : 'https://skpcxbdrmsnwmggjodkz.supabase.co');
+    const rpcConfigUrl = `${supabaseBase}/rest/v1/rpc/get_onboarding_config`;
+
+    response = await fetch(rpcConfigUrl, {
+      method: 'POST',
+      headers: {
+        'apikey': ONBOARDING_CONFIG.publishableKey,
+        'Authorization': `Bearer ${ONBOARDING_CONFIG.publishableKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({}),
       cache: 'no-store',
       signal: controller.signal
     });
