@@ -120,7 +120,6 @@
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      // Elements
       const fields = {
         template: document.getElementById('template'),
         bride: document.getElementById('bride'),
@@ -148,8 +147,8 @@
       };
 
       let events = [
-        { event_name: 'Wedding Ceremony', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Royal Palace Banquet' },
-        { event_name: 'Reception', event_date: '2026-10-28', event_time: '8:00 PM', venue: 'Royal Palace Banquet' }
+        { event_name: 'Wedding Ceremony', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Grand Royal Palace' },
+        { event_name: 'Reception', event_date: '2026-10-28', event_time: '8:00 PM', venue: 'Grand Royal Palace' }
       ];
 
       function renderEventEditors() {
@@ -194,7 +193,7 @@
         const b = fields.bride.value.trim() || 'Bride Name';
         const g = fields.groom.value.trim() || 'Groom Name';
         const d = fields.date.value || '2026-10-27';
-        const v = fields.venue.value.trim() || 'Grand Heritage Palace';
+        const v = fields.venue.value.trim() || 'Grand Royal Palace';
 
         return {
           guest: { name: 'Respected Guest & Family', with_family: true, persons: 2 },
@@ -225,12 +224,17 @@
 
         const data = buildData();
         const tName = fields.template.value;
-        const isSub = location.pathname.includes('/Invite/');
-        const basePath = isSub ? '../' : './';
 
         try {
-          // Dynamic import of template js
-          const mod = await import(`${basePath}templates/${tName}.js`);
+          let mod;
+          // Step 1: Pehle same folder check karega (./templates/)
+          // Step 2: Fail hone par parent folder check karega (../templates/)
+          try {
+            mod = await import(`./templates/${tName}.js`);
+          } catch (e1) {
+            mod = await import(`../templates/${tName}.js`);
+          }
+
           const fn = mod.default || mod;
           const html = fn(data);
 
@@ -256,23 +260,22 @@
           </html>`;
           status.textContent = 'Preview updated';
         } catch (err) {
-          console.warn('Template module load warning:', err);
+          console.error('Template loading failed:', err);
           status.textContent = 'Template file load error';
-          // Clean fallback in case file is missing
           frame.srcdoc = `<!doctype html><html><body style="margin:0;background:#1e050b;color:#f5e2b8;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Georgia,serif;padding:24px;text-align:center;">
             <div style="border:1px solid #c9a24a;border-radius:14px;padding:28px;max-width:440px;background:#2b0710;">
               <h2 style="margin:0 0 10px;color:#e8c56d;">${data.wedding.bride_name} & ${data.wedding.groom_name}</h2>
               <p style="font-size:14px;margin:6px 0;">Date: ${data.wedding.date}</p>
               <p style="font-size:14px;margin:6px 0;">Venue: ${data.wedding.venue}</p>
               <div style="margin-top:16px;padding-top:12px;border-top:1px dashed #c9a24a88;font-size:12px;opacity:0.8;">
-                (Note: <code>templates/${tName}.js</code> could not be found locally, showing core details)
+                Error: <code>${tName}.js</code> nahi mila. Please verify file exists in <code>templates/</code> folder.
               </div>
             </div>
           </body></html>`;
         }
       }
 
-      // Input listeners
+      // Input change listeners for real-time live preview
       [fields.bride, fields.groom, fields.date, fields.venue].forEach(el => el.addEventListener('input', renderPreview));
       [fields.template, fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
       document.getElementById('add-event').addEventListener('click', () => {
@@ -281,7 +284,7 @@
         renderPreview();
       });
 
-      // Default Showcase Data
+      // Default sample details
       fields.template.value = 'template-01';
       fields.bride.value = 'Aisha';
       fields.groom.value = 'Rahman';
