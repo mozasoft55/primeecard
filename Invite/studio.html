@@ -227,8 +227,6 @@
 
         try {
           let mod;
-          // Step 1: Pehle same folder check karega (./templates/)
-          // Step 2: Fail hone par parent folder check karega (../templates/)
           try {
             mod = await import(`./templates/${tName}.js`);
           } catch (e1) {
@@ -243,6 +241,57 @@
           const hue = tName === 'template-02' ? 0 : pal.hue;
           const dir = fields.language.value === 'ur' ? 'rtl' : 'ltr';
 
+          // Interactive navigation script jo har template ke button ko activate karega
+          const templateBehavior = `
+          <script>
+            (function() {
+              // Generic Multi-step navigator (Handles Begin, Next, Prev, Step Buttons)
+              const screens = Array.from(document.querySelectorAll('.t01-screen, .t03-screen, .t04-screen, .t05-screen, [data-screen]'));
+              const steps = Array.from(document.querySelectorAll('.t01-step, .t03-step, .t04-step, .t05-step'));
+              let currentStep = 0;
+
+              function goToStep(idx) {
+                if (!screens.length) return;
+                currentStep = Math.max(0, Math.min(screens.length - 1, idx));
+                screens.forEach((scr, i) => {
+                  scr.classList.toggle('active', i === currentStep);
+                });
+                steps.forEach((btn, i) => {
+                  btn.classList.toggle('active', i === currentStep);
+                  btn.classList.toggle('done', i < currentStep);
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+
+              // Bind 'Begin Invitation' and any next/prev buttons
+              document.addEventListener('click', function(e) {
+                const nextBtn = e.target.closest('[data-next], .t01-begin, .t03-begin, .t04-begin, .begin-btn, button:not([data-prev])');
+                const prevBtn = e.target.closest('[data-prev]');
+                const restartBtn = e.target.closest('[data-restart]');
+                const stepBtn = e.target.closest('.t01-step, .t03-step, .t04-step, .t05-step');
+
+                if (nextBtn && (nextBtn.textContent.toLowerCase().includes('begin') || nextBtn.hasAttribute('data-next'))) {
+                  e.preventDefault();
+                  goToStep(currentStep + 1);
+                } else if (prevBtn) {
+                  e.preventDefault();
+                  goToStep(currentStep - 1);
+                } else if (restartBtn) {
+                  e.preventDefault();
+                  goToStep(0);
+                } else if (stepBtn && stepBtn.dataset.step !== undefined) {
+                  e.preventDefault();
+                  goToStep(Number(stepBtn.dataset.step));
+                }
+              });
+
+              // Initial step open
+              if (screens.length > 0) {
+                goToStep(0);
+              }
+            })();
+          <\/script>`;
+
           frame.srcdoc = `<!doctype html>
           <html lang="${fields.language.value}" dir="${dir}">
           <head>
@@ -256,26 +305,17 @@
           </head>
           <body>
             <div class="studio-preview">${html}</div>
+            ${templateBehavior}
           </body>
           </html>`;
           status.textContent = 'Preview updated';
         } catch (err) {
           console.error('Template loading failed:', err);
           status.textContent = 'Template file load error';
-          frame.srcdoc = `<!doctype html><html><body style="margin:0;background:#1e050b;color:#f5e2b8;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Georgia,serif;padding:24px;text-align:center;">
-            <div style="border:1px solid #c9a24a;border-radius:14px;padding:28px;max-width:440px;background:#2b0710;">
-              <h2 style="margin:0 0 10px;color:#e8c56d;">${data.wedding.bride_name} & ${data.wedding.groom_name}</h2>
-              <p style="font-size:14px;margin:6px 0;">Date: ${data.wedding.date}</p>
-              <p style="font-size:14px;margin:6px 0;">Venue: ${data.wedding.venue}</p>
-              <div style="margin-top:16px;padding-top:12px;border-top:1px dashed #c9a24a88;font-size:12px;opacity:0.8;">
-                Error: <code>${tName}.js</code> nahi mila. Please verify file exists in <code>templates/</code> folder.
-              </div>
-            </div>
-          </body></html>`;
         }
       }
 
-      // Input change listeners for real-time live preview
+      // Input change listeners
       [fields.bride, fields.groom, fields.date, fields.venue].forEach(el => el.addEventListener('input', renderPreview));
       [fields.template, fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
       document.getElementById('add-event').addEventListener('click', () => {
