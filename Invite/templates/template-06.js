@@ -126,9 +126,9 @@ body{overflow:visible!important;margin:0;padding:0;overscroll-behavior:contain}
 .t8 button{font:inherit;color:inherit;cursor:pointer}
 .t8 a{color:inherit}
 .t8 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.t8-noise{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:t8-grain 1.2s steps(6) infinite}
-@keyframes t8-grain{0%{transform:translate(0,0)}20%{transform:translate(-2%,1%)}40%{transform:translate(1%,-2%)}60%{transform:translate(-1%,2%)}80%{transform:translate(2%,-1%)}100%{transform:translate(0,0)}}
+.t8-noise{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.05;mix-blend-mode:overlay;overflow:hidden}
+.t8-noise:before{content:"";position:absolute;inset:-4%;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:t8-grain 1.2s steps(6) infinite}@keyframes t8-grain{0%{transform:translate(0,0)}20%{transform:translate(-2%,1%)}40%{transform:translate(1%,-2%)}60%{transform:translate(-1%,2%)}80%{transform:translate(2%,-1%)}100%{transform:translate(0,0)}}
 .t8-progress{position:fixed;top:0;left:0;height:2px;width:100%;z-index:998;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,#b8873b,#fff1b8,#d9a84f);box-shadow:0 0 12px rgba(229,192,123,.8)}
 .t8-gold{background:linear-gradient(110deg,#a67a2e 0%,#fff1b8 22%,#d9a84f 42%,#fff7d6 58%,#b8863a 78%,#f0cf7e 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:t8-shimmer 6s linear infinite}
 @keyframes t8-shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
