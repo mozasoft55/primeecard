@@ -46,7 +46,7 @@
     .event-grid input { min-width: 0; min-height: 38px; padding: 7px; border: 1px solid #d5c9bb; border-radius: 7px; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .toolbar h2 { margin: 0; }
-    .preview-frame { display: block; width: 100%; height: min(78vh, 850px); min-height: 520px; border: 0; border-radius: 12px; background: #17050a; }
+    .preview-frame { display: block; width: 100%; height: min(78vh, 850px); min-height: 520px; border: 0; border-radius: 12px; background: #17050a; overscroll-behavior: contain; }
     @media (max-width: 850px) {
       .layout { grid-template-columns: minmax(0, 1fr); padding: 14px; }
       .preview-frame { height: 72vh; min-height: 520px; }
@@ -120,6 +120,7 @@
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
+      // Elements
       const fields = {
         template: document.getElementById('template'),
         bride: document.getElementById('bride'),
@@ -147,8 +148,13 @@
       };
 
       let events = [
-        { event_name: 'Wedding Ceremony', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Grand Royal Palace' },
-        { event_name: 'Reception', event_date: '2026-10-28', event_time: '8:00 PM', venue: 'Grand Royal Palace' }
+        { event_name: 'Haldi', event_date: '2026-12-04', event_time: '11:00 AM', venue: 'Royal Palace Banquet', image_url: './assets/haldi.jpg' },
+        { event_name: 'Mehendi', event_date: '2026-12-04', event_time: '4:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/mehendi.jpg' },
+        { event_name: 'Sangeet', event_date: '2026-12-04', event_time: '7:30 PM', venue: 'Royal Palace Banquet' },
+        { event_name: 'Baarat', event_date: '2026-12-05', event_time: '4:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/baraat.jpg' },
+        { event_name: 'Jaimala', event_date: '2026-12-05', event_time: '7:00 PM', venue: 'Royal Palace Banquet' },
+        { event_name: 'Phere', event_date: '2026-12-05', event_time: '9:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/phere.jpg' },
+        { event_name: 'Reception', event_date: '2026-12-06', event_time: '7:30 PM', venue: 'Royal Palace Banquet', image_url: './assets/reception.jpg' }
       ];
 
       function renderEventEditors() {
@@ -193,7 +199,7 @@
         const b = fields.bride.value.trim() || 'Bride Name';
         const g = fields.groom.value.trim() || 'Groom Name';
         const d = fields.date.value || '2026-10-27';
-        const v = fields.venue.value.trim() || 'Grand Royal Palace';
+        const v = fields.venue.value.trim() || 'Grand Heritage Palace';
 
         return {
           guest: { name: 'Respected Guest & Family', with_family: true, persons: 2 },
@@ -226,13 +232,19 @@
         const tName = fields.template.value;
 
         try {
+          // Dynamic import of template js with resilient path resolution and cache-busting
+          const cacheBust = `?t=${Date.now()}`;
           let mod;
           try {
-            mod = await import(`./templates/${tName}.js`);
+            mod = await import(`./templates/${tName}.js${cacheBust}`);
           } catch (e1) {
-            mod = await import(`../templates/${tName}.js`);
+            try {
+              mod = await import(`../templates/${tName}.js${cacheBust}`);
+            } catch (e2) {
+              console.warn('Template module load warning:', e1, e2);
+              throw e1;
+            }
           }
-
           const fn = mod.default || mod;
           const html = fn(data);
 
@@ -241,95 +253,125 @@
           const hue = tName === 'template-02' ? 0 : pal.hue;
           const dir = fields.language.value === 'ur' ? 'rtl' : 'ltr';
 
-          // Interactive navigation script jo har template ke button ko activate karega
-          const templateBehavior = `
-          <script>
-            (function() {
-              // Generic Multi-step navigator (Handles Begin, Next, Prev, Step Buttons)
-              const screens = Array.from(document.querySelectorAll('.t01-screen, .t03-screen, .t04-screen, .t05-screen, [data-screen]'));
-              const steps = Array.from(document.querySelectorAll('.t01-step, .t03-step, .t04-step, .t05-step'));
-              let currentStep = 0;
-
-              function goToStep(idx) {
-                if (!screens.length) return;
-                currentStep = Math.max(0, Math.min(screens.length - 1, idx));
-                screens.forEach((scr, i) => {
-                  scr.classList.toggle('active', i === currentStep);
-                });
-                steps.forEach((btn, i) => {
-                  btn.classList.toggle('active', i === currentStep);
-                  btn.classList.toggle('done', i < currentStep);
-                });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-
-              // Bind 'Begin Invitation' and any next/prev buttons
-              document.addEventListener('click', function(e) {
-                const nextBtn = e.target.closest('[data-next], .t01-begin, .t03-begin, .t04-begin, .begin-btn, button:not([data-prev])');
-                const prevBtn = e.target.closest('[data-prev]');
-                const restartBtn = e.target.closest('[data-restart]');
-                const stepBtn = e.target.closest('.t01-step, .t03-step, .t04-step, .t05-step');
-
-                if (nextBtn && (nextBtn.textContent.toLowerCase().includes('begin') || nextBtn.hasAttribute('data-next'))) {
-                  e.preventDefault();
-                  goToStep(currentStep + 1);
-                } else if (prevBtn) {
-                  e.preventDefault();
-                  goToStep(currentStep - 1);
-                } else if (restartBtn) {
-                  e.preventDefault();
-                  goToStep(0);
-                } else if (stepBtn && stepBtn.dataset.step !== undefined) {
-                  e.preventDefault();
-                  goToStep(Number(stepBtn.dataset.step));
-                }
-              });
-
-              // Initial step open
-              if (screens.length > 0) {
-                goToStep(0);
-              }
-            })();
-          <\/script>`;
-
           frame.srcdoc = `<!doctype html>
           <html lang="${fields.language.value}" dir="${dir}">
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <style>
-              html,body{margin:0;padding:0;width:100%;min-height:100%;height:auto;overflow-x:hidden;overflow-y:auto;background:#16050a}
+              html{margin:0;padding:0;width:100%;min-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:#16050a}
+              body{margin:0;padding:0;width:100%;min-height:100%;overflow:visible;overscroll-behavior:contain;background:#16050a}
               .studio-preview{position:relative;width:100%;min-height:100vh;filter:hue-rotate(${hue}deg);direction:${dir}}
               .studio-preview *{${font}}
             </style>
           </head>
           <body>
             <div class="studio-preview">${html}</div>
-            ${templateBehavior}
           </body>
           </html>`;
+
+          const mountFrame = () => {
+            try {
+              const doc = frame.contentDocument || frame.contentWindow?.document;
+              if (doc && typeof mod.mount === 'function') {
+                const target = doc.querySelector('.studio-preview') || doc.body;
+                mod.mount(target, data);
+              }
+            } catch (err) {
+              console.warn('Studio mount error:', err);
+            }
+          };
+          frame.onload = mountFrame;
+          setTimeout(mountFrame, 120);
+
           status.textContent = 'Preview updated';
         } catch (err) {
-          console.error('Template loading failed:', err);
+          console.warn('Template module load warning:', err);
           status.textContent = 'Template file load error';
+          // Clean fallback in case file is missing
+          frame.srcdoc = `<!doctype html><html><body style="margin:0;background:#1e050b;color:#f5e2b8;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Georgia,serif;padding:24px;text-align:center;">
+            <div style="border:1px solid #c9a24a;border-radius:14px;padding:28px;max-width:440px;background:#2b0710;">
+              <h2 style="margin:0 0 10px;color:#e8c56d;">${data.wedding.bride_name} & ${data.wedding.groom_name}</h2>
+              <p style="font-size:14px;margin:6px 0;">Date: ${data.wedding.date}</p>
+              <p style="font-size:14px;margin:6px 0;">Venue: ${data.wedding.venue}</p>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px dashed #c9a24a88;font-size:12px;opacity:0.8;">
+                (Note: <code>templates/${tName}.js</code> could not be found locally, showing core details)
+              </div>
+            </div>
+          </body></html>`;
         }
       }
 
-      // Input change listeners
+      // Input listeners
       [fields.bride, fields.groom, fields.date, fields.venue].forEach(el => el.addEventListener('input', renderPreview));
-      [fields.template, fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
+      [fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
+
+      // Supported templates
+      const validTemplates = [
+        'template-01', 'template-02', 'template-03', 'template-04', 'template-05',
+        'template-06', 'template-07', 'template-08', 'template-09', 'template-10'
+      ];
+
+      // Route detection: URL hash (#template-03) or query param (?template=template-03)
+      function resolveInitialTemplate() {
+        const rawHash = (window.location.hash || '').replace(/^[#/]+/, '').trim();
+        if (rawHash && validTemplates.includes(rawHash)) return rawHash;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramT = urlParams.get('template');
+        if (paramT && validTemplates.includes(paramT)) return paramT;
+
+        // Default to template-03 so visiting studio.html# opens the redesigned template immediately
+        return 'template-03';
+      }
+
+      const initialTemplate = resolveInitialTemplate();
+      fields.template.value = initialTemplate;
+      if (window.location.hash !== `#${initialTemplate}`) {
+        history.replaceState(null, '', `#${initialTemplate}`);
+      }
+
+      // Sync dropdown change to URL hash
+      fields.template.addEventListener('change', () => {
+        if (window.location.hash !== `#${fields.template.value}`) {
+          window.location.hash = fields.template.value;
+        }
+        renderPreview();
+      });
+
+      // Sync hashchange to dropdown and preview
+      window.addEventListener('hashchange', () => {
+        const h = (window.location.hash || '').replace(/^[#/]+/, '').trim();
+        if (validTemplates.includes(h) && fields.template.value !== h) {
+          fields.template.value = h;
+          renderPreview();
+        }
+      });
+
       document.getElementById('add-event').addEventListener('click', () => {
         events.push({ event_name: '', event_date: fields.date.value || '', event_time: '' });
         renderEventEditors();
         renderPreview();
       });
 
-      // Default sample details
-      fields.template.value = 'template-01';
-      fields.bride.value = 'Aisha';
-      fields.groom.value = 'Rahman';
-      fields.date.value = '2026-10-27';
-      fields.venue.value = 'Grand Royal Palace, Howrah';
+      // Default Showcase Data
+      if (initialTemplate === 'template-03') {
+        fields.bride.value = 'Tarana Khan';
+        fields.groom.value = 'Akbar Khan';
+        fields.date.value = '2026-10-27';
+        fields.venue.value = 'Howrah, West Bengal';
+        events = [
+          { event_name: 'Mehndi', event_date: '2026-10-26', event_time: '6:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Nikah', event_date: '2026-10-27', event_time: '4:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Walima / Dawat', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Dinner & Reception', event_date: '2026-10-27', event_time: '8:00 PM Onwards', venue: 'Howrah, West Bengal' }
+        ];
+      } else {
+        fields.bride.value = 'Aisha';
+        fields.groom.value = 'Rahman';
+        fields.date.value = '2026-10-27';
+        fields.venue.value = 'Grand Royal Palace, Howrah';
+      }
       fields.palette.value = 'royal';
       fields.language.value = 'en';
 
