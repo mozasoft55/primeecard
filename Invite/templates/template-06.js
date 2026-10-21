@@ -155,7 +155,9 @@ body{overflow:visible!important;margin:0;padding:0;overscroll-behavior:contain}
 .t8-entry{position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:900;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2.5vh,24px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:radial-gradient(ellipse at 50% 42%,#1b5943 0,#0f2c23 43%,#05120f 100%);transition:transform .9s var(--ease),opacity .9s var(--ease)}
 .t8-entry:before,.t8-entry:after{content:"";position:absolute;width:min(86vw,70vh,440px);height:min(86vw,70vh,440px);border:1px solid rgba(229,192,123,.22);border-radius:50%;box-shadow:0 0 0 18px rgba(229,192,123,.03),0 0 0 42px rgba(229,192,123,.02);pointer-events:none}
 .t8-entry:after{width:min(68vw,54vh,320px);height:min(68vw,54vh,320px);border-style:dashed;animation:t8-spin 70s linear infinite}
-.t8-entry.t8-leaving{transform:scale(1.15);opacity:0;pointer-events:none}
+.t8-entry.t8-leaving{opacity:0;pointer-events:none;overflow:hidden}
+.t8-entry-in{transition:transform .9s var(--ease)}
+.t8-entry.t8-leaving .t8-entry-in{transform:scale(1.15)}
 .t8-entry-in{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.6vh,16px);max-height:100%;max-width:min(92vw,480px);margin:auto;padding:12px 0}
 .t8-kicker{font:500 clamp(9px,1.4vh,10.5px) Cinzel,serif;letter-spacing:.34em;color:#e7d8b5}
 .t8-entry-names{font:clamp(34px,6.8vh,62px)/1.25 "Great Vibes",cursive;margin:clamp(4px,1vh,10px) 0;padding:2px 12px;filter:drop-shadow(0 0 18px rgba(229,192,123,.45))}
