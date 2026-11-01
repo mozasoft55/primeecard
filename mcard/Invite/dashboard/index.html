@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#200810">
+  <meta name="referrer" content="no-referrer">
+  <title>Your wedding order | Royal Wedding Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar"><a href="../" class="brand"><span>✦</span> Royal Wedding Cards</a><span class="private-label">Private customer dashboard</span></header>
+  <main class="dashboard" id="dashboard">
+    <section id="loading-state" class="state-card" aria-live="polite"><span class="spinner"></span><p>Opening your secure dashboard…</p></section>
+    <section id="error-state" class="state-card" hidden>
+      <h1>Open your private dashboard</h1>
+      <p id="error-message" role="status"></p>
+      <button id="error-retry-button" class="button button-primary" type="button" style="margin-bottom: 1rem;" hidden>Retry loading dashboard</button>
+      <form id="dashboard-link-form" class="access-form">
+        <label for="dashboard-link-input">Paste the full secure dashboard link from your order email</label>
+        <input id="dashboard-link-input" type="url" autocomplete="url" placeholder="https://your-site.example/dashboard/?order=…&amp;token=…" required>
+        <button class="button button-primary" type="submit">Open dashboard securely</button>
+      </form>
+      <p class="helper">An order reference by itself cannot unlock private order, guest, or RSVP data. If the email link expired, contact the business to request a new one.</p>
+      <a href="../" class="button button-outline">Return to invitation site</a>
+    </section>
+
+    <div id="dashboard-content" hidden>
+      <section class="welcome">
+        <div><p class="eyebrow">Your celebration, organized</p><h1 id="couple-title"></h1><p id="wedding-date"></p></div>
+        <a id="preview-link" class="button button-gold" href="../share.html">Preview invitation</a>
+      </section>
+      <section class="summary-grid" aria-label="Order summary">
+        <article class="metric"><small>Order reference</small><strong id="order-reference"></strong></article>
+        <article class="metric"><small>Package</small><strong id="package-name"></strong></article>
+        <article class="metric"><small>Order status</small><strong id="order-status"></strong></article>
+        <article class="metric"><small>Payment status</small><strong id="payment-status"></strong></article>
+        <article class="metric"><small>List price</small><strong id="list-price"></strong></article>
+        <article class="metric"><small>Discount</small><strong id="discount"></strong></article>
+        <article class="metric"><small>Advance expected</small><strong id="advance-expected"></strong></article>
+        <article class="metric"><small>Verified amount</small><strong id="advance-verified"></strong></article>
+        <article class="metric highlight"><small>Balance outstanding</small><strong id="balance"></strong></article>
+      </section>
+      <p class="financial-note">UPI references and screenshots are not proof of receipt. Verified amount changes only after authorized review.</p>
+
+      <!-- Guest tracker: goal, progress bar, status tiles, nudges, recent replies. Rendered by app.js -->
+      <section class="panel" id="tracker" aria-labelledby="tracker-title">
+        <div class="panel-head">
+          <div><p class="eyebrow">Live responses</p><h2 id="tracker-title">Guest tracker</h2></div>
+          <button id="refresh-button" class="button button-outline button-small" type="button">Refresh</button>
+        </div>
+        <div id="tracker-body"></div>
+      </section>
+
+      <!-- Guest list -->
+      <section class="panel" id="guest-panel" aria-labelledby="guests-title">
+        <div class="panel-head">
+          <div><p class="eyebrow">Guest list</p><h2 id="guests-title">People you’re inviting</h2><p class="helper" id="guest-summary-line"></p></div>
+          <div class="head-actions">
+            <button id="open-add-guest" class="button button-primary button-small" type="button">＋ Add guest</button>
+            <details class="menu" id="more-menu">
+              <summary class="button button-outline button-small">More ▾</summary>
+              <div class="menu-list">
+                <button type="button" id="open-import">Import from Excel / CSV</button>
+                <a id="generate-guest-links" href="../guest-list.html">Generate guest links</a>
+                <a id="csv-template" download="wedding-guests-template.csv">Download CSV template</a>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="list-tools">
+          <input id="guest-search" type="search" placeholder="Search by name or phone" aria-label="Search guests" autocomplete="off">
+          <div id="filter-chips" class="chips" role="group" aria-label="Filter guests by status"></div>
+        </div>
+        <div id="guest-table-wrap"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><p class="eyebrow">Wedding programme</p><h2>Your timeline</h2></div></div>
+        <ol id="timeline" class="timeline"></ol>
+      </section>
+    </div>
+  </main>
+
+  <!-- Add / edit guest -->
+  <dialog id="guest-dialog" class="edit-dialog">
+    <form id="guest-form" method="dialog" novalidate>
+      <h2 id="guest-dialog-title">Add guest</h2>
+      <label>Guest name<input name="guest_name" required maxlength="120" autocomplete="off"></label>
+      <label>People in this invitation <span class="field-hint">including the guest</span><input name="family_members" type="number" min="1" max="20" value="1" required inputmode="numeric"></label>
+      <label>Phone / WhatsApp <span class="field-hint">optional</span><input name="phone" type="tel" maxlength="24" inputmode="tel"></label>
+      <label>Category <span class="field-hint">optional</span><input name="category" list="category-options" maxlength="60" value="Family" autocomplete="off"></label>
+      <datalist id="category-options"><option value="Family"><option value="Relatives"><option value="Friends"><option value="Colleagues"><option value="VIP"></datalist>
+      <label>City / address <span class="field-hint">optional</span><input name="city_address" maxlength="250"></label>
+      <input name="guest_id" type="hidden">
+      <p id="guest-form-error" class="dialog-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button button-outline" id="cancel-guest" type="button">Cancel</button>
+        <button class="button button-outline" id="save-another" type="submit" value="another">Save &amp; add another</button>
+        <button class="button button-primary" id="save-guest" type="submit" value="save">Save guest</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- View reply message -->
+  <dialog id="reply-dialog" class="edit-dialog">
+    <h2 id="reply-dialog-name">Guest Response</h2>
+    <div id="reply-dialog-body" style="display: grid; gap: 12px; margin: 16px 0;">
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Status</small><p id="reply-dialog-status" style="margin: 2px 0 0; font-weight: 700;"></p></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">People Attending</small><p id="reply-dialog-attending" style="margin: 2px 0 0; font-size: 18px; font-weight: 600;"></p></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Wishes / Message</small><blockquote id="reply-dialog-message" style="margin: 6px 0 0; padding: 12px 14px; background: #fff8eb; border-left: 3px solid var(--gold); border-radius: 6px; font: italic 16px/1.45 Georgia, serif; color: #5a3825; white-space: pre-wrap;"></blockquote></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Submitted</small><p id="reply-dialog-time" style="margin: 2px 0 0; color: var(--muted); font-size: 13px;"></p></div>
+    </div>
+    <div class="dialog-actions">
+      <button class="button button-outline" id="close-reply-dialog" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <!-- CSV import -->
+  <dialog id="import-dialog" class="edit-dialog">
+    <form id="import-form" method="dialog">
+      <h2>Import guests</h2>
+      <p class="helper">In Excel, save your guest sheet as CSV first. Columns: guest_name, family_members, phone, category, city_address. Up to 500 rows; you’ll see a preview before anything is added.</p>
+      <label class="field-file">Choose CSV file<input id="guest-csv" type="file" accept=".csv,text/csv"></label>
+      <div id="import-preview" class="import-preview" hidden></div>
+      <div class="dialog-actions">
+        <button class="button button-outline" id="cancel-import" type="button">Close</button>
+        <button class="button button-primary" id="import-guests" type="button" disabled>Import guests</button>
+      </div>
+    </form>
+  </dialog>
+
+  
+
+  <!-- View reply message -->
+  <dialog id="reply-dialog" class="edit-dialog">
+    <h2 id="reply-dialog-name">Guest Response</h2>
+    <div id="reply-dialog-body" style="display: grid; gap: 12px; margin: 16px 0;">
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Status</small><p id="reply-dialog-status" style="margin: 2px 0 0; font-weight: 700;"></p></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">People Attending</small><p id="reply-dialog-attending" style="margin: 2px 0 0; font-size: 18px; font-weight: 600;"></p></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Wishes / Message</small><blockquote id="reply-dialog-message" style="margin: 6px 0 0; padding: 12px 14px; background: #fff8eb; border-left: 3px solid var(--gold); border-radius: 6px; font: italic 16px/1.45 Georgia, serif; color: #5a3825; white-space: pre-wrap;"></blockquote></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Submitted</small><p id="reply-dialog-time" style="margin: 2px 0 0; color: var(--muted); font-size: 13px;"></p></div>
+    </div>
+    <div class="dialog-actions">
+      <button class="button button-outline" id="close-reply-dialog" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

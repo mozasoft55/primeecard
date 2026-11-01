@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#32030B">
+  <title>Wedding Invitation Concierge</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --oxblood: #6f0f1c;
+      --oxblood-deep: #3b050f;
+      --gold-24k: #d4af37;
+      --gold-deep: #b98a2f;
+      --gold-light: #f7e5b5;
+      --paper: #fffcf6;
+      --paper-shade: #f5ead2;
+      --text: #3b1a1f;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 100dvh Lock: Zero Scroll / No Page Bounce */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      position: fixed;
+      touch-action: none;
+      background: radial-gradient(circle at 50% 20%, #3a040d 0%, #150104 70%, #090002 100%);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .app-viewport {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      max-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(10px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+    }
+
+    .share-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      background: linear-gradient(180deg, var(--paper) 0%, #faf1dd 50%, var(--paper-shade) 100%);
+      border: 2px solid var(--gold-24k);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), 0 0 35px rgba(212, 175, 55, 0.15);
+      padding: 22px 18px 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .share-card::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(212, 175, 55, 0.65);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    /* Monogram */
+    .crest-badge {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto;
+      border: 1.5px solid var(--oxblood);
+      border-radius: 50%;
+      outline: 1.5px solid var(--gold-24k);
+      outline-offset: 3px;
+      display: grid;
+      place-items: center;
+      font-family: 'Cinzel', serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--oxblood);
+      background: #fffdfa;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      flex-shrink: 0;
+    }
+
+    /* Requested High-End Punch Lines */
+    .punchline-top {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .punchline-sub {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #6a323d;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .couple-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(34px, 8vw, 40px);
+      color: var(--oxblood);
+      line-height: 1;
+      margin: 3px 0 10px;
+      flex-shrink: 0;
+    }
+
+    /* Field Labels */
+    .field-label {
+      font-family: 'Cinzel', serif;
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--oxblood);
+      text-align: left;
+      display: block;
+      margin: 0 2px 4px;
+    }
+
+    .input-royal {
+      width: 100%;
+      height: 44px;
+      border-radius: 10px;
+      border: 1.5px solid var(--gold-deep);
+      background: #ffffff;
+      padding: 0 14px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      color: var(--oxblood);
+      outline: none;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-royal::placeholder {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      color: #9c6c74;
+      font-size: 14px;
+    }
+    .input-royal:focus {
+      border-color: var(--oxblood);
+      box-shadow: 0 0 10px rgba(111, 15, 28, 0.25);
+    }
+
+    /* Live Preview Box */
+    .preview-box {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px dashed var(--gold-deep);
+      border-radius: 10px;
+      padding: 7px 10px;
+      margin: 4px 0 10px;
+      text-align: left;
+    }
+    .preview-title {
+      font-family: 'Cinzel', serif;
+      font-size: 7.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      font-weight: 700;
+    }
+    .preview-url {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--oxblood);
+      word-break: break-all;
+      margin-top: 2px;
+      display: block;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    /* Buttons */
+    .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .btn-share-whatsapp {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #ffffff;
+      border: 1px solid #0f6c61;
+      height: 44px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: 10.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+      text-decoration: none;
+    }
+    .btn-share-whatsapp:active { transform: scale(0.97); }
+
+    .btn-view-card {
+      background: linear-gradient(135deg, var(--oxblood), var(--oxblood-deep));
+      color: var(--gold-light);
+      border: 1.5px solid var(--gold-24k);
+      height: 42px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(111, 15, 28, 0.35);
+      text-decoration: none;
+    }
+    .btn-view-card:active { transform: scale(0.97); }
+
+    .btn-copy {
+      background: #ffffff;
+      color: var(--oxblood);
+      border: 1.2px solid var(--oxblood);
+      height: 38px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-studio {
+      background: #fffaf0;
+      color: var(--oxblood);
+      border: 1.2px solid var(--gold-deep);
+      min-height: 38px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn-guests {
+      background: #fffaf0;
+      color: var(--oxblood);
+      border: 1.2px solid var(--gold-deep);
+      min-height: 38px;
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: var(--oxblood-deep);
+      color: var(--gold-light);
+      border: 1px solid var(--gold-24k);
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-size: 11px;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 1px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-height: 760px) {
+      .share-card {
+        justify-content: flex-start;
+        gap: 10px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+      }
+      .share-card > div { flex-shrink: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <div class="share-card">
+      
+      <!-- Top Crest & High-End Punchline -->
+      <div>
+        <div class="crest-badge" id="coupleInitials">...</div>
+        <div class="punchline-top">Your Dream Wedding, Our Digital Promise</div>
+        <div class="punchline-sub">A smarter way to manage your wedding</div>
+        <div class="couple-title" id="coupleNames">Loading invitation...</div>
+      </div>
+
+      <!-- Input Form -->
+      <div>
+        <label class="field-label" for="guestNameInput">Guest Name (for the message)</label>
+        <input type="text" id="guestNameInput" class="input-royal" placeholder="Enter your Guest Name" maxlength="100" autocomplete="off">
+
+        <div style="margin-top: 8px;">
+          <label class="field-label" for="guestInviteCode">Supabase Invite Code</label>
+          <input type="text" id="guestInviteCode" class="input-royal" placeholder="Enter the code saved in Supabase" maxlength="120" autocomplete="off">
+        </div>
+
+        <div style="margin-top: 8px;">
+          <label class="field-label" for="guestLanguage">Invitation Language</label>
+          <select id="guestLanguage" class="input-royal">
+            <option value="en">English</option><option value="bn">বাংলা</option>
+            <option value="hi">हिन्दी</option><option value="ur">اردو</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Live URL Preview -->
+        <div class="preview-box">
+          <div class="preview-title">Generated Personalized Link</div>
+          <span class="preview-url" id="liveUrlPreview">Loading link...</span>
+          <div id="shareStatus" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-stack">
+        <a href="#" id="btnWhatsApp" target="_blank" class="btn-share-whatsapp">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.187-2.59-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.056-2.127-.534-1.745-.722-2.884-2.499-2.971-2.616-.087-.116-.708-.94-.708-1.792s.448-1.27.607-1.444c.159-.175.348-.218.463-.218l.333.006c.108 0 .252-.041.393.299.144.348.491 1.2.534 1.288.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.087-.178.182-.077.355.101.174.449.741.964 1.2.662.591 1.221.774 1.394.861.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.174.231-.145.39-.087s1.011.477 1.184.564.289.13.332.203c.044.073.044.419-.1.824z"/></svg>
+          <span>Share via WhatsApp</span>
+        </a>
+
+        <a href="#" id="btnViewCard" target="_blank" class="btn-view-card">
+          <span>👁️ View Generated Card</span>
+        </a>
+
+        <button class="btn-copy" id="btnCopy" type="button">
+          <span>📋 Copy Invitation Link</span>
+        </button>
+        <a class="btn-studio" id="btnStudio" href="#">Open Live Preview Studio</a>
+        <a class="btn-guests" id="btnGuestList" href="#">Build Code Links &amp; QR Codes</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast">Link Copied Successfully!</div>
+
+  <script type="module">
+    import { fetchInvitationByCode, fetchWeddingById } from './api.js';
+
+    const STORAGE_KEY = 'mcard-last-wedding-id';
+
+    // 1. DYNAMIC BASE URL EXTRACTION (PRESERVES SUBFOLDERS / REPO PATHS)
+    const currentLoc = window.location;
+    const currentParams = new URLSearchParams(currentLoc.search);
+
+    // Extract slug
+    let rawSlug = currentParams.get('w') || currentParams.get('id') || localStorage.getItem(STORAGE_KEY) || '';
+    rawSlug = rawSlug.replace(/\/share(\.html)?\/?$/, '').trim();
+    if (rawSlug) {
+      localStorage.setItem(STORAGE_KEY, rawSlug);
+    }
+
+    // Dynamically calculate the base directory path (e.g. /invite/ShadiCard-Project/)
+    let basePath = currentLoc.pathname;
+    if (basePath.endsWith('share.html')) {
+      basePath = basePath.slice(0, -10); // Strip 'share.html'
+    } else if (basePath.endsWith('/share')) {
+      basePath = basePath.slice(0, -6) + '/'; // Strip '/share'
+    }
+    if (!basePath.endsWith('/')) {
+      basePath += '/';
+    }
+
+    // Fully qualified base destination for the main card (e.g., https://mozasoft55.github.io/invite/ShadiCard-Project/)
+    const cardBaseRoot = `${currentLoc.origin}${basePath}`;
+
+    // DOM ELEMENTS
+    const guestInput = document.getElementById('guestNameInput');
+    const inviteCodeInput = document.getElementById('guestInviteCode');
+    const languageInput = document.getElementById('guestLanguage');
+    languageInput.value = ['en', 'bn', 'hi', 'ur'].includes(currentParams.get('lang')) ? currentParams.get('lang') : 'en';
+    const previewDisplay = document.getElementById('liveUrlPreview');
+    const shareStatus = document.getElementById('shareStatus');
+    const btnWhatsApp = document.getElementById('btnWhatsApp');
+    const btnViewCard = document.getElementById('btnViewCard');
+    const btnCopy = document.getElementById('btnCopy');
+    const btnStudio = document.getElementById('btnStudio');
+    const btnGuestList = document.getElementById('btnGuestList');
+    const toast = document.getElementById('toast');
+
+    let weddingRecord = null;
+    // 2. FETCH WEDDING DATA FROM SUPABASE
+    async function initWeddingData() {
+      try {
+        if (!rawSlug) {
+          const inviteCode = (currentParams.get('code') || '').trim();
+          if (!inviteCode) throw new Error('Open this page from a saved wedding or invitation link to load its Supabase data.');
+          const invite = await fetchInvitationByCode(inviteCode);
+          weddingRecord = invite.wedding;
+        } else {
+          const data = await fetchWeddingById(rawSlug);
+          weddingRecord = data.wedding;
+          localStorage.setItem(STORAGE_KEY, rawSlug);
+        }
+
+        if (!weddingRecord) throw new Error('Supabase did not return wedding data for this link.');
+
+        const b = String(weddingRecord.bride_name || '').trim();
+        const g = String(weddingRecord.groom_name || '').trim();
+        document.getElementById('coupleNames').textContent = [b, g].filter(Boolean).join(' & ') || 'Wedding details unavailable';
+        document.getElementById('coupleInitials').textContent = `${b[0] || ''}${g[0] || ''}`.toUpperCase();
+        shareStatus.textContent = '';
+      } catch (err) {
+        console.error('Wedding data loading error:', err);
+        weddingRecord = null;
+        document.getElementById('coupleNames').textContent = 'Wedding data unavailable';
+        document.getElementById('coupleInitials').textContent = '';
+        shareStatus.textContent = err.message || 'Could not load wedding data from Supabase.';
+      }
+      refreshState();
+    }
+
+    // 3. COMPOSE 100% ACCURATE PERSONALIZED URL
+    function buildTargetCardUrl() {
+      const guestName = guestInput.value.trim() || 'Guest';
+      const destUrl = new URL(cardBaseRoot);
+      const inviteCode = inviteCodeInput.value.trim();
+      if (inviteCode) destUrl.searchParams.set('code', inviteCode);
+      destUrl.searchParams.set('lang', languageInput.value);
+      return {
+        url: destUrl.toString().replace(/%20/g, '+'),
+        guestName
+      };
+    }
+
+    // 4. WHATSAPP INVITATION MESSAGE BUILDER
+    function buildWhatsAppCopy(meta) {
+      const b = weddingRecord?.bride_name || '';
+      const g = weddingRecord?.groom_name || '';
+
+      if (weddingRecord?.share_message && weddingRecord.share_message.trim()) {
+        return weddingRecord.share_message
+          .replace(/{guest}/gi, meta.guestName)
+          .replace(/{link}/gi, meta.url)
+          .replace(/{bride}/gi, b)
+          .replace(/{groom}/gi, g);
+      }
+
+      const messages = {
+        bn: `প্রিয় ${meta.guestName},\n\n${b} ও ${g}-এর বিবাহ অনুষ্ঠানে আপনাকে সাদর আমন্ত্রণ জানাই।\n\nআপনার ব্যক্তিগত আমন্ত্রণপত্র:\n${meta.url}\n\nআপনার উপস্থিতি আমাদের আনন্দিত করবে।`,
+        hi: `प्रिय ${meta.guestName},\n\n${b} एवं ${g} के विवाह समारोह में आपको सादर आमंत्रित करते हैं।\n\nआपका व्यक्तिगत निमंत्रण:\n${meta.url}\n\nआपकी उपस्थिति हमारे लिए खुशी की बात होगी।`,
+        ur: `محترم ${meta.guestName}،\n\n${b} اور ${g} کی شادی میں آپ کو شرکت کی دعوت ہے۔\n\nآپ کا خصوصی دعوت نامہ:\n${meta.url}\n\nآپ کی شرکت ہمارے لیے باعثِ مسرت ہوگی۔`
+      };
+      if (messages[languageInput.value]) return messages[languageInput.value];
+
+      return `Dear *${meta.guestName}*,\n\nWe are delighted to invite you to celebrate the wedding ceremony of *${b} & ${g}*.\n\nPlease open your personalized digital invitation card below:\n${meta.url}\n\nYour presence will make this celebration truly memorable.\n\nWarm regards,\nFamily & Friends`;
+    }
+
+    // 5. REACTIVE STATE SYNC
+    function refreshState() {
+      if (!weddingRecord || !rawSlug) return;
+      const studioUrl = new URL('studio.html', cardBaseRoot);
+      studioUrl.searchParams.set('w', rawSlug);
+      studioUrl.searchParams.set('lang', languageInput.value);
+      btnStudio.href = studioUrl.toString();
+
+      const guestListUrl = new URL('guest-list.html', cardBaseRoot);
+      guestListUrl.searchParams.set('w', rawSlug);
+      guestListUrl.searchParams.set('lang', languageInput.value);
+      btnGuestList.href = guestListUrl.toString();
+
+      if (!inviteCodeInput.value.trim()) {
+        previewDisplay.textContent = 'Enter the invite code saved in Supabase.';
+        btnViewCard.href = '#';
+        btnWhatsApp.href = '#';
+        return;
+      }
+
+      const meta = buildTargetCardUrl();
+      previewDisplay.textContent = meta.url;
+      btnViewCard.href = meta.url;
+      const waText = buildWhatsAppCopy(meta);
+      btnWhatsApp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(waText)}`;
+    }
+
+    // 6. EVENT BINDINGS
+    guestInput.addEventListener('input', refreshState);
+    inviteCodeInput.addEventListener('input', refreshState);
+    languageInput.addEventListener('change', refreshState);
+    btnWhatsApp.addEventListener('click', event => {
+      if (!weddingRecord || !inviteCodeInput.value.trim()) event.preventDefault();
+    });
+    btnViewCard.addEventListener('click', event => {
+      if (!weddingRecord || !inviteCodeInput.value.trim()) event.preventDefault();
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      if (!weddingRecord || !rawSlug || !inviteCodeInput.value.trim()) {
+        showToast('Enter the invite code already saved in Supabase.');
+        return;
+      }
+      const meta = buildTargetCardUrl();
+      try {
+        await navigator.clipboard.writeText(meta.url);
+        showToast("Link Copied Successfully!");
+      } catch {
+        showToast("Copy failed, please copy manually");
+      }
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    initWeddingData();
+  </script>
+</body>
+</html>

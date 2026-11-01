@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#3b0712">
+  <title>Invitation Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #35151b;
+      --wine: #6f0f1c;
+      --gold: #c9a24a;
+      --paper: #fffaf2;
+      --muted: #76666a;
+      font-family: "Playfair Display", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; color: var(--ink); background: #f3eee8; }
+    button, input, select { font: inherit; }
+    .topbar { padding: 18px clamp(16px, 4vw, 40px); background: #3b0712; color: #f7e5b5; }
+    .topbar a { color: inherit; text-decoration: none; }
+    .topbar h1 { margin: 0; font-size: 1.25rem; }
+    .topbar p { margin: 5px 0 0; color: #e5d4bd; font: 0.9rem "Cormorant Garamond", Georgia, serif; }
+    .layout { display: grid; grid-template-columns: minmax(280px, 390px) minmax(0, 1fr); gap: 22px; max-width: 1440px; margin: 0 auto; padding: 22px; }
+    .panel, .preview-panel { min-width: 0; border: 1px solid #dfd3c7; border-radius: 16px; background: var(--paper); box-shadow: 0 12px 34px #35151b12; }
+    .panel { padding: 22px; }
+    .panel h2, .preview-panel h2 { margin: 0 0 14px; color: var(--wine); font-size: 1.15rem; }
+    .notice { margin: 0 0 18px; padding: 11px 12px; border-left: 3px solid var(--gold); background: #faf1dc; color: #55453f; font: 0.92rem/1.45 "Cormorant Garamond", Georgia, serif; }
+    .field { display: grid; gap: 6px; margin: 12px 0; }
+    .field label, legend { color: #58313a; font-size: 0.84rem; font-weight: 700; }
+    .field input, .field select { width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid #cdbda9; border-radius: 8px; background: white; color: var(--ink); }
+    .field input:focus, .field select:focus, button:focus-visible, a:focus-visible { outline: 3px solid #d5b464; outline-offset: 2px; }
+    fieldset { margin: 16px 0 0; padding: 0; border: 0; }
+    legend { margin-bottom: 4px; }
+    .events { display: grid; gap: 10px; }
+    .event-editor { padding: 11px; border: 1px solid #e2d6c8; border-radius: 10px; background: #fffdf9; }
+    .event-editor h3 { margin: 0 0 8px; font-size: 0.88rem; }
+    .event-editor-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .event-editor-head button, #add-event { min-height:34px; padding:5px 10px; border:1px solid var(--gold); border-radius:999px; background:white; color:var(--wine); cursor:pointer; }
+    .event-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .event-grid input { min-width: 0; min-height: 38px; padding: 7px; border: 1px solid #d5c9bb; border-radius: 7px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .toolbar h2 { margin: 0; }
+    .preview-frame { display: block; width: 100%; height: min(78vh, 850px); min-height: 520px; border: 0; border-radius: 12px; background: #17050a; overscroll-behavior: contain; }
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+      .preview-frame { height: 72vh; min-height: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a id="back-link" href="share.html"><h1>Invitation Studio</h1></a>
+    <p id="couple-heading">Make a temporary live preview of your invitation</p>
+  </header>
+  <main class="layout">
+    <section class="panel" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">Live preview controls</h2>
+      <p class="notice">Changes update this preview only. Fill in details and test templates live.</p>
+      
+      <div class="field">
+        <label for="template">Invitation design</label>
+        <select id="template">
+          <option value="template-01">Template 1</option><option value="template-02">Template 2</option>
+          <option value="template-03">Template 3</option><option value="template-04">Template 4</option>
+          <option value="template-05">Template 5</option><option value="template-06">Template 6</option>
+          <option value="template-07">Template 7</option><option value="template-08">Template 8</option>
+          <option value="template-09">Template 9</option><option value="template-10">Template 10</option>
+        </select>
+      </div>
+      <div class="field"><label for="bride">Bride's name</label><input id="bride" maxlength="100" autocomplete="off"></div>
+      <div class="field"><label for="groom">Groom's name</label><input id="groom" maxlength="100" autocomplete="off"></div>
+      <div class="field"><label for="date">Wedding date</label><input id="date" type="date"></div>
+      <div class="field"><label for="venue">Venue</label><input id="venue" maxlength="180" autocomplete="off"></div>
+      
+      <div class="field">
+        <label for="palette">Colour mood</label>
+        <select id="palette">
+          <option value="royal">Royal maroon & gold</option><option value="emerald">Emerald & gold</option>
+          <option value="navy">Navy & gold</option><option value="rose">Rose & gold</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="font">Preview font</label>
+        <select id="font">
+          <option value="inherit">Original design font</option>
+          <option value="Georgia, serif">Georgia</option>
+          <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond</option>
+          <option value="'Playfair Display', Georgia, serif">Playfair Display</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="language">Invitation language</label>
+        <select id="language">
+          <option value="en">English</option><option value="bn">বাংলা</option>
+          <option value="hi">हिन्दी</option><option value="ur">اردو</option>
+        </select>
+      </div>
+      <fieldset>
+        <legend>Wedding events</legend>
+        <div class="events" id="events"></div>
+        <button id="add-event" type="button" style="margin-top:10px;">Add event</button>
+      </fieldset>
+    </section>
+
+    <section class="preview-panel" aria-labelledby="preview-heading" style="padding:16px">
+      <div class="toolbar">
+        <h2 id="preview-heading">Invitation preview</h2>
+        <span id="preview-status" role="status">Ready</span>
+        <button id="print-preview" type="button">Print / save as PDF</button>
+      </div>
+      <iframe class="preview-frame" id="preview" title="Live invitation preview"></iframe>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const fields = {
+        template: document.getElementById('template'),
+        bride: document.getElementById('bride'),
+        groom: document.getElementById('groom'),
+        date: document.getElementById('date'),
+        venue: document.getElementById('venue'),
+        palette: document.getElementById('palette'),
+        font: document.getElementById('font'),
+        language: document.getElementById('language')
+      };
+      const eventRoot = document.getElementById('events');
+      const frame = document.getElementById('preview');
+      const status = document.getElementById('preview-status');
+      const coupleHeading = document.getElementById('couple-heading');
+
+      document.getElementById('print-preview').addEventListener('click', () => {
+        window.print();
+      });
+
+      const paletteValues = {
+        royal: { hue: 0, colors: { primary: '#7a1426', primary_dark: '#3f0713', accent: '#b98a2f', paper_top: '#FFFDF8', paper_bottom: '#F2DFBF', text: '#3b1a1f' } },
+        emerald: { hue: 112, colors: { primary: '#0f4d3a', primary_dark: '#052b20', accent: '#b98a2f', paper_top: '#FBFFF9', paper_bottom: '#E4EFD9', text: '#14291f' } },
+        navy: { hue: 218, colors: { primary: '#1b2f5e', primary_dark: '#0a1633', accent: '#b98a2f', paper_top: '#FCFDFF', paper_bottom: '#E3E8F2', text: '#16203a' } },
+        rose: { hue: 328, colors: { primary: '#9c2f55', primary_dark: '#55132d', accent: '#b98a2f', paper_top: '#FFFBFC', paper_bottom: '#F5DDE3', text: '#3a1824' } }
+      };
+
+      let events = [
+        { event_name: 'Haldi', event_date: '2026-12-04', event_time: '11:00 AM', venue: 'Royal Palace Banquet', image_url: './assets/haldi.jpg' },
+        { event_name: 'Mehendi', event_date: '2026-12-04', event_time: '4:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/mehendi.jpg' },
+        { event_name: 'Sangeet', event_date: '2026-12-04', event_time: '7:30 PM', venue: 'Royal Palace Banquet', image_url: './assets/sangeet.jpg' },
+        { event_name: 'Baarat', event_date: '2026-12-05', event_time: '4:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/baraat.jpg' },
+        { event_name: 'Jaimala', event_date: '2026-12-05', event_time: '7:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/jaimala.jpg' },
+        { event_name: 'Phere', event_date: '2026-12-05', event_time: '9:00 PM', venue: 'Royal Palace Banquet', image_url: './assets/phere.jpg' },
+        { event_name: 'Reception', event_date: '2026-12-06', event_time: '7:30 PM', venue: 'Royal Palace Banquet', image_url: './assets/reception.jpg' }
+      ];
+
+      function renderEventEditors() {
+        eventRoot.innerHTML = '';
+        events.forEach((event, index) => {
+          const card = document.createElement('div');
+          card.className = 'event-editor';
+          card.innerHTML = `
+            <div class="event-editor-head">
+              <h3>Event ${index + 1}</h3>
+              <button type="button" data-del="${index}">Remove</button>
+            </div>
+            <div class="event-grid">
+              <input type="text" placeholder="Event name" value="${event.event_name || ''}" data-key="event_name" data-idx="${index}">
+              <input type="date" value="${event.event_date || ''}" data-key="event_date" data-idx="${index}">
+              <input type="text" placeholder="Time" value="${event.event_time || ''}" data-key="event_time" data-idx="${index}">
+            </div>
+          `;
+          eventRoot.appendChild(card);
+        });
+
+        eventRoot.querySelectorAll('button[data-del]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            events.splice(Number(e.target.dataset.del), 1);
+            renderEventEditors();
+            renderPreview();
+          });
+        });
+
+        eventRoot.querySelectorAll('input').forEach(input => {
+          input.addEventListener('input', (e) => {
+            const idx = Number(e.target.dataset.idx);
+            const key = e.target.dataset.key;
+            events[idx][key] = e.target.value;
+            renderPreview();
+          });
+        });
+      }
+
+      function buildData() {
+        const pal = paletteValues[fields.palette.value] || paletteValues.royal;
+        const b = fields.bride.value.trim() || 'Bride Name';
+        const g = fields.groom.value.trim() || 'Groom Name';
+        const d = fields.date.value || '2026-10-27';
+        const v = fields.venue.value.trim() || 'Grand Heritage Palace';
+
+        return {
+          guest: { name: 'Respected Guest & Family', with_family: true, persons: 2 },
+          wedding: {
+            bride_name: b,
+            groom_name: g,
+            date: d,
+            time: '7:00 PM',
+            venue: v,
+            address: v,
+            rsvp_number: '9876543210',
+            template_id: fields.template.value,
+            theme_colors: pal.colors
+          },
+          events: events.map(ev => ({
+            ...ev,
+            event_date: ev.event_date || d,
+            venue: ev.venue || v
+          }))
+        };
+      }
+
+      async function renderPreview() {
+        status.textContent = 'Updating…';
+        const b = fields.bride.value.trim();
+        const g = fields.groom.value.trim();
+        coupleHeading.textContent = (b || g) ? `${b || 'Bride'} & ${g || 'Groom'} · Live Preview` : 'Make a temporary live preview of your invitation';
+
+        const data = buildData();
+        const tName = fields.template.value;
+
+        try {
+          // Dynamic import of template js with resilient path resolution and cache-busting
+          const cacheBust = `?t=${Date.now()}`;
+          let mod;
+          try {
+            mod = await import(`./templates/${tName}.js${cacheBust}`);
+          } catch (e1) {
+            try {
+              mod = await import(`../templates/${tName}.js${cacheBust}`);
+            } catch (e2) {
+              console.warn('Template module load warning:', e1, e2);
+              throw e1;
+            }
+          }
+          const fn = mod.default || mod;
+          const html = fn(data);
+
+          const pal = paletteValues[fields.palette.value] || paletteValues.royal;
+          const font = fields.font.value === 'inherit' ? '' : `font-family:${fields.font.value} !important;`;
+          const hue = tName === 'template-02' ? 0 : pal.hue;
+          const dir = fields.language.value === 'ur' ? 'rtl' : 'ltr';
+
+          frame.srcdoc = `<!doctype html>
+          <html lang="${fields.language.value}" dir="${dir}">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <style>
+              html{margin:0;padding:0;width:100%;min-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:#16050a}
+              body{margin:0;padding:0;width:100%;min-height:100%;overflow:visible;overscroll-behavior:contain;background:#16050a}
+              .studio-preview{position:relative;width:100%;min-height:100vh;filter:hue-rotate(${hue}deg);direction:${dir}}
+              .studio-preview *{${font}}
+            </style>
+          </head>
+          <body>
+            <div class="studio-preview">${html}</div>
+          </body>
+          </html>`;
+
+          const mountFrame = () => {
+            try {
+              const doc = frame.contentDocument || frame.contentWindow?.document;
+              if (doc && typeof mod.mount === 'function') {
+                const target = doc.querySelector('.studio-preview') || doc.body;
+                mod.mount(target, data);
+              }
+            } catch (err) {
+              console.warn('Studio mount error:', err);
+            }
+          };
+          frame.onload = mountFrame;
+          setTimeout(mountFrame, 120);
+
+          status.textContent = 'Preview updated';
+        } catch (err) {
+          console.warn('Template module load warning:', err);
+          status.textContent = 'Template file load error';
+          // Clean fallback in case file is missing
+          frame.srcdoc = `<!doctype html><html><body style="margin:0;background:#1e050b;color:#f5e2b8;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:Georgia,serif;padding:24px;text-align:center;">
+            <div style="border:1px solid #c9a24a;border-radius:14px;padding:28px;max-width:440px;background:#2b0710;">
+              <h2 style="margin:0 0 10px;color:#e8c56d;">${data.wedding.bride_name} & ${data.wedding.groom_name}</h2>
+              <p style="font-size:14px;margin:6px 0;">Date: ${data.wedding.date}</p>
+              <p style="font-size:14px;margin:6px 0;">Venue: ${data.wedding.venue}</p>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px dashed #c9a24a88;font-size:12px;opacity:0.8;">
+                (Note: <code>templates/${tName}.js</code> could not be found locally, showing core details)
+              </div>
+            </div>
+          </body></html>`;
+        }
+      }
+
+      // Input listeners
+      [fields.bride, fields.groom, fields.date, fields.venue].forEach(el => el.addEventListener('input', renderPreview));
+      [fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
+
+      // Supported templates
+      const validTemplates = [
+        'template-01', 'template-02', 'template-03', 'template-04', 'template-05',
+        'template-06', 'template-07', 'template-08', 'template-09', 'template-10'
+      ];
+
+      // Route detection: URL hash (#template-03) or query param (?template=template-03)
+      function resolveInitialTemplate() {
+        const rawHash = (window.location.hash || '').replace(/^[#/]+/, '').trim();
+        if (rawHash && validTemplates.includes(rawHash)) return rawHash;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramT = urlParams.get('template');
+        if (paramT && validTemplates.includes(paramT)) return paramT;
+
+        // Default to template-03 so visiting studio.html# opens the redesigned template immediately
+        return 'template-03';
+      }
+
+      const initialTemplate = resolveInitialTemplate();
+      fields.template.value = initialTemplate;
+      if (window.location.hash !== `#${initialTemplate}`) {
+        history.replaceState(null, '', `#${initialTemplate}`);
+      }
+
+      // Sync dropdown change to URL hash
+      fields.template.addEventListener('change', () => {
+        if (window.location.hash !== `#${fields.template.value}`) {
+          window.location.hash = fields.template.value;
+        }
+        renderPreview();
+      });
+
+      // Sync hashchange to dropdown and preview
+      window.addEventListener('hashchange', () => {
+        const h = (window.location.hash || '').replace(/^[#/]+/, '').trim();
+        if (validTemplates.includes(h) && fields.template.value !== h) {
+          fields.template.value = h;
+          renderPreview();
+        }
+      });
+
+      document.getElementById('add-event').addEventListener('click', () => {
+        events.push({ event_name: '', event_date: fields.date.value || '', event_time: '' });
+        renderEventEditors();
+        renderPreview();
+      });
+
+      // Default Showcase Data
+      if (initialTemplate === 'template-03') {
+        fields.bride.value = 'Tarana Khan';
+        fields.groom.value = 'Akbar Khan';
+        fields.date.value = '2026-10-27';
+        fields.venue.value = 'Howrah, West Bengal';
+        events = [
+          { event_name: 'Mehndi', event_date: '2026-10-26', event_time: '6:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Nikah', event_date: '2026-10-27', event_time: '4:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Walima / Dawat', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Dinner & Reception', event_date: '2026-10-27', event_time: '8:00 PM Onwards', venue: 'Howrah, West Bengal' }
+        ];
+      } else {
+        fields.bride.value = 'Aisha';
+        fields.groom.value = 'Rahman';
+        fields.date.value = '2026-10-27';
+        fields.venue.value = 'Grand Royal Palace, Howrah';
+      }
+      fields.palette.value = 'royal';
+      fields.language.value = 'en';
+
+      renderEventEditors();
+      renderPreview();
+    });
+  </script>
+</body>
+</html>

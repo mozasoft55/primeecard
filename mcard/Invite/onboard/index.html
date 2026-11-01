@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#200810">
+  <meta name="referrer" content="no-referrer">
+  <title>Create your wedding invitation | Royal Wedding Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script src="../vendor/qrcode-generator.js" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../"><span class="brand-mark" aria-hidden="true">✦</span><span>Royal Wedding Cards<small>YOUR STORY, BEAUTIFULLY INVITED</small></span></a>
+    <span class="secure-note"><span aria-hidden="true">◆</span> Private and secure order setup</span>
+  </header>
+
+  <main class="layout">
+    <aside class="story">
+      <p class="eyebrow">A celebration begins here</p>
+      <h1>Your invitation,<br><em>your way.</em></h1>
+      <p class="story-copy">Share the details once. We’ll prepare your wedding card workspace and keep your celebration beautifully organized.</p>
+      <div class="story-rule"></div>
+      <p class="story-quote">“The beginning of your forever deserves an invitation to remember.”</p>
+      <div class="trust-list">
+        <span><b>01</b> Design your card</span>
+        <span><b>02</b> Choose a package</span>
+        <span><b>03</b> Track your order securely</span>
+      </div>
+    </aside>
+
+    <section class="wizard-card" aria-labelledby="page-title">
+      <div id="form-view">
+        <div class="wizard-head">
+          <div>
+            <p class="eyebrow">Customer onboarding</p>
+            <h2 id="page-title">Let’s begin</h2>
+          </div>
+          <span class="step-count" id="step-count">Step 1 of 4</span>
+        </div>
+        <ol class="progress" aria-label="Onboarding progress">
+          <li class="active" data-progress="0"><span>1</span><small>People</small></li>
+          <li data-progress="1"><span>2</span><small>Celebration</small></li>
+          <li data-progress="2"><span>3</span><small>Package</small></li>
+          <li data-progress="3"><span>4</span><small>Review</small></li>
+        </ol>
+
+        <form id="onboarding-form" novalidate>
+          <section class="form-step" data-step="0">
+            <h3>Customer & couple</h3>
+            <p class="section-hint">Your contact details are used for order updates and dashboard access.</p>
+            <div class="field-grid">
+              <label class="field">Customer full name<input name="customer_name" autocomplete="name" maxlength="120" required></label>
+              <label class="field">Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+              <label class="field">Phone / WhatsApp<input name="phone" type="tel" autocomplete="tel" maxlength="24" required></label>
+              <label class="field">WhatsApp number <span class="optional">if different</span><input name="whatsapp_phone" type="tel" maxlength="24"></label>
+              <label class="field">City<input name="city" autocomplete="address-level2" maxlength="100" required></label>
+              <label class="field">Preferred contact
+                <select name="preferred_contact"><option value="whatsapp">WhatsApp</option><option value="phone">Phone</option><option value="email">Email</option></select>
+              </label>
+              <label class="field">Bride’s name<input name="bride_name" maxlength="100" required></label>
+              <label class="field">Groom’s name<input name="groom_name" maxlength="100" required></label>
+              <label class="field">Bride’s parents <span class="optional">optional</span><input name="bride_parents" maxlength="240"></label>
+              <label class="field">Groom’s parents <span class="optional">optional</span><input name="groom_parents" maxlength="240"></label>
+              <label class="field field-wide">Host / invitation sender <span class="optional">optional</span><input name="host_name" placeholder="e.g. Mrs. & Mr. Khan" maxlength="180"></label>
+            </div>
+          </section>
+
+          <section class="form-step" data-step="1" hidden>
+            <h3>Wedding celebration</h3>
+            <p class="section-hint">Add ceremony, venue, programme and card design details.</p>
+            <div class="field-grid">
+              <label class="field">Wedding date<input name="event_date" type="date" required></label>
+              <label class="field">Ceremony title<input name="ceremony_title" placeholder="Nikah / Marriage Ceremony" maxlength="120"></label>
+              <label class="field">Ceremony time
+                <div class="time-picker-row">
+                  <select name="ceremony_hour" class="time-part">
+                    <option value="">HH</option>
+                    <option value="01">1</option><option value="02">2</option><option value="03">3</option>
+                    <option value="04">4</option><option value="05">5</option><option value="06">6</option>
+                    <option value="07">7</option><option value="08">8</option><option value="09">9</option>
+                    <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                  </select>
+                  <span class="time-sep">:</span>
+                  <select name="ceremony_minute" class="time-part">
+                    <option value="">MM</option>
+                    <option value="00">00</option><option value="15">15</option>
+                    <option value="30">30</option><option value="45">45</option>
+                  </select>
+                  <select name="ceremony_ampm" class="time-part time-ampm">
+                    <option value="">AM/PM</option>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
+                <input type="hidden" name="ceremony_time">
+              </label>
+              <label class="field">Venue title<input name="venue_title" placeholder="Banquet Hall" maxlength="120"></label>
+              <label class="field field-wide">Venue name<input name="venue" maxlength="180"></label>
+              <label class="field field-wide">Venue address<textarea name="address" rows="2" maxlength="500"></textarea></label>
+              <label class="field field-wide">Google Maps URL<input name="map_url" type="url" placeholder="https://maps.google.com/…"></label>
+            </div>
+            <div class="subsection-head"><div><h4>Programme timeline</h4><p>Add, remove or reorder events.</p></div><button class="button button-outline button-small" id="add-event" type="button">＋ Add event</button></div>
+            <div id="event-list" class="event-list"></div>
+            <div class="field-grid design-grid">
+              <label class="field">
+                <span class="field-label-row">Invitation style <a id="template-preview-link" class="preview-template-link" href="../studio.html#template-02" target="_blank" rel="noopener">👁 Preview design ↗</a></span>
+                <select name="template_style" id="template-select" required></select>
+              </label>
+              <label class="field">Colour theme<select name="theme_name" id="theme-select" required></select></label>
+            </div>
+            <div id="theme-preview" class="theme-preview" aria-live="polite"></div>
+            <p id="design-warning" class="inline-error" role="status" hidden></p>
+          </section>
+
+          <section class="form-step" data-step="2" hidden>
+            <h3>Package & payment</h3>
+            <p class="section-hint">Package prices come from the business configuration. Payment is verified separately by our team.</p>
+            <div id="package-list" class="package-list" aria-live="polite"><p class="loading-line">Loading available packages…</p></div>
+            <div id="cash-fallback" class="cash-fallback" hidden>
+              <p><strong>Package selection is temporarily unavailable.</strong> You can still send a cash/manual quote request. This is an inquiry, not a confirmed order; our team will contact you to confirm the package and price.</p>
+              <button id="cash-fallback-button" type="button" class="button button-outline">Continue with cash / manual quote</button>
+            </div>
+            <div id="payment-methods" class="payment-methods" role="radiogroup" aria-label="Payment method" hidden>
+              <label class="payment-choice"><input type="radio" name="payment_mode" value="upi" checked><span><b>UPI / QR</b><small>Payment awaits independent verification</small></span></label>
+              <label class="payment-choice"><input type="radio" name="payment_mode" value="cash"><span><b>Cash settlement</b><small>Pending cash verification</small></span></label>
+            </div>
+            <p id="payment-config-warning" class="inline-error" role="status" hidden></p>
+            <div id="upi-panel" class="upi-panel">
+              <div class="upi-qr" id="upi-qr" aria-label="UPI payment QR code"></div>
+              <div class="upi-details">
+                <p class="eyebrow">Advance payable</p>
+                <strong class="upi-amount" id="upi-amount">Select a package</strong>
+                <p>Pay to <span id="merchant-name">merchant</span></p>
+                <div class="copy-row"><code id="upi-vpa">UPI ID loads with package details</code><button type="button" class="button button-outline button-small" id="copy-vpa">Copy UPI ID</button></div>
+                <button type="button" class="button button-outline button-small" id="copy-payment">Copy payment details</button>
+                <label class="field">UTR / transaction reference <span class="optional">optional</span><input name="utr" maxlength="120" autocomplete="off"></label>
+                <label class="field">Payment screenshot <span class="optional">optional · JPG, PNG or WebP · max 3 MB</span><input name="proof" type="file" accept="image/jpeg,image/png,image/webp"></label>
+                <p class="fine-print">A QR scan, UTR or screenshot is not proof of settlement. Your payment status remains Pending Verification until reviewed.</p>
+              </div>
+            </div>
+            <div id="cash-panel" class="notice-box" hidden>
+              Cash selected. UTR and payment screenshot are not required. Verified amount stays ₹0 until an authorized team member confirms receipt.
+            </div>
+            <div id="captcha-container" class="captcha-wrap"></div>
+            <p id="config-warning" class="inline-error" hidden></p>
+          </section>
+
+          <section class="form-step" data-step="3" hidden>
+            <h3 id="review-heading">Review your order</h3>
+            <p id="review-hint" class="section-hint">Please check these details before creating your secure order.</p>
+            <div id="review-content" class="review-card"></div>
+            <label id="order-consent" class="consent"><input name="consent" type="checkbox" required><span>I confirm these wedding details are accurate and agree that UPI payments remain unverified until the business confirms receipt.</span></label>
+            <p id="review-privacy" class="privacy-note">Your order reference identifies the order only. Private dashboard access is sent separately through the email address you provided.</p>
+          </section>
+
+          <div id="form-error" class="form-error" role="alert" hidden></div>
+          <div class="wizard-actions">
+            <button id="back-button" class="button button-muted" type="button" hidden>Back</button>
+            <span class="action-spacer"></span>
+            <button id="next-button" class="button button-gold" type="button">Continue</button>
+            <button id="submit-button" class="button button-primary" type="submit" hidden disabled>Create my order</button>
+          </div>
+        </form>
+      </div>
+
+      <section id="success-view" class="success-view" hidden aria-live="polite">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <p id="success-eyebrow" class="eyebrow">Provisioning complete</p>
+        <h2 id="success-heading">Your celebration has a home.</h2>
+        <p id="success-message"></p>
+        <dl class="success-details">
+          <div><dt>Order reference</dt><dd id="success-order"></dd></div>
+          <div><dt>Payment status</dt><dd id="success-payment"></dd></div>
+        </dl>
+        <div class="dashboard-action-card">
+          <div class="dashboard-btn-container">
+            <a id="dashboard-link" class="button button-primary success-link is-disabled" href="javascript:void(0)" aria-disabled="true" role="button">
+              <span id="dashboard-link-icon" class="btn-icon" aria-hidden="true">🔒</span>
+              <span id="dashboard-link-text">Open Secure Dashboard</span>
+            </a>
+          </div>
+
+          <div class="refresh-action-container">
+            <button id="refresh-status-btn" type="button" class="button button-outline button-refresh">
+              <span id="refresh-icon" class="refresh-icon" aria-hidden="true">↻</span>
+              <span id="refresh-btn-text">Refresh Status</span>
+            </button>
+          </div>
+          <p id="refresh-status-msg" class="refresh-status-msg" aria-live="polite">Verification in progress. Click &ldquo;Refresh Status&rdquo; to check if your card has been activated.</p>
+        </div>
+
+        <div id="payment-pending-notice" class="payment-pending-notice">
+          <div class="ppn-icon" aria-hidden="true">⏱</div>
+          <p class="ppn-title">Payment Verification Required</p>
+          <p class="ppn-body">Your order is saved. Dashboard access will <strong>automatically enable</strong> as soon as our team verifies your payment receipt and activates your card.</p>
+          <p class="ppn-hint">After making your payment, click the <strong>&ldquo;Refresh Status&rdquo;</strong> button above to immediately unlock access.</p>
+        </div>
+
+        <div id="payment-verified-notice" class="payment-verified-notice" hidden>
+          <div class="pvn-icon" aria-hidden="true">✓</div>
+          <p class="pvn-title">Card Activated &amp; Verified!</p>
+          <p class="pvn-body">Your payment has been successfully confirmed. You now have full access to your personalized invitation card, guest list, and RSVP tracking.</p>
+        </div>
+
+        <p id="dashboard-fine-print" class="fine-print" hidden>Your dashboard link is a private access credential. Do not forward it. Check your inbox for a copy; email delivery may still be pending.</p>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><span>Royal Wedding Cards</span><span>Thoughtfully made for your most meaningful day</span></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

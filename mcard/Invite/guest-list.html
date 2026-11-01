@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#3b0712">
+  <title>Guest Links &amp; QR Codes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="./vendor/qrcode-generator.js" defer></script>
+  <style>
+    :root { color-scheme: light; --ink:#35151b; --wine:#6f0f1c; --gold:#c9a24a; --paper:#fffaf2; --muted:#76666a; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    body { margin:0; min-width:320px; color:var(--ink); background:#f3eee8; font-family:"Playfair Display",Georgia,serif; }
+    button,input,select,textarea { font:inherit; }
+    .topbar { padding:18px clamp(16px,4vw,40px); background:#3b0712; color:#f7e5b5; }
+    .topbar a { color:inherit; text-decoration:none; }
+    .topbar h1 { margin:0; font-size:1.25rem; }
+    .topbar p { margin:5px 0 0; color:#e5d4bd; font:0.9rem "Cormorant Garamond",Georgia,serif; }
+    main { width:min(calc(100% - 28px), 1050px); margin:22px auto; }
+    .panel { margin-bottom:18px; padding:22px; border:1px solid #dfd3c7; border-radius:16px; background:var(--paper); box-shadow:0 12px 34px #35151b12; }
+    .panel h2 { margin:0 0 12px; color:var(--wine); font-size:1.15rem; }
+    .note { margin:0 0 14px; color:#55453f; font:0.95rem/1.45 "Cormorant Garamond",Georgia,serif; }
+    textarea { display:block; width:100%; min-height:140px; padding:12px; border:1px solid #cdbda9; border-radius:9px; background:white; color:var(--ink); resize:vertical; }
+    .options { display:flex; flex-wrap:wrap; gap:14px; align-items:end; margin:14px 0; }
+    .field { display:grid; gap:6px; }
+    .field label,.field legend { color:#58313a; font-size:.84rem; font-weight:700; }
+    select { min-width:170px; min-height:42px; padding:8px 10px; border:1px solid #cdbda9; border-radius:8px; background:#fff; color:var(--ink); }
+    button,a.action { display:inline-flex; min-height:40px; align-items:center; justify-content:center; padding:8px 15px; border:1px solid var(--wine); border-radius:999px; background:var(--wine); color:#fff5d9; font-weight:700; text-decoration:none; cursor:pointer; }
+    button.secondary,a.secondary { border-color:var(--gold); background:white; color:var(--wine); }
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #d5b464; outline-offset:2px; }
+    #status { min-height:1.4em; margin:10px 0 0; color:#4d0a18; font-weight: 600; }
+    .guest-results { display:grid; gap:10px; }
+    .guest-card { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:13px; border:1px solid #e2d6c8; border-radius:11px; background:#fffdf9; }
+    .guest-card h3 { margin:0 0 4px; font-size:1rem; }
+    .guest-card a.guest-link { display:block; overflow-wrap:anywhere; color:#553139; font:12px/1.45 ui-monospace,Consolas,monospace; }
+    .actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; }
+    .actions button,.actions a { min-height:36px; padding:6px 12px; font-size:.78rem; }
+    dialog { width:min(440px, calc(100vw - 24px)); border:1px solid var(--gold); border-radius:16px; padding:20px; background:var(--paper); color:var(--ink); box-shadow:0 24px 80px #0008; }
+    dialog::backdrop { background:#17050acc; }
+    dialog h2 { margin:0 0 6px; color:var(--wine); }
+    #qr-content { display:grid; justify-items:center; gap:12px; margin:16px 0; }
+    #qr-content svg { width:min(100%,300px); height:auto; background:white; }
+    #qr-url { width:100%; overflow-wrap:anywhere; font:12px/1.4 ui-monospace,Consolas,monospace; }
+    .dialog-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    @media(max-width:600px) {
+      main { width:min(calc(100% - 20px), 1050px); margin:12px auto; }
+      .panel { padding:16px; }
+      .guest-card { grid-template-columns:minmax(0,1fr); }
+      .actions { justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a id="back-link" href="share.html"><h1>Guest Links &amp; QR Codes</h1></a>
+    <p id="couple-heading">Create separate invitation links for your guests</p>
+  </header>
+  <main>
+    <section class="panel" aria-labelledby="guest-list-heading">
+      <h2 id="guest-list-heading">Build a personalized guest list</h2>
+      <p class="note">Enter one guest name per line. System will auto-generate codes and save them directly into the database.</p>
+      <label class="field" for="guest-names"><span>Guest Names (one per line)</span></label>
+      <textarea id="guest-names" maxlength="12000" placeholder="Kalimuddin&#10;Arif Hassan&#10;Shamshad Alam"></textarea>
+      <div class="options">
+        <label class="field" for="guest-language">
+          <span>Invitation language</span>
+          <select id="guest-language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ur">اردو</option>
+          </select>
+        </label>
+        <button id="generate" type="button">Generate guest links</button>
+        <button id="copy-all" class="secondary" type="button" hidden>Copy all links</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel" aria-labelledby="results-heading">
+      <h2 id="results-heading">Personalized invitations</h2>
+      <div class="guest-results" id="guest-results"></div>
+    </section>
+  </main>
+  <dialog id="qr-dialog" aria-labelledby="qr-heading">
+    <h2 id="qr-heading">Guest invitation QR</h2>
+    <p class="note" id="qr-guest-name"></p>
+    <div id="qr-content"></div>
+    <div class="dialog-actions">
+      <button id="download-qr" type="button">Download QR SVG</button>
+      <button id="close-qr" class="secondary" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { SUPABASE_CONFIG } from './supabase-config.js';
+
+    const params = new URLSearchParams(location.search);
+    const weddingId = (params.get('w') || '').trim();
+    const input = document.getElementById('guest-names');
+    const status = document.getElementById('status');
+    const results = document.getElementById('guest-results');
+    const generateBtn = document.getElementById('generate');
+    const copyAllButton = document.getElementById('copy-all');
+    const qrDialog = document.getElementById('qr-dialog');
+    const qrContent = document.getElementById('qr-content');
+    const qrGuestName = document.getElementById('qr-guest-name');
+    let wedding = null;
+    let lastGeneratedLinks = [];
+    let activeQrName = '';
+
+    function generateCode(name = '') {
+      const clean = name.trim().replace(/[^a-zA-Z]/g, '').slice(0, 4).toUpperCase();
+      const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+      return (clean ? `${clean}-` : 'G-') + rand;
+    }
+
+    function buildInvitationUrl(code, language = 'en') {
+      const url = new URL('./', location.origin);
+      url.searchParams.set('code', String(code).trim());
+      if (language && language !== 'en') url.searchParams.set('lang', language);
+      return url.href;
+    }
+
+    function makeQr(url) {
+      if (typeof window.qrcode !== 'function') throw new Error('Local QR encoder load nahi hua.');
+      const qr = window.qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      return qr.createSvgTag(6, 8);
+    }
+
+    function buildShareMessage(name, url) {
+      const bride = wedding?.bride_name || 'the couple';
+      const groom = wedding?.groom_name || '';
+      const language = document.getElementById('guest-language').value;
+      if (language === 'bn') {
+        return `প্রিয় ${name},\n\n${bride} ও ${groom}-এর বিবাহ অনুষ্ঠানে আপনাকে সাদর আমন্ত্রণ জানাই।\n\nআপনার व्यक्तिगत निमंत्रणপত্র:\n${url}`;
+      }
+      if (language === 'hi') {
+        return `प्रिय ${name},\n\n${bride} एवं ${groom} के विवाह समारोह में आपको सादर आमंत्रित करते हैं।\n\nआपका व्यक्तिगत निमंत्रण:\n${url}`;
+      }
+      if (language === 'ur') {
+        return `محترم ${name}،\n\n${bride} اور ${groom} کی شادی میں آپ کو شرکت کی دعوت ہے۔\n\nآپ کا خصوصی دعوت نامہ:\n${url}`;
+      }
+      return `Dear ${name}, you are invited to celebrate the wedding of ${bride} & ${groom}. We look forward to welcoming you.\n${url}`;
+    }
+
+    function openQr(name, url) {
+      try {
+        activeQrName = name;
+        qrGuestName.textContent = name;
+        qrContent.replaceChildren();
+        const template = document.createElement('template');
+        template.innerHTML = makeQr(url);
+        const svg = template.content.querySelector('svg');
+        qrContent.append(svg);
+        const link = document.createElement('a');
+        link.id = 'qr-url';
+        link.href = url;
+        link.textContent = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        qrContent.append(link);
+        qrDialog.showModal();
+      } catch (error) {
+        status.textContent = error.message || 'QR code generate nahi ho paya.';
+      }
+    }
+
+    function createGuestCard(name, url) {
+      const article = document.createElement('article');
+      article.className = 'guest-card';
+      const info = document.createElement('div');
+      const heading = document.createElement('h3');
+      heading.textContent = name;
+      const link = document.createElement('a');
+      link.className = 'guest-link';
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = url;
+      info.append(heading, link);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      const view = document.createElement('a');
+      view.className = 'action secondary';
+      view.href = url;
+      view.target = '_blank';
+      view.rel = 'noopener noreferrer';
+      view.textContent = 'Preview';
+      const whatsapp = document.createElement('a');
+      whatsapp.className = 'action';
+      const message = buildShareMessage(name, url);
+      whatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+      whatsapp.target = '_blank';
+      whatsapp.rel = 'noopener noreferrer';
+      whatsapp.textContent = 'WhatsApp';
+      const qr = document.createElement('button');
+      qr.type = 'button';
+      qr.className = 'secondary';
+      qr.textContent = 'Show QR';
+      qr.addEventListener('click', () => openQr(name, url));
+      actions.append(view, whatsapp, qr);
+      article.append(info, actions);
+      return article;
+    }
+
+    function renderCards(entries) {
+      const language = document.getElementById('guest-language').value;
+      lastGeneratedLinks = entries.map(entry =>
+        buildInvitationUrl(entry.code, language)
+      );
+      results.replaceChildren(...entries.map((entry, index) =>
+        createGuestCard(entry.name, lastGeneratedLinks[index])
+      ));
+      copyAllButton.hidden = entries.length === 0;
+      status.textContent = `Ready: ${entries.length} invitation link${entries.length === 1 ? '' : 's'}. Database me verified!`;
+    }
+
+    async function loadGuestsFromDB() {
+      if (!weddingId || !SUPABASE_CONFIG?.url) return [];
+      try {
+        const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/guests?wedding_id=eq.${encodeURIComponent(weddingId)}&select=guest_name,invite_code&order=created_at.asc`, {
+          headers: {
+            'apikey': SUPABASE_CONFIG.anonKey,
+            'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+          }
+        });
+        if (!res.ok) return [];
+        return await res.json();
+      } catch (err) {
+        console.warn('DB fetch error:', err);
+        return [];
+      }
+    }
+
+    async function saveNewGuestsToDB(newGuests) {
+      if (!weddingId || !newGuests.length) return;
+      const payload = newGuests.map(g => ({
+        wedding_id: weddingId,
+        guest_name: g.name,
+        invite_code: g.code,
+        family_members: 1,
+        category: 'Family'
+      }));
+
+      const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/guests`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.message || 'Database me guest save karne me problem aayi.');
+      }
+    }
+
+    async function fetchWedding() {
+      if (!weddingId || !SUPABASE_CONFIG?.url) return null;
+      try {
+        const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/weddings?id=eq.${encodeURIComponent(weddingId)}&select=bride_name,groom_name`, {
+          headers: {
+            'apikey': SUPABASE_CONFIG.anonKey,
+            'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+          }
+        });
+        const data = await res.json();
+        return data && data[0] ? data[0] : null;
+      } catch {
+        return null;
+      }
+    }
+
+    generateBtn.addEventListener('click', async () => {
+      const rawText = input.value.trim();
+      if (!rawText) {
+        status.textContent = 'Kripya kam se kam ek guest ka naam likhein.';
+        return;
+      }
+
+      generateBtn.disabled = true;
+      status.textContent = 'Saving guests to database...';
+
+      try {
+        const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        const entries = [];
+        const toInsert = [];
+
+        for (const line of lines) {
+          if (line.includes('|')) {
+            const parts = line.split('|').map(p => p.trim());
+            entries.push({ code: parts[0], name: parts[1] || 'Guest' });
+          } else {
+            const name = line;
+            const code = generateCode(name);
+            const item = { code, name };
+            entries.push(item);
+            toInsert.push(item);
+          }
+        }
+
+        if (toInsert.length > 0) {
+          await saveNewGuestsToDB(toInsert);
+          input.value = entries.map(e => `${e.code} | ${e.name}`).join('\n');
+        }
+
+        renderCards(entries);
+      } catch (error) {
+        status.textContent = `Error: ${error.message}`;
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    copyAllButton.addEventListener('click', async () => {
+      if (!lastGeneratedLinks.length) return;
+      try {
+        await navigator.clipboard.writeText(lastGeneratedLinks.join('\n'));
+        status.textContent = `Copied ${lastGeneratedLinks.length} links to clipboard.`;
+      } catch {
+        status.textContent = 'Clipboard copy fail ho gaya.';
+      }
+    });
+
+    document.getElementById('download-qr').addEventListener('click', () => {
+      const svg = qrContent.querySelector('svg');
+      if (!svg) return;
+      const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml;charset=utf-8' });
+      const downloadUrl = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = downloadUrl;
+      anchor.download = `${activeQrName.slice(0, 40) || 'guest'}-qr.svg`;
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    });
+
+    document.getElementById('close-qr').addEventListener('click', () => qrDialog.close());
+
+    async function initialize() {
+      if (weddingId) {
+        const backLink = new URL('share.html', location.href);
+        backLink.searchParams.set('w', weddingId);
+        document.getElementById('back-link').href = backLink.href;
+
+        wedding = await fetchWedding();
+        if (wedding) {
+          document.getElementById('couple-heading').textContent =
+            `${wedding.bride_name || 'Bride'} & ${wedding.groom_name || 'Groom'} · guest links`;
+        }
+
+        status.textContent = 'Loading guests...';
+        const dbGuests = await loadGuestsFromDB();
+        if (dbGuests.length > 0) {
+          input.value = dbGuests.map(g => `${g.invite_code} | ${g.guest_name}`).join('\n');
+          const entries = dbGuests.map(g => ({ code: g.invite_code, name: g.guest_name }));
+          renderCards(entries);
+          return;
+        }
+      }
+
+      status.textContent = 'Enter guest names (one per line) or paste invite codes above.';
+    }
+
+    initialize();
+  </script>
+</body>
+</html>

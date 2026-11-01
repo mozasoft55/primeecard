@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#200810">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <title>Payment review | Royal Wedding Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body data-view="boot">
+  <header class="topbar">
+    <a href="../" class="brand"><span>✦</span> Royal Wedding Cards</a>
+    <div id="session-bar" class="session-bar" hidden>
+      <span id="aal-badge" class="secure-badge" hidden>2-step verified</span>
+      <span id="session-email" class="session-email"></span>
+      <button id="signout" type="button" class="button button-gold button-small">Sign out</button>
+    </div>
+    <span id="staff-label" class="private-label">Authorized staff only</span>
+  </header>
+
+  <main class="stage">
+    <section id="view-boot" class="state-card" aria-live="polite"><span class="spinner"></span><p>Checking your session…</p></section>
+
+    <!-- ───────── Sign-in ───────── -->
+    <section id="auth-card" class="auth-card" hidden>
+      <ol id="stepper" class="stepper" data-step="1" aria-label="Sign-in steps">
+        <li class="s1"><span>1</span>Password</li>
+        <li class="s2"><span>2</span>Verification</li>
+      </ol>
+
+      <form id="view-password" novalidate hidden>
+        <p class="eyebrow">Administrator sign-in</p>
+        <h1>Payment review</h1>
+        <p class="lede">Sign in with your administrator account. You’ll confirm with a 6-digit code in the next step.</p>
+        <label class="field">Email
+          <input name="email" type="email" autocomplete="username" required spellcheck="false" autocapitalize="off">
+        </label>
+        <label class="field">Password
+          <span class="pw-wrap">
+            <input name="password" id="pw" type="password" autocomplete="current-password" required>
+            <button type="button" id="pw-toggle" class="pw-toggle" aria-pressed="false" aria-controls="pw">Show</button>
+          </span>
+        </label>
+        <p id="login-message" class="msg" role="alert" aria-live="polite"></p>
+        <button class="button button-primary button-block" type="submit">Continue</button>
+        <p class="fineprint">Access is limited to approved administrators. Attempts are logged.</p>
+      </form>
+
+      <form id="view-mfa" novalidate hidden>
+        <p class="eyebrow">Step 2 of 2</p>
+        <h1>Enter your 6-digit code</h1>
+        <p class="lede">Open your authenticator app and type the current code for <b>Royal Wedding Cards</b>.</p>
+        <label class="field">Verification code
+          <input id="mfa-code" class="code-input" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>
+        </label>
+        <p id="mfa-message" class="msg" role="alert" aria-live="polite"></p>
+        <button class="button button-primary button-block" type="submit">Verify and open</button>
+        <button class="link-button" type="button" data-signout>Use a different account</button>
+        <p class="fineprint">Lost your phone? Ask the site owner to reset your authenticator in the Supabase dashboard.</p>
+      </form>
+
+      <form id="view-enroll" novalidate hidden>
+        <p class="eyebrow">One-time setup</p>
+        <h1>Secure this account</h1>
+        <p class="lede">Scan the code with Google Authenticator, Authy or 1Password, then type the 6-digit number it shows.</p>
+        <div class="qr-box"><img id="enroll-qr" alt="QR code for your authenticator app" width="168" height="168"></div>
+        <p class="fineprint center">Can’t scan? Enter this key in the app:</p>
+        <div class="secret-row"><code id="enroll-secret">Preparing…</code><button type="button" id="copy-secret" class="button button-outline button-small">Copy</button></div>
+        <label class="field">6-digit code from the app
+          <input id="enroll-code" class="code-input" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" required>
+        </label>
+        <p id="enroll-message" class="msg" role="alert" aria-live="polite"></p>
+        <button class="button button-primary button-block" type="submit">Activate and open</button>
+        <button class="link-button" type="button" data-signout>Cancel and sign out</button>
+      </form>
+
+      <div id="view-denied" hidden>
+        <p class="eyebrow">Access denied</p>
+        <h1>Not an administrator</h1>
+        <p class="lede">This account is signed in but is not on the administrator list. If you should have access, ask the site owner to add you.</p>
+        <button class="button button-primary button-block" type="button" data-signout>Sign out</button>
+      </div>
+    </section>
+
+    <!-- ───────── Review console ───────── -->
+    <div id="view-console" hidden>
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">Authorized administration</p>
+          <h1>Payment verification &amp; Access Control</h1>
+          <p>Review UPI claims, monitor verification audit logs, and toggle customer invitation links in real time.</p>
+        </div>
+      </section>
+
+      <section id="stats" class="stats" aria-label="Queue summary"></section>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Payment Management</p>
+            <h2>Payment records</h2>
+          </div>
+          <button id="refresh" type="button" class="button button-outline button-small">Refresh</button>
+        </div>
+        <p class="financial-note">A submitted UTR does not prove settlement. Confirm money in your bank before verifying.</p>
+
+        <!-- Advance Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-tabs" id="payment-filter-tabs">
+            <button type="button" class="chip active" data-filter="pending">
+              Pending <span id="count-pending" class="badge">0</span>
+            </button>
+            <button type="button" class="chip" data-filter="verified">
+              Verified <span id="count-verified" class="badge">0</span>
+            </button>
+            <button type="button" class="chip" data-filter="rejected">
+              Rejected <span id="count-rejected" class="badge">0</span>
+            </button>
+            <button type="button" class="chip" data-filter="suspended">
+              URL Disabled <span id="count-suspended" class="badge">0</span>
+            </button>
+            <button type="button" class="chip" data-filter="all">
+              All Records <span id="count-all" class="badge">0</span>
+            </button>
+          </div>
+
+          <div class="search-box">
+            <input type="search" id="admin-search-input" placeholder="Search order, phone, or couple...">
+          </div>
+        </div>
+
+        <div id="admin-error" class="form-error" role="alert" hidden></div>
+        <div id="payment-queue"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Manual follow-up</p>
+            <h2>Cash quote requests</h2>
+          </div>
+        </div>
+        <p class="financial-note">These are inquiries, not confirmed orders. Contact the customer, agree a package and price, then update the status.</p>
+        <div id="cash-request-queue"></div>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="confirm-dialog" class="dialog">
+    <form method="dialog">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-body"></p>
+      <div class="dialog-actions">
+        <button class="button button-outline" value="cancel" autofocus>Cancel</button>
+        <button id="confirm-ok" class="button button-primary" value="ok"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
