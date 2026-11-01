@@ -1,0 +1,9 @@
+{
+  "name": "royal-wedding-invitation",
+  "private": true,
+  "description": "Supabase-backed wedding invitations with local QR-code generation",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
