@@ -77,12 +77,16 @@
       <div class="field"><label for="groom">Groom's name</label><input id="groom" maxlength="100" autocomplete="off"></div>
       <div class="field"><label for="date">Wedding date</label><input id="date" type="date"></div>
       <div class="field"><label for="venue">Venue</label><input id="venue" maxlength="180" autocomplete="off"></div>
+      <div class="field"><label for="invocation">Blessing / Invocation</label><input id="invocation" placeholder="|| শ্রী শ্রী প্রজাপতয়ে নমঃ || or Shree Ganeshaya Namah" autocomplete="off"></div>
+      <div class="field"><label for="ceremony_title">Ceremony title</label><input id="ceremony_title" placeholder="Shubho Bibaho / Shubh Vivah / Nikah" autocomplete="off"></div>
       
       <div class="field">
         <label for="palette">Colour mood</label>
         <select id="palette">
-          <option value="royal">Royal maroon & gold</option><option value="emerald">Emerald & gold</option>
-          <option value="navy">Navy & gold</option><option value="rose">Rose & gold</option>
+          <option value="maroon">Royal Maroon & Imperial Gold</option>
+          <option value="emerald">Emerald Velvet & Champagne Gold</option>
+          <option value="navy">Sapphire Midnight & Antique Gold</option>
+          <option value="rose">Plum Velvet & Rose Gold</option>
         </select>
       </div>
       <div class="field">
@@ -127,6 +131,8 @@
         groom: document.getElementById('groom'),
         date: document.getElementById('date'),
         venue: document.getElementById('venue'),
+        invocation: document.getElementById('invocation'),
+        ceremony_title: document.getElementById('ceremony_title'),
         palette: document.getElementById('palette'),
         font: document.getElementById('font'),
         language: document.getElementById('language')
@@ -141,10 +147,11 @@
       });
 
       const paletteValues = {
-        royal: { hue: 0, colors: { primary: '#7a1426', primary_dark: '#3f0713', accent: '#b98a2f', paper_top: '#FFFDF8', paper_bottom: '#F2DFBF', text: '#3b1a1f' } },
-        emerald: { hue: 112, colors: { primary: '#0f4d3a', primary_dark: '#052b20', accent: '#b98a2f', paper_top: '#FBFFF9', paper_bottom: '#E4EFD9', text: '#14291f' } },
-        navy: { hue: 218, colors: { primary: '#1b2f5e', primary_dark: '#0a1633', accent: '#b98a2f', paper_top: '#FCFDFF', paper_bottom: '#E3E8F2', text: '#16203a' } },
-        rose: { hue: 328, colors: { primary: '#9c2f55', primary_dark: '#55132d', accent: '#b98a2f', paper_top: '#FFFBFC', paper_bottom: '#F5DDE3', text: '#3a1824' } }
+        maroon: { key: 'maroon', colors: { primary: '#7a1426', primary_dark: '#3f0713', accent: '#c9a24a', paper_top: '#FFFDF8', paper_bottom: '#F2DFBF', text: '#3b1a1f' } },
+        emerald: { key: 'emerald', colors: { primary: '#0f4d3a', primary_dark: '#06281e', accent: '#d4af37', paper_top: '#FBFFF9', paper_bottom: '#E4EFD9', text: '#12332a' } },
+        navy: { key: 'navy', colors: { primary: '#1b2f5e', primary_dark: '#0a1633', accent: '#e0b95e', paper_top: '#FCFDFF', paper_bottom: '#E3E8F2', text: '#14213f' } },
+        rose: { key: 'rose', colors: { primary: '#9c2f55', primary_dark: '#55132d', accent: '#d4a24c', paper_top: '#FFFBFC', paper_bottom: '#F5DDE3', text: '#4a1a2a' } },
+        royal: { key: 'maroon', colors: { primary: '#7a1426', primary_dark: '#3f0713', accent: '#c9a24a', paper_top: '#FFFDF8', paper_bottom: '#F2DFBF', text: '#3b1a1f' } }
       };
 
       let events = [
@@ -195,10 +202,11 @@
       }
 
       function buildData() {
-        const pal = paletteValues[fields.palette.value] || paletteValues.royal;
+        const palKey = fields.palette.value || 'maroon';
+        const pal = paletteValues[palKey] || paletteValues.maroon;
         const b = fields.bride.value.trim() || 'Bride Name';
         const g = fields.groom.value.trim() || 'Groom Name';
-        const d = fields.date.value || '2026-10-27';
+        const d = fields.date.value || '2026-12-05';
         const v = fields.venue.value.trim() || 'Grand Heritage Palace';
 
         return {
@@ -210,9 +218,19 @@
             time: '7:00 PM',
             venue: v,
             address: v,
+            invocation: fields.invocation ? fields.invocation.value.trim() : '',
+            ceremony_title: fields.ceremony_title ? fields.ceremony_title.value.trim() : '',
             rsvp_number: '9876543210',
             template_id: fields.template.value,
-            theme_colors: pal.colors
+            theme: pal.key,
+            theme_name: pal.key,
+            primary_color: pal.colors.primary,
+            accent_color: pal.colors.accent,
+            accent2_color: pal.colors.primary,
+            paper_color: ['template-01', 'template-03', 'template-04', 'template-05', 'template-08', 'template-09', 'template-10'].includes(fields.template.value) ? undefined : pal.colors.paper_top,
+            theme_colors: pal.colors,
+            language: fields.language.value || 'en',
+            lang: fields.language.value || 'en'
           },
           events: events.map(ev => ({
             ...ev,
@@ -222,8 +240,19 @@
         };
       }
 
+      let currentRenderId = 0;
+      let currentMountCleanup = null;
+
       async function renderPreview() {
         status.textContent = 'Updating…';
+        const renderId = ++currentRenderId;
+
+        // Clean up previous template listeners/timers cleanly before loading new template
+        if (typeof currentMountCleanup === 'function') {
+          try { currentMountCleanup(); } catch (e) { console.warn('Studio cleanup warning:', e); }
+          currentMountCleanup = null;
+        }
+
         const b = fields.bride.value.trim();
         const g = fields.groom.value.trim();
         coupleHeading.textContent = (b || g) ? `${b || 'Bride'} & ${g || 'Groom'} · Live Preview` : 'Make a temporary live preview of your invitation';
@@ -232,7 +261,7 @@
         const tName = fields.template.value;
 
         try {
-          // Dynamic import of template js with resilient path resolution and cache-busting
+          // Dynamic import of template js and i18n with resilient path resolution and cache-busting
           const cacheBust = `?t=${Date.now()}`;
           let mod;
           try {
@@ -245,46 +274,78 @@
               throw e1;
             }
           }
+
+          let i18nMod;
+          try {
+            i18nMod = await import(`./i18n.js${cacheBust}`);
+          } catch (e1) {
+            try {
+              i18nMod = await import(`../i18n.js${cacheBust}`);
+            } catch (e2) {
+              console.warn('i18n module load warning:', e1, e2);
+            }
+          }
+          const localizeHtml = i18nMod?.localizeHtml || i18nMod?.default?.localizeHtml || ((h) => h);
+
           const fn = mod.default || mod;
-          const html = fn(data);
+          const rawHtml = fn(data);
+
+          const lang = fields.language.value || 'en';
+          const dir = lang === 'ur' ? 'rtl' : 'ltr';
+          const localizedHtml = localizeHtml(rawHtml, lang);
 
           const pal = paletteValues[fields.palette.value] || paletteValues.royal;
           const font = fields.font.value === 'inherit' ? '' : `font-family:${fields.font.value} !important;`;
-          const hue = tName === 'template-02' ? 0 : pal.hue;
-          const dir = fields.language.value === 'ur' ? 'rtl' : 'ltr';
 
           frame.srcdoc = `<!doctype html>
-          <html lang="${fields.language.value}" dir="${dir}">
+          <html lang="${lang}" dir="${dir}">
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <style>
               html{margin:0;padding:0;width:100%;min-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:#16050a}
               body{margin:0;padding:0;width:100%;min-height:100%;overflow:visible;overscroll-behavior:contain;background:#16050a}
-              .studio-preview{position:relative;width:100%;min-height:100vh;filter:hue-rotate(${hue}deg);direction:${dir}}
+              .studio-preview{position:relative;width:100%;min-height:100vh;direction:${dir}}
               .studio-preview *{${font}}
             </style>
           </head>
           <body>
-            <div class="studio-preview">${html}</div>
+            <div class="studio-preview" data-render-id="${renderId}">${localizedHtml}</div>
           </body>
           </html>`;
 
-          const mountFrame = () => {
+          let mounted = false;
+          const doMount = () => {
+            if (mounted || renderId !== currentRenderId) return;
             try {
               const doc = frame.contentDocument || frame.contentWindow?.document;
-              if (doc && typeof mod.mount === 'function') {
-                const target = doc.querySelector('.studio-preview') || doc.body;
-                mod.mount(target, data);
+              if (!doc) return;
+              const target = doc.querySelector('.studio-preview');
+              // Ensure we only mount on the actual current template document
+              if (target && target.children.length > 0 && target.getAttribute('data-render-id') === String(renderId)) {
+                mounted = true;
+                if (typeof mod.mount === 'function') {
+                  currentMountCleanup = mod.mount(target, data);
+                }
+                status.textContent = 'Preview updated';
               }
             } catch (err) {
               console.warn('Studio mount error:', err);
             }
           };
-          frame.onload = mountFrame;
-          setTimeout(mountFrame, 120);
 
-          status.textContent = 'Preview updated';
+          frame.onload = doMount;
+          // Resilient check polling to catch synchronous or asynchronous document readiness without race conditions
+          let checkCount = 0;
+          const checkInterval = setInterval(() => {
+            checkCount++;
+            if (mounted || renderId !== currentRenderId || checkCount > 25) {
+              clearInterval(checkInterval);
+              return;
+            }
+            doMount();
+          }, 40);
+
         } catch (err) {
           console.warn('Template module load warning:', err);
           status.textContent = 'Template file load error';
@@ -303,7 +364,7 @@
       }
 
       // Input listeners
-      [fields.bride, fields.groom, fields.date, fields.venue].forEach(el => el.addEventListener('input', renderPreview));
+      [fields.bride, fields.groom, fields.date, fields.venue, fields.invocation, fields.ceremony_title].forEach(el => el.addEventListener('input', renderPreview));
       [fields.palette, fields.font, fields.language].forEach(el => el.addEventListener('change', renderPreview));
 
       // Supported templates
@@ -358,21 +419,21 @@
       if (initialTemplate === 'template-03') {
         fields.bride.value = 'Tarana Khan';
         fields.groom.value = 'Akbar Khan';
-        fields.date.value = '2026-10-27';
+        fields.date.value = '2026-12-05';
         fields.venue.value = 'Howrah, West Bengal';
         events = [
-          { event_name: 'Mehndi', event_date: '2026-10-26', event_time: '6:00 PM', venue: 'Howrah, West Bengal' },
-          { event_name: 'Nikah', event_date: '2026-10-27', event_time: '4:00 PM', venue: 'Howrah, West Bengal' },
-          { event_name: 'Walima / Dawat', event_date: '2026-10-27', event_time: '7:00 PM', venue: 'Howrah, West Bengal' },
-          { event_name: 'Dinner & Reception', event_date: '2026-10-27', event_time: '8:00 PM Onwards', venue: 'Howrah, West Bengal' }
+          { event_name: 'Mehndi', event_date: '2026-12-04', event_time: '6:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Nikah', event_date: '2026-12-05', event_time: '4:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Walima / Dawat', event_date: '2026-12-05', event_time: '7:00 PM', venue: 'Howrah, West Bengal' },
+          { event_name: 'Dinner & Reception', event_date: '2026-12-06', event_time: '8:00 PM Onwards', venue: 'Howrah, West Bengal' }
         ];
       } else {
         fields.bride.value = 'Aisha';
         fields.groom.value = 'Rahman';
-        fields.date.value = '2026-10-27';
+        fields.date.value = '2026-12-05';
         fields.venue.value = 'Grand Royal Palace, Howrah';
       }
-      fields.palette.value = 'royal';
+      fields.palette.value = 'maroon';
       fields.language.value = 'en';
 
       renderEventEditors();

@@ -434,7 +434,7 @@ function renderPayments() {
       `;
     }
 
-    const publicUrl = location.origin + '/?code=' + encodeURIComponent(payment.preview_guest_code || '');
+    const publicUrl = new URL('?code=' + encodeURIComponent(payment.preview_guest_code || ''), new URL('../', location.href)).href;
 
     return `
       <article class="payment-card" data-payment="${escapeHtml(payment.payment_id)}">

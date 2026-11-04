@@ -161,3 +161,15 @@ test('rejects duplicate guest rows, invalid guest counts, and malformed CSV', ()
   assert.throws(() => parseGuestCsv('guest_name\n\n'), /at least one guest row|does not contain any guest rows/i);
   assert.throws(() => parseGuestCsv('guest_name\n"Ayesha'), /unterminated quoted field/i);
 });
+
+test('preserves custom invocation and ceremony title across all religious traditions', () => {
+  const input = {
+    ...validOrder,
+    invocation: '|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||',
+    ceremony_title: 'Shubho Bibaho'
+  };
+  const result = validateOnboarding(input);
+  assert.equal(result.valid, true);
+  assert.equal(result.value.invocation, '|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||');
+  assert.equal(result.value.ceremony_title, 'Shubho Bibaho');
+});

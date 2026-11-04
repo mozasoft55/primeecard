@@ -33,14 +33,14 @@ export const DEFAULT_STYLES = Object.freeze([
 ]);
 
 export const DEFAULT_THEMES = Object.freeze([
-  { theme_name: 'charcoal-gold', primary_color: '#2B2B2B', primary_dark_color: '#111111', accent_color: '#C9A24A', paper_top_color: '#FAF8F3', paper_bottom_color: '#EBE6DA', text_color: '#222222' },
-  { theme_name: 'emerald', primary_color: '#0F4D3A', primary_dark_color: '#06281E', accent_color: '#C9A24A', paper_top_color: '#F7FBF4', paper_bottom_color: '#DFEAD6', text_color: '#12332A' },
-  { theme_name: 'maroon', primary_color: '#7A1426', primary_dark_color: '#4D0A18', accent_color: '#C9A24A', paper_top_color: '#FFFAF0', paper_bottom_color: '#F2E4C4', text_color: '#3B1A1F' },
-  { theme_name: 'navy', primary_color: '#1B2F5E', primary_dark_color: '#0C1730', accent_color: '#C9A24A', paper_top_color: '#FBFAF5', paper_bottom_color: '#E6E4D6', text_color: '#14213F' },
-  { theme_name: 'rose', primary_color: '#9C2F55', primary_dark_color: '#5E1630', accent_color: '#D4A24C', paper_top_color: '#FFF6F7', paper_bottom_color: '#F6DFE3', text_color: '#4A1A2A' },
-  { theme_name: 'royal-purple', primary_color: '#4B2A7B', primary_dark_color: '#2A1450', accent_color: '#D4AF37', paper_top_color: '#FBF8FF', paper_bottom_color: '#E8DEF5', text_color: '#2C1A4A' },
-  { theme_name: 'saffron', primary_color: '#C2410C', primary_dark_color: '#7C2D12', accent_color: '#B8860B', paper_top_color: '#FFFAF0', paper_bottom_color: '#FFE8C2', text_color: '#4A2208' },
-  { theme_name: 'teal', primary_color: '#0E6B72', primary_dark_color: '#063C41', accent_color: '#D4AF37', paper_top_color: '#F4FBFB', paper_bottom_color: '#D7ECEC', text_color: '#0F3A3D' }
+  { theme_name: 'maroon', label: 'Royal Maroon & Imperial Gold', primary_color: '#7A1426', primary_dark_color: '#3F0713', accent_color: '#C9A24A', paper_top_color: '#FFFDF8', paper_bottom_color: '#F2DFBF', text_color: '#3B1A1F' },
+  { theme_name: 'emerald', label: 'Emerald Velvet & Champagne Gold', primary_color: '#0F4D3A', primary_dark_color: '#06281E', accent_color: '#D4AF37', paper_top_color: '#FBFFF9', paper_bottom_color: '#E4EFD9', text_color: '#12332A' },
+  { theme_name: 'navy', label: 'Sapphire Midnight & Antique Gold', primary_color: '#1B2F5E', primary_dark_color: '#0A1633', accent_color: '#E0B95E', paper_top_color: '#FCFDFF', paper_bottom_color: '#E3E8F2', text_color: '#14213F' },
+  { theme_name: 'rose', label: 'Plum Velvet & Rose Gold', primary_color: '#9C2F55', primary_dark_color: '#55132D', accent_color: '#D4A24C', paper_top_color: '#FFFBFC', paper_bottom_color: '#F5DDE3', text_color: '#4A1A2A' },
+  { theme_name: 'charcoal-gold', label: 'Charcoal & Gold', primary_color: '#2B2B2B', primary_dark_color: '#111111', accent_color: '#C9A24A', paper_top_color: '#FAF8F3', paper_bottom_color: '#EBE6DA', text_color: '#222222' },
+  { theme_name: 'royal-purple', label: 'Royal Purple & Gold', primary_color: '#4B2A7B', primary_dark_color: '#2A1450', accent_color: '#D4AF37', paper_top_color: '#FBF8FF', paper_bottom_color: '#E8DEF5', text_color: '#2C1A4A' },
+  { theme_name: 'saffron', label: 'Imperial Saffron', primary_color: '#C2410C', primary_dark_color: '#7C2D12', accent_color: '#B8860B', paper_top_color: '#FFFAF0', paper_bottom_color: '#FFE8C2', text_color: '#4A2208' },
+  { theme_name: 'teal', label: 'Peacock Teal & Gold', primary_color: '#0E6B72', primary_dark_color: '#063C41', accent_color: '#D4AF37', paper_top_color: '#F4FBFB', paper_bottom_color: '#D7ECEC', text_color: '#0F3A3D' }
 ]);
 
 export function formatINR(paise) {
@@ -142,6 +142,7 @@ export function validateOnboarding(input) {
     groom_parents: text('groom_parents', 240),
     host_name: text('host_name', 180),
     event_date: weddingDate,
+    invocation: text('invocation', 200),
     ceremony_title: text('ceremony_title', 120),
     ceremony_time: ceremonyTime,
     venue_title: text('venue_title', 120),
@@ -198,6 +199,7 @@ export function validateCashRequest(input) {
       groom_parents: text('groom_parents', 240),
       host_name: text('host_name', 180),
       event_date: eventDate,
+      invocation: text('invocation', 200),
       ceremony_title: text('ceremony_title', 120),
       ceremony_time: text('ceremony_time', 8),
       venue_title: text('venue_title', 120),

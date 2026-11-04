@@ -115,7 +115,7 @@ const THEMES = {
   ruby: { n: ['#220711', '#702040'], s: ['#12050b', '#341322'], d: ['#5d2040', '#ffb56e'], gold: '#f2c46b', acc: '#ff8aa1' }
 };
 const pickTheme = w => {
-  const t = THEMES[clean(w?.theme).toLowerCase()] || THEMES.monsoon;
+  const t = THEMES[clean(w?.theme || w?.theme_name).toLowerCase()] || THEMES.maroon || THEMES.monsoon;
   const gold = hex6(w?.accent_color) || t.gold;
   return { ...t, gold };
 };

@@ -89,11 +89,16 @@ function parseWhen(dv, tv, offset = '+05:30') {
 
 /* ---------- dynamic theme ---------- */
 const PRESETS = {
-  blush: { a: '#b4566b', a2: '#7d8f69', paper: '#fbf6ef' },
-  sage: { a: '#5f7a61', a2: '#c08a6a', paper: '#f7f7f0' },
-  lavender: { a: '#7a63a8', a2: '#c5a46a', paper: '#f8f5fb' },
-  terracotta: { a: '#b5593c', a2: '#6b7f6a', paper: '#fbf4ec' },
-  sky: { a: '#3f6f9f', a2: '#c9a66b', paper: '#f4f8fb' }
+  maroon: { a: '#8e1b34', a2: '#c99e32', paper: '#fdf9f4', ink: '#20050a' },
+  royal: { a: '#8e1b34', a2: '#c99e32', paper: '#fdf9f4', ink: '#20050a' },
+  emerald: { a: '#0c5238', a2: '#d4af37', paper: '#f4f8f5', ink: '#041d14' },
+  navy: { a: '#142e5d', a2: '#dfb85f', paper: '#f4f6fb', ink: '#050f24' },
+  rose: { a: '#99224f', a2: '#d49a50', paper: '#fdf5f8', ink: '#250412' },
+  blush: { a: '#b4566b', a2: '#7d8f69', paper: '#fbf6ef', ink: '#281317' },
+  sage: { a: '#5f7a61', a2: '#c08a6a', paper: '#f7f7f0', ink: '#1c251c' },
+  lavender: { a: '#7a63a8', a2: '#c5a46a', paper: '#f8f5fb', ink: '#211833' },
+  terracotta: { a: '#b5593c', a2: '#6b7f6a', paper: '#fbf4ec', ink: '#2c140d' },
+  sky: { a: '#3f6f9f', a2: '#c9a66b', paper: '#f4f8fb', ink: '#0e1f30' }
 };
 const hex6 = v => {
   const m = clean(v).match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
@@ -104,11 +109,16 @@ const rgbOf = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const hexOf = a => '#' + a.map(c => pad(Math.max(0, Math.min(255, Math.round(c))).toString(16))).join('');
 const scale = (h, k) => hexOf(rgbOf(h).map(c => c * k));
 const mix = (h1, h2, t) => { const a = rgbOf(h1), b = rgbOf(h2); return hexOf(a.map((c, i) => c + (b[i] - c) * t)); };
+const lumOf = h => { const [r, g, b] = rgbOf(h); return 0.299 * r + 0.587 * g + 0.114 * b; };
 
 function themeVars(w) {
-  const p = PRESETS[clean(w.theme).toLowerCase()] || PRESETS.blush;
-  const a = hex6(w.accent_color) || p.a, a2 = hex6(w.accent2_color) || p.a2, paper = hex6(w.paper_color) || p.paper;
-  const ink = scale(a, .22), dark = scale(a, .7), soft = mix(a, '#ffffff', .82), mid = mix(a, '#ffffff', .6), paper2 = mix(paper, a, .07);
+  const p = PRESETS[clean(w.theme || w.theme_name).toLowerCase()] || PRESETS.maroon || PRESETS.blush;
+  const a = hex6(w.accent_color) || p.a, a2 = hex6(w.accent2_color) || p.a2;
+  const paperCand = hex6(w.paper_color);
+  // Protect template 07 paper: must remain light luxury stationery (lum >= 65)
+  const paper = (paperCand && lumOf(paperCand) >= 65) ? paperCand : p.paper;
+  const ink = p.ink || scale(a, .22);
+  const dark = scale(a, .7), soft = mix(a, '#ffffff', .82), mid = mix(a, '#ffffff', .6), paper2 = mix(paper, a, .07);
   const rgb = h => rgbOf(h).join(',');
   return `--paper:${paper};--paper2:${paper2};--ink:${ink};--a:${a};--a-dark:${dark};--a-soft:${soft};--a-mid:${mid};--a2:${a2};--a-rgb:${rgb(a)};--a2-rgb:${rgb(a2)};--ink-rgb:${rgb(ink)};--paper-rgb:${rgb(paper)}`;
 }

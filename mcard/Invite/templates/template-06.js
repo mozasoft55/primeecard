@@ -1,68 +1,88 @@
 /* ==========================================================================
-   Royal Cinematic Wedding Invitation — render()/mount() template
-   Same contract as your other templates:
-     export default function render({ guest, wedding, events }) -> html string
-     export function mount(root, { guest, wedding, events }) -> cleanup()
-   render() alone is a complete, readable static invitation (no JS needed).
-   mount() adds: entry seal, countdown, scratch card, scroll reveals, RSVP.
-
-   wedding fields (all optional, nothing is hard-coded):
-     bride_name, groom_name, date, time, venue, address, city, map_url,
-     invocation, families | footer_text, poem, hero_image, venue_image,
-     rsvp_number, rsvp_contacts, surprise_message, name_order ('bride_first'),
-     story: [{title, text, image}]  (array or JSON string),
-     travel_info, stay_info, music_url, timezone_offset (default +05:30)
-   events[]: event_name, event_date, event_time, venue, address, description,
-     dress_code, dress_color, local_name, image_url
-   guest: name, with_family
+   SHUBHO BIBAHO — Royal Bengali Hindu Watercolor Heritage (Template 06)
+   Authentic 2000IQ Reframe based on Royal Bengali Invitation Card Art:
+   - Centerpiece Royal Bengali Wedding Card (Exact high-DPI parchment card art)
+   - Arch canopy, hanging jasmine/wisteria garlands, serene lake & Rajbari backdrop
+   - Bengali Bride in Red Banarasi silk & Mukut + Groom in Topor & Dhoti-Kurta
+   - Auspicious invocation: "|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||"
+   - Auspicious Lagna ("শুভ লগ্ন"), Bengali numerals translation ("০-৯"), and dates
+   - Complete ritual timeline (Gaye Holud, Mehendi, Aashirbaad, Shubho Bibaho, Boubhat)
+     with authentic fallback photography for each ritual
+   - Entry Gate with Royal Sindoor Bindi Seal & Marigold/Alta petal celebration
+   - Live Countdown Timer (Days, Hours, Min, Sec) & Interactive Calendar grid
+   - Google Maps Directions & Google Calendar Sync
+   - Interactive WhatsApp RSVP generator with guest counter & function selection
+   - Bilingual support: Instant toggle between English and বাংলা
+   - Shehnai / Music audio player toggle
    ========================================================================== */
 
-/* ---------- tiny helpers ---------- */
+/* ---------- Helpers ---------- */
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
 const clean = v => String(v ?? '').trim();
 const safeUrl = u => (/^https?:\/\//i.test(clean(u)) ? esc(clean(u)) : '');
-const safeImg = u => (/^https:\/\/[^\s'"()<>\\]+$/i.test(clean(u)) ? clean(u) : '');
+const safeImg = u => (/^(?:https?:\/\/[^\s'"()<>\\]+|\.\/assets\/[^\s'"()<>\\]+|assets\/[^\s'"()<>\\]+)$/i.test(clean(u)) ? clean(u) : '');
 const lines = s => String(s ?? '').split(/[;\n]/).map(x => x.trim()).filter(Boolean);
 const pad = n => String(n).padStart(2, '0');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const ORD = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN'];
-const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&family=Inter:wght@300;400;500;600&family=Noto+Serif+Devanagari:wght@400;600&display=swap';
+const ORD = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'];
+const MONTHS_BN = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+const DAYS_BN = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+const ORD_BN = ['প্রথম', 'দ্বিতীয়', 'তৃতীয়', 'চতুর্থ', 'পঞ্চম', 'ষষ্ঠ', 'সপ্তম'];
+const BN_DIG = '০১২৩৪৫৬৭৮৯';
+const toBn = s => String(s).replace(/\d/g, d => BN_DIG[d]);
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Galada&family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap';
 
 function dparts(v) {
   const raw = clean(v);
   let m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[T\s])/), y, mo, d;
   if (m) [y, mo, d] = [+m[1], +m[2], +m[3]];
   else if ((m = raw.match(/^(\d{1,2})[\s/-]+([A-Za-z]{3,9})[\s/-]+(\d{4})$/))) {
-    mo = MONTHS.findIndex(n => n.slice(0, 3).toLowerCase() === m[2].slice(0, 3).toLowerCase()) + 1; [y, d] = [+m[3], +m[1]];
-  } else if ((m = raw.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/))) [y, mo, d] = [+m[3], +m[2], +m[1]];
-  else return null;
+    mo = MONTHS.findIndex(n => n.slice(0, 3).toLowerCase() === m[2].slice(0, 3).toLowerCase()) + 1;
+    [y, d] = [+m[3], +m[1]];
+  } else if ((m = raw.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/))) {
+    [y, mo, d] = [+m[3], +m[2], +m[1]];
+  } else return null;
   if (!mo) return null;
   const t = new Date(Date.UTC(y, mo - 1, d));
   return t.getUTCFullYear() === y && t.getUTCMonth() === mo - 1 && t.getUTCDate() === d ? { y, mo, d } : null;
 }
-const weekday = p => DAYS[new Date(Date.UTC(p.y, p.mo - 1, p.d)).getUTCDay()];
-const longDate = p => `${pad(p.d)} ${MONTHS[p.mo - 1]} ${p.y}`;
-const shortDate = p => `${pad(p.d)} ${MONTHS[p.mo - 1].slice(0, 3)} ${p.y}`;
+const weekday = p => new Date(Date.UTC(p.y, p.mo - 1, p.d)).getUTCDay();
 
-function fmtTime(v) {
+function timeParts(v) {
   const raw = clean(v);
-  if (!raw) return '';
+  if (!raw) return null;
   if (/T/.test(raw)) {
     const d = new Date(raw);
-    if (!Number.isNaN(d.getTime())) return d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' }).replace(/\b(am|pm)\b/i, s => s.toUpperCase());
+    if (!Number.isNaN(d.getTime())) {
+      const s = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
+      const [h, mi] = s.split(':').map(Number);
+      return { h, mi };
+    }
   }
-  const m = raw.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?$/);
-  if (m) {
-    let h = +m[1];
-    const mer = m[3] ? m[3].toUpperCase() : (h >= 12 ? 'PM' : 'AM');
-    if (!m[3]) h = h % 12 || 12;
-    return `${h}:${m[2]} ${mer}`;
-  }
-  return raw;
+  const m = raw.match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([AaPp][Mm])?$/);
+  if (!m) return null;
+  let h = +m[1];
+  const mi = +(m[2] || 0), mer = m[3] ? m[3].toUpperCase() : '';
+  if (mer === 'PM' && h !== 12) h += 12;
+  if (mer === 'AM' && h === 12) h = 0;
+  return h > 23 || mi > 59 ? null : { h, mi };
 }
+const timeEn = v => {
+  const t = timeParts(v);
+  if (!t) return clean(v);
+  return `${t.h % 12 || 12}:${pad(t.mi)} ${t.h >= 12 ? 'PM' : 'AM'}`;
+};
+const timeBn = v => {
+  const t = timeParts(v);
+  if (!t) return clean(v);
+  const h = t.h, per = h >= 4 && h < 6 ? 'ভোর' : h >= 6 && h < 12 ? 'সকাল' : h >= 12 && h < 15 ? 'দুপুর' : h >= 15 && h < 17 ? 'বিকেল' : h >= 17 && h < 20 ? 'সন্ধ্যা' : 'রাত';
+  const h12 = h % 12 || 12;
+  return t.mi ? `${per} ${toBn(h12)}:${toBn(pad(t.mi))}` : `${per} ${toBn(h12)}টা`;
+};
 
 function parseWhen(dv, tv, offset = '+05:30') {
   const d = dparts(dv);
@@ -80,369 +100,833 @@ function parseWhen(dv, tv, offset = '+05:30') {
   return Number.isNaN(ts) ? null : ts;
 }
 
-/* ---------- imagery (Unsplash; each has a fallback so nothing breaks) ---------- */
-const U = (id, w = 800) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+/* ---------- Bilingual Text ---------- */
+const L = (en, bn) => `<span data-l="en">${esc(en)}</span><span data-l="bn">${esc(bn || en)}</span>`;
+const LH = (en, bn) => `<span data-l="en">${en}</span><span data-l="bn">${bn || en}</span>`;
+const TXT = {
+  kicker: ['A CELEBRATION OF LOVE', 'ভালোবাসার উৎসব'],
+  dear: ['Dear', 'শ্রদ্ধেয়'],
+  open: ['Open', 'খুলুন'],
+  tapOpen: ['Tap to open the invitation', 'আমন্ত্রণপত্র খুলতে ছুঁয়ে দিন'],
+  title: ['Shubho Bibaho', 'শুভ বিবাহ'],
+  weddingOf: ['The wedding celebration of', 'শুভ বিবাহে'],
+  together: ['Together with their families', 'উভয় পরিবারের পক্ষ থেকে'],
+  inviteDef: ['Request the pleasure of your company as they begin their sacred journey together.', 'দুই পরিবারের ভালোবাসা ও আশীর্বাদে আমাদের বিবাহ অনুষ্ঠানে আপনি সাদর আমন্ত্রিত।'],
+  invocDef: ['|| Shree Shree Prajapataye Namah ||', '|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||'],
+  invited: ['Invited', 'আমন্ত্রিত'],
+  begin: ['View Invitation', 'আমন্ত্রণপত্র দেখুন'],
+  scrollDown: ['Scroll down', 'নিচে স্ক্রল করুন'],
+  daysToGo: ['days to go', 'দিন বাকি'],
+  today: ['Today is the auspicious day ✦', 'আজই সেই শুভদিন ✦'],
+  bibaho: ['Shubho Bibaho', 'শুভ বিবাহ'],
+  bless1: ['With the love and blessings of both families,', 'দুই পরিবারের ভালোবাসা ও আশীর্বাদে'],
+  bless2: ['we cordially invite you to our wedding celebration', 'আমাদের বিবাহ অনুষ্ঠানে আপনি সাদর আমন্ত্রিত'],
+  lagna: ['Auspicious Lagna', 'শুভ লগ্ন'],
+  presence: ['Your gracious presence will make our celebration complete', 'আপনার উপস্থিতি আমাদের আনন্দ পূর্ণ করবে'],
+  contact: ['Contact', 'যোগাযোগ'],
+  storyEy: ['A little bit of forever', 'চিরকালের গল্প'],
+  storyH: ['Our Journey', 'আমাদের গল্প'],
+  storySub: ['Every love story is sacred. Ours is a collection of cherished moments that brought us together.', 'প্রতিটি ভালোবাসার গল্পই পবিত্র। আমাদের গল্প ছোট ছোট মুহূর্তের মালা, যা আমাদের এখানে এনেছে।'],
+  poemDef: ['Two souls united by destiny, blessed with eternal love, walking seven sacred steps toward a lifetime of happiness.', 'দুটি মন, একটি পবিত্র বন্ধন, সাতপাকের অঙ্গীকার আর আজীবনের ভালোবাসা। প্রতিটি আগামীকাল হোক আনন্দময়।'],
+  dateEy: ['Mark your calendar', 'দিনটি মনে রাখুন'],
+  dateH: ['Save the Date', 'শুভদিন ও শুভলগ্ন'],
+  days: ['Days', 'দিন'], hrs: ['Hours', 'ঘণ্টা'], min: ['Min', 'মিনিট'], sec: ['Sec', 'সেকেন্ড'],
+  addCal: ['Add to calendar', 'ক্যালেন্ডারে যোগ করুন'],
+  began: ['The celebration has begun ✦', 'উৎসব শুরু হয়েছে ✦'],
+  evEy: ['The festivities', 'উৎসবের আয়োজন'],
+  evH: ['Rituals & Celebrations', 'অনুষ্ঠানসূচি ও মাঙ্গলিক পর্ব'],
+  evSub: ['Sacred rituals, heartfelt laughter, music and eternal memories. We would be delighted to have you with us.', 'ঐতিহ্যবাহী আচার, আনন্দ, সুর আর স্মৃতি — আপনার শুভ উপস্থিতি আমাদের আনন্দ দ্বিগুণ করবে।'],
+  day: ['Day', 'দিন'],
+  dress: ['Dress code', 'পোশাকবিধি'],
+  momEy: ['Glimpses of us', 'আমাদের মুহূর্ত'],
+  momH: ['Moments of Love', 'স্মৃতির অ্যালবাম'],
+  venEy: ['Join us', 'আমাদের সঙ্গে থাকুন'],
+  venH: ['The Destination', 'অনুষ্ঠানস্থল'],
+  venSub: ['A serene setting for a celebration close to our hearts.', 'আমাদের হৃদয়ের কাছের এক উৎসবের সুন্দর আয়োজন।'],
+  venTag: ['The wedding destination', 'বিয়ের ঠিকানা'],
+  directions: ['Get directions', 'পথ নির্দেশ'],
+  calendar: ['Calendar', 'ক্যালেন্ডার'],
+  rsvpEy: ['Your presence is our present', 'আপনার উপস্থিতিই আমাদের উপহার'],
+  rsvpH: ['Kindly RSVP', 'আপনার উত্তর জানান'],
+  yourName: ['Your name', 'আপনার নাম'],
+  yes: ["Yes, we'll be there", 'হ্যাঁ, আমরা আসছি'],
+  no: ["Sorry, can't make it", 'দুঃখিত, আসতে পারছি না'],
+  howMany: ['How many of you?', 'আপনারা কতজন?'],
+  people: ['people', 'জন'],
+  which: ['Which functions?', 'কোন কোন অনুষ্ঠানে থাকবেন?'],
+  note: ['A note for the couple & family (optional)', 'বর-কনে ও পরিবারের জন্য বার্তা (ঐচ্ছিক)'],
+  send: ['Send RSVP on WhatsApp', 'হোয়াটসঅ্যাপে উত্তর পাঠান'],
+  cap: ['WhatsApp opens with your reply filled in. Just press send.', 'আপনার উত্তর লেখা অবস্থায় হোয়াটসঅ্যাপ খুলবে। শুধু সেন্ড চাপুন।'],
+  endEy: ['Forever begins', 'নতুন জীবনের শুরু'],
+  endBless: ['With love & blessings', 'ভালোবাসা ও আশীর্বাদসহ'],
+  s1: ['How We Met', 'প্রথম শুভদৃষ্টি'],
+  s1t: ['One unexpected hello became a thousand conversations, shared dreams, and a friendship that felt like home.', 'একটি অপ্রত্যাশিত শুভদৃষ্টি থেকে শুরু হলো হাজার কথার গল্প, আর এক ভালোবাসা যা ঘরের মতোই আপন।'],
+  s2: ['The Promise', 'প্রতিশ্রুতি'],
+  s2t: ['With happy tears and hearts full of hope, we chose each other — and all the beautiful tomorrows still to come.', 'আনন্দাশ্রু আর আশায় ভরা মন নিয়ে আমরা একে অপরকে বেছে নিলাম — সাত জন্মের সঙ্গী হওয়ার শুভ আশায়।'],
+  s3: ['The Big Day', 'শুভ বিবাহ'],
+  s3t: ['Now, surrounded by the people we love, we cannot wait to celebrate the beginning of our forever with you.', 'আজ আমাদের প্রিয়জনদের আশীর্বাদ মাথায় নিয়ে শুরু হচ্ছে আমাদের সাতপাকের যাত্রা — আপনাদেরও পাশে চাই।'],
+  guestSal: ['Cordially Invited', 'সাদর আমন্ত্রণ'],
+  withFam: ['With Family', 'পরিবার সহ'],
+  guestCount: ['Guest(s)', 'জন অতিথি'],
+  countdownHead: ['Auspicious Countdown', 'মাঙ্গলিক ক্ষণগণনা'],
+  untilLagna: ['Until the Auspicious Lagna', 'শুভ লগ্নের আর বাকি'],
+  viewCard: ['View Wedding Card', 'আমন্ত্রণপত্র দেখুন'],
+  scratchHint: ['✦ Scratch with your finger to reveal our secret blessing ✦', '✦ আশীর্বাদ ও বিশেষ বার্তাটি দেখতে ঘষুন বা ছুঁয়ে দিন ✦'],
+  revEy: ['A surprise for you', 'আপনার জন্য চমক'],
+  revH: ['Special Message', 'বিশেষ বার্তা'],
+  revTap: ['✦ Tap to reveal ✦', '✦ দেখতে ছুঁয়ে দিন ✦'],
+  revMsg: ['We are truly blessed to have you in our lives. Your love and blessings mean the world to us as we take our seven sacred steps together. See you at the celebration!', 'আমাদের জীবনে আপনাদের উপস্থিতি সত্যিই পরম আশীর্বাদ। সাতপাকের এই পবিত্র যাত্রায় আপনাদের আন্তরিক আশীর্বাদ ও উপস্থিতি আমাদের সবচেয়ে বড় উপহার। অনুষ্ঠানে দেখা হচ্ছে!'],
+  revSign: ['With all our love & reverence', 'আন্তরিক ভালোবাসা ও শ্রদ্ধায়']
+};
+const t = k => L(TXT[k][0], TXT[k][1]);
+
+/* ---------- Themes ---------- */
+const hex6 = v => {
+  const m = clean(v).match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return null;
+  return '#' + (m[1].length === 3 ? m[1].split('').map(c => c + c).join('') : m[1]).toLowerCase();
+};
+const rgbOf = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const hexOf = a => '#' + a.map(c => pad(clamp(Math.round(c), 0, 255).toString(16))).join('');
+const mixc = (h1, h2, k) => { const a = rgbOf(h1), b = rgbOf(h2); return hexOf(a.map((c, i) => c + (b[i] - c) * k)); };
+const THEMES = {
+  maroon: { p: '#8e1a34', a: '#b5121b', paper: '#fbf5eb', cream: '#f7eed8', gold: '#c99738' },
+  royal: { p: '#8e1a34', a: '#b5121b', paper: '#fbf5eb', cream: '#f7eed8', gold: '#c99738' },
+  emerald: { p: '#0f543e', a: '#187858', paper: '#f7fbf6', cream: '#eaf4e6', gold: '#d4af37' },
+  navy: { p: '#1b2f5e', a: '#244585', paper: '#f9faff', cream: '#e7ecf7', gold: '#dfb85f' },
+  rose: { p: '#9c2f55', a: '#c43e6e', paper: '#fff6f8', cream: '#f8e4ea', gold: '#d4a24c' },
+  sindoor: { p: '#a11d21', a: '#c8231f', paper: '#fdf3ec', cream: '#f8ecd4', gold: '#d4a23b' },
+  haldi: { p: '#9a5b0b', a: '#b5121b', paper: '#fef8e7', cream: '#faf0d2', gold: '#e0a82e' },
+  peacock: { p: '#0f5f6b', a: '#8e1a34', paper: '#eef5f3', cream: '#f3f0e0', gold: '#c99738' }
+};
+function themeVars(w) {
+  const th = THEMES[clean(w.theme || w.theme_name).toLowerCase()] || THEMES.maroon;
+  const p = hex6(w.primary_color) || th.p, a = hex6(w.accent_color) || th.a, paper = hex6(w.paper_color) || th.paper, cream = th.cream, gold = th.gold;
+  const dark = mixc(p, '#000000', .3), ink = mixc(p, '#000000', .68), soft = mixc(p, '#ffffff', .88), mid = mixc(mixc(p, '#ffffff', .6), '#b4a5a7', .35);
+  return `--p:${p};--p-dark:${dark};--p-soft:${soft};--p-mid:${mid};--p-rgb:${rgbOf(p).join(',')};--a:${a};--paper:${paper};--cream:${cream};--gold:${gold};--ink:${ink};--ink-rgb:${rgbOf(ink).join(',')}`;
+}
+
+/* ---------- Content & Icon Helpers ---------- */
 const KINDS = [
-  { re: /haldi|ubtan|pithi|gaye\s*holud/i, icon: '🌼', src: './assets/haldi.jpg', img: '1606216794074-735e91aa2c92', alt: '1599661046827-dacff0c0f09a', dress: '#f4c542' },
-  { re: /mehendi|mehndi|henna/i, icon: '🌿', src: './assets/mehendi.jpg', img: '1583939003579-730e3918a45a', alt: '1465495976277-4387d4b0b4c6', dress: '#187653' },
-  { re: /sangeet|cocktail|music|garba|dandiya/i, icon: '🎶', src: './assets/sangeet.jpg', img: '1469371670807-013ccf25f16a', alt: '1511795409834-ef04bbd61622', dress: '#7444a1' },
-  { re: /milad|meelad|mawlid|seerat|quran|dua|fateha/i, icon: '🕌', src: './assets/milad-sharif.jpg', img: '1584551246679-0daf3d275d0f', alt: '1591604129939-f1efa4d9f7fa', dress: '#104936' },
-  { re: /baraat|barat|procession/i, icon: '🐎', src: './assets/baraat.jpg', img: '1519167758481-83f550bb49b3', alt: '1606216794074-735e91aa2c92', dress: '#e88aab' },
-  { re: /jaimala|varmala|engagement|sagai|tilak|ring/i, icon: '💐', src: './assets/jaimala.jpg', img: '1519225421980-715cb0215aed', alt: '1465495976277-4387d4b0b4c6', dress: '#d8b56e' },
-  { re: /phere|pheras|nikah|wedding|vivah|shaadi|biye|ceremony|saptapadi/i, icon: '🔥', src: './assets/phere.jpg', img: '1465495976277-4387d4b0b4c6', alt: '1519741497674-611481863552', dress: '#8e1e32' },
-  { re: /reception|walima|dinner|aashirbaad|aashirvad|blessing/i, icon: '✨', src: './assets/reception.jpg', img: '1511795409834-ef04bbd61622', alt: '1469371670807-013ccf25f16a', dress: '#e6cbd3' }
+  { re: /haldi|holud|ubtan|pithi|gaye/i, icon: 'flower', asset: 'template-06-haldi.jpg', dress: { en: 'Yellow & Marigold', bn: 'হলুদ ও গাঁদা রঙ' }, c: '#f4c542' },
+  { re: /mehendi|mehndi|henna/i, icon: 'leaf', asset: 'template-06-mehendi.jpg', dress: { en: 'Green & Pastels', bn: 'সবুজ ও হালকা রঙ' }, c: '#3f8f3a' },
+  { re: /sangeet|cocktail|music|dhak|dandiya|garba/i, icon: 'music', asset: 'template-06-sangeet.jpg', dress: { en: 'Festive & Colourful', bn: 'উৎসবের রঙিন পোশাক' }, c: '#7a2a6a' },
+  { re: /aiburo|aibhat|puja|pujo|shanti|ganesh|nandimukh|vrata/i, icon: 'lamp', asset: 'template-06-card-art.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#e9d9a6' },
+  { re: /mala\s*badal|jaimala|varmala|engagement|sagai|tilak|ring|ashirbad|aashirbad/i, icon: 'garland', asset: 'template-06-jaimala.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#d8b56e' },
+  { re: /phere|saat\s*paak|sampradan|sindoor|vivah|biye|bibaho|wedding|ceremony|kanyadan/i, icon: 'kalash', asset: 'template-06-phere.jpg', dress: { en: 'Red, White & Gold', bn: 'লাল, সাদা ও সোনালি' }, c: '#b5121b' },
+  { re: /reception|bou\s*bhat|boubhat|dinner|bhoj|feast|walima/i, icon: 'feast', asset: 'template-06-reception.jpg', dress: { en: 'Formal Elegance', bn: 'অভিজাত পোশাক' }, c: '#8e2a45' },
+  { re: /baraat|bor\s*boron|boron/i, icon: 'lamp', asset: 'template-06-baraat.jpg', dress: { en: 'Royal Festive', bn: 'রাজকীয় উৎসব' }, c: '#c8281e' }
 ];
-const DEFAULT_KIND = { icon: '✦', img: '1519741497674-611481863552', alt: '1522413452208-996ff3f3e740', dress: '#e5c07b' };
+const DEFAULT_KIND = { icon: 'flower', asset: 'template-06-phere.jpg', dress: null, c: '#d9b8a8' };
 const kindOf = name => KINDS.find(k => k.re.test(name)) || DEFAULT_KIND;
+const ICONS = {
+  flower: '<circle cx="12" cy="12" r="2.6"/><circle cx="12" cy="5.6" r="2.8"/><circle cx="12" cy="18.4" r="2.8"/><circle cx="5.6" cy="12" r="2.8"/><circle cx="18.4" cy="12" r="2.8"/>',
+  leaf: '<path d="M5 19C5 10 11 5 20 5C20 14 15 19 5 19Z"/><path d="M5 19L14 10"/>',
+  music: '<ellipse cx="12" cy="8" rx="8" ry="3"/><path d="M4 8V16C4 17.7 7.6 19 12 19S20 17.7 20 16V8"/><path d="M4 12.5C8 14 16 14 20 12.5" stroke-dasharray="2 2"/>',
+  lamp: '<path d="M3 14C3 18 7 20 12 20S21 18 21 14Z"/><path d="M12 4C9 7.4 9 10.6 12 12C15 10.6 15 7.4 12 4Z"/>',
+  garland: '<path d="M3.5 5C3.5 16 20.5 16 20.5 5"/><circle cx="12" cy="17.2" r="2"/><circle cx="7" cy="13" r="1.5"/><circle cx="17" cy="13" r="1.5"/>',
+  kalash: '<path d="M8 9H16C18 12 18 17 15 21H9C6 17 6 12 8 9Z"/><path d="M9 9V7H15V9"/><path d="M12 2.5L9 7M12 2.5L15 7M12 2.5V7"/>',
+  feast: '<circle cx="12" cy="14" r="6.5"/><path d="M12 7.5V3M8.2 5L9.2 8M15.8 5L14.8 8"/>'
+};
+const icon = k => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
 
 const DEFAULT_STORY = [
-  { title: 'How We Met', text: 'One unexpected hello became a thousand conversations, shared dreams, and a friendship that felt like home.', image: U('1529636798458-92182e662485', 700), alt: U('1519741497674-611481863552', 700) },
-  { title: 'The Proposal', text: 'With happy tears and hearts full of hope, we chose each other—and all the beautiful tomorrows still to come.', image: U('1519741497674-611481863552', 700), alt: U('1522413452208-996ff3f3e740', 700) },
-  { title: 'The Big Day', text: 'Now, surrounded by the people we love, we cannot wait to celebrate the beginning of our forever with you.', image: U('1520854221256-17451cc331bf', 700), alt: U('1606216794074-735e91aa2c92', 700) }
+  { k: 's1', image: '' }, { k: 's2', image: '' }, { k: 's3', image: '' }
 ];
-
 function readStory(raw) {
   let a = raw;
   if (typeof a === 'string') { try { a = JSON.parse(a); } catch { a = null; } }
-  if (!Array.isArray(a) || !a.length) return DEFAULT_STORY;
-  return a.slice(0, 3).map((s, i) => ({
-    title: clean(s?.title) || DEFAULT_STORY[i % 3].title,
-    text: clean(s?.text) || DEFAULT_STORY[i % 3].text,
-    image: safeImg(s?.image) || DEFAULT_STORY[i % 3].image,
-    alt: DEFAULT_STORY[i % 3].alt
-  }));
+  return DEFAULT_STORY.map((d, i) => {
+    const s = Array.isArray(a) ? a[i] : null;
+    return {
+      title: L(clean(s?.title) || TXT[d.k][0], clean(s?.title) || TXT[d.k][1]),
+      text: L(clean(s?.text) || TXT[d.k + 't'][0], clean(s?.text) || TXT[d.k + 't'][1]),
+      altTitle: clean(s?.title) || TXT[d.k][0],
+      image: safeImg(s?.image)
+    };
+  });
+}
+function readGallery(raw) {
+  let a = raw;
+  if (typeof a === 'string') { try { a = JSON.parse(a); } catch { a = lines(a); } }
+  if (!Array.isArray(a)) return [];
+  return a.map(x => safeImg(typeof x === 'string' ? x : (x?.image || x?.url))).filter(Boolean).slice(0, 9);
 }
 
-/* ---------- styles (all scoped under .t8) ---------- */
-const STYLE = `
-html{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-body{overflow:visible!important;margin:0;padding:0;overscroll-behavior:contain}
-.t8,.t8 *,.t8 *:before,.t8 *:after{box-sizing:border-box}
-.t8{--gold:#e5c07b;--bright:#fdf1c6;--pearl:#fdfbf7;--line:rgba(229,192,123,.34);--ease:cubic-bezier(.22,1,.36,1);
-  position:relative;width:100%;min-height:100vh;overflow-x:clip;color:var(--pearl);font:300 15px/1.7 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;
-  background:radial-gradient(ellipse 80% 40% at 50% 0,#1b5a45 0,transparent 70%),linear-gradient(180deg,#0f2c23 0,#05120f 55%,#030a08 100%)}
-.t8.t8-locked{height:100vh!important;height:100dvh!important;max-height:100vh!important;overflow:hidden!important}
-.t8 h1,.t8 h2,.t8 h3,.t8 p,.t8 figure{margin-top:0}
-.t8 img{display:block;max-width:100%}
-.t8 button{font:inherit;color:inherit;cursor:pointer}
-.t8 a{color:inherit}
-.t8 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.t8-noise{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.05;mix-blend-mode:overlay;overflow:hidden}
-.t8-noise:before{content:"";position:absolute;inset:-4%;
-  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:t8-grain 1.2s steps(6) infinite}
-@keyframes t8-grain{0%{transform:translate(0,0)}20%{transform:translate(-2%,1%)}40%{transform:translate(1%,-2%)}60%{transform:translate(-1%,2%)}80%{transform:translate(2%,-1%)}100%{transform:translate(0,0)}}
-.t8-progress{position:fixed;top:0;left:0;height:2px;width:100%;z-index:998;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,#b8873b,#fff1b8,#d9a84f);box-shadow:0 0 12px rgba(229,192,123,.8)}
-.t8-gold{background:linear-gradient(110deg,#a67a2e 0%,#fff1b8 22%,#d9a84f 42%,#fff7d6 58%,#b8863a 78%,#f0cf7e 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:t8-shimmer 6s linear infinite}
-@keyframes t8-shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-.t8-wrap{position:relative;width:100%;max-width:1120px;margin:0 auto;padding:0 22px}
-.t8 section{position:relative;padding:96px 0}
-.t8-eyebrow{font:500 11px Cinzel,serif;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.t8-head{text-align:center;margin-bottom:54px}
-.t8-head h2{font:500 clamp(28px,6vw,46px)/1.15 Cinzel,serif;letter-spacing:.08em;margin:0 0 14px}
-.t8-head p{max-width:460px;margin:0 auto;color:#d6ddd5;font-size:14px}
-.t8-rule{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--gold);margin:22px auto 0}
-.t8-rule:before,.t8-rule:after{content:"";height:1px;width:64px;background:linear-gradient(90deg,transparent,var(--gold))}
-.t8-rule:after{transform:scaleX(-1)}
-.t8-glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.03));border:1px solid var(--line);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 24px 60px rgba(0,0,0,.35)}
-.t8-ph{background:radial-gradient(circle at 30% 20%,rgba(229,192,123,.22),transparent 55%),linear-gradient(135deg,#17493a,#0a1f18)}
-.t8 img.t8-failed{opacity:0}
-.t8-reveal{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
-.t8-reveal.t8-in{opacity:1;transform:none}
-.t8-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 32px;border-radius:40px;border:1px solid rgba(255,245,210,.7);text-decoration:none;color:#04140e!important;font:800 12px Cinzel,serif!important;letter-spacing:.16em;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#b8862d 0%,#fef3c7 26%,#d9a441 50%,#fff7d6 74%,#b8862d 100%);background-size:200% auto;box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 0 rgba(145,95,20,.4);transition:transform .35s var(--ease),background-position .8s ease,box-shadow .35s;text-shadow:none!important}
-.t8-btn:hover{transform:translateY(-3px);background-position:100% 0}
-.t8-btn:after,.t8-send:after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-60%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:t8-sweep 4s ease-in-out infinite}
-@keyframes t8-sweep{0%,55%{left:-60%}100%{left:130%}}
-/* entry */
-.t8-entry{position:fixed;inset:0;width:100%;height:100%;height:100dvh;z-index:900;display:flex;align-items:center;justify-content:center;padding:clamp(12px,2.5vh,24px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:radial-gradient(ellipse at 50% 42%,#1b5943 0,#0f2c23 43%,#05120f 100%);transition:transform .9s var(--ease),opacity .9s var(--ease)}
-.t8-entry:before,.t8-entry:after{content:"";position:absolute;width:min(86vw,70vh,440px);height:min(86vw,70vh,440px);border:1px solid rgba(229,192,123,.22);border-radius:50%;box-shadow:0 0 0 18px rgba(229,192,123,.03),0 0 0 42px rgba(229,192,123,.02);pointer-events:none}
-.t8-entry:after{width:min(68vw,54vh,320px);height:min(68vw,54vh,320px);border-style:dashed;animation:t8-spin 70s linear infinite}
-.t8-entry.t8-leaving{transform:scale(1.15);opacity:0;pointer-events:none}
-.t8-entry-in{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.6vh,16px);max-height:100%;max-width:min(92vw,480px);margin:auto;padding:12px 0}
-.t8-kicker{font:500 clamp(9px,1.4vh,10.5px) Cinzel,serif;letter-spacing:.34em;color:#e7d8b5}
-.t8-entry-names{font:clamp(34px,6.8vh,62px)/1.25 "Great Vibes",cursive;margin:clamp(4px,1vh,10px) 0;padding:2px 12px;filter:drop-shadow(0 0 18px rgba(229,192,123,.45))}
-.t8-entry-names span{font-size:.7em;margin:0 4px}
-.t8-entry-sub{font:500 clamp(8.5px,1.3vh,10px) Cinzel,serif;letter-spacing:.2em;color:var(--gold)}
-.t8-guest-line{font:italic 400 clamp(14px,2.2vh,17px)/1.4 "Cormorant Garamond",serif;color:#f2e6c4;margin:clamp(2px,.8vh,6px) 0}
-.t8-seal{width:clamp(110px,18vh,146px);height:clamp(110px,18vh,146px);border-radius:50%;border:0;position:relative;color:#6d491a;display:grid;place-content:center;gap:2px;
-  background:radial-gradient(circle at 34% 25%,#fff0b9 0,#e8c16b 20%,#b98435 48%,#f6db8c 67%,#986323 83%,#f9e5a3 91%,#986323 100%);
-  box-shadow:inset 0 3px 3px rgba(255,255,255,.6),inset 0 -8px 12px rgba(110,69,27,.55),0 14px 26px rgba(0,0,0,.55),0 0 38px rgba(229,192,123,.35);animation:t8-pulseseal 3s ease-in-out infinite}
-.t8-seal:before{content:"";position:absolute;inset:8px;border:1px solid rgba(128,85,30,.6);border-radius:50%;box-shadow:inset 0 0 0 4px rgba(249,230,160,.27)}
-.t8-seal b{font:500 clamp(24px,4vh,32px) Cinzel,serif;letter-spacing:-.06em;text-shadow:0 1px rgba(255,255,255,.55),0 -1px rgba(125,83,28,.5)}
-.t8-seal small{font:600 clamp(7px,1.1vh,8.5px) Cinzel,serif;letter-spacing:.2em}
-.t8-seal.t8-burst{animation:t8-burst .5s ease-in forwards}
-.t8-entry-note{font-size:clamp(9.5px,1.4vh,11px);letter-spacing:.2em;text-transform:uppercase;color:#e9dfc7;cursor:pointer}
-.t8-flash{position:fixed;inset:0;z-index:901;background:radial-gradient(circle at 50% 50%,rgba(255,246,214,.85) 0%,rgba(229,192,123,.4) 45%,transparent 75%);opacity:0;pointer-events:none}
-.t8-flash.t8-on{animation:t8-flash .8s ease forwards}
-.t8-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.t8-pt{position:absolute;bottom:-12px;border-radius:50%;background:var(--bright);box-shadow:0 0 10px 2px rgba(229,192,123,.55);opacity:0;animation:t8-rise var(--d,9s) linear infinite;animation-delay:var(--dl,0s);left:var(--l,50%)}
-@keyframes t8-rise{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.85}90%{opacity:.85}100%{transform:translateY(-105vh) scale(1.6);opacity:0}}
-@keyframes t8-pulseseal{0%,100%{transform:scale(1)}50%{transform:scale(1.05);box-shadow:inset 0 3px 3px rgba(255,255,255,.6),inset 0 -8px 12px rgba(110,69,27,.55),0 14px 26px rgba(0,0,0,.55),0 0 58px rgba(229,192,123,.7)}}
-@keyframes t8-burst{45%{transform:scale(1.22)}100%{transform:scale(0);opacity:0}}
-@keyframes t8-flash{0%{opacity:0}25%{opacity:.65}100%{opacity:0}}
-@keyframes t8-spin{to{transform:rotate(360deg)}}
-/* hero */
-.t8-hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;overflow:hidden;padding:clamp(65px,11vh,105px) 20px clamp(60px,11vh,100px);text-align:center;isolation:isolate}
-.t8-hero-bg{position:absolute;inset:-8% 0;z-index:-2;will-change:transform;background-size:cover;background-position:center}
-.t8-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 38%,transparent 25%,rgba(5,18,15,.65) 100%)}
-.t8-frame{position:absolute;inset:14px;border:1px solid rgba(229,192,123,.3);pointer-events:none;z-index:1}
-.t8-frame:before,.t8-frame:after{content:"✦";position:absolute;color:var(--gold);font-size:12px;background:#07160f;padding:0 8px;left:50%;transform:translateX(-50%)}
-.t8-frame:before{top:-9px}.t8-frame:after{bottom:-9px}
-.t8-hero-in{position:relative;z-index:2;max-width:760px;padding:8px 0}
-.t8-invoc{font:500 11px Cinzel,serif;letter-spacing:.32em;color:#e7d8b5;margin:0 0 10px;text-transform:uppercase}
-.t8-eyebrow{font:500 11px Cinzel,serif;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin:0 auto clamp(20px,3.5vh,36px);display:inline-block}
-.t8-hero h1{font:clamp(46px,12vw,128px)/1.22 "Great Vibes",cursive;margin:0 0 clamp(8px,2vh,18px);padding-top:clamp(12px,2.5vh,24px);filter:drop-shadow(0 0 22px rgba(229,192,123,.55)) drop-shadow(0 6px 18px rgba(0,0,0,.6))}
-.t8-hero h1 span{display:block;font-size:.42em;line-height:1.4;margin:clamp(2px,0.8vh,8px) 0}
-.t8-hero-copy{max-width:420px;margin:clamp(10px,2vh,18px) auto 0;font-size:14px;color:#f1eadb;text-shadow:0 2px 12px rgba(0,0,0,.7)}
-.t8-guest-pill{display:inline-block;margin-top:clamp(12px,2vh,18px);padding:8px 18px;border-radius:30px;border:1px solid rgba(229,192,123,.5);background:rgba(5,18,15,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:500 10px Cinzel,serif;letter-spacing:.2em;text-transform:uppercase;color:var(--bright)}
-/* guest person / family box */
-.t8-guest-boxes{display:inline-flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,14px);margin:clamp(8px,1.5vh,14px) auto 0;padding:6px 16px;border-radius:14px;background:rgba(5,18,15,.55);border:1px solid rgba(229,192,123,.4);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.35);cursor:pointer;transition:transform .2s}
-.t8-guest-boxes:hover{transform:scale(1.03)}
-.t8-box-star{color:var(--gold);font-size:13px;line-height:1}
-.t8-box-col{display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.78;transition:opacity .2s}
-.t8-box-col.active{opacity:1}
-.t8-box-label{font:500 12px/1.2 "Cormorant Garamond",Georgia,serif;letter-spacing:.06em;color:#f2e6c4}
-.t8-box-val{min-width:44px;height:24px;padding:0 8px;border:1.2px solid rgba(229,192,123,.65);border-radius:4px;background:rgba(255,255,255,.08);color:var(--bright);font:700 12.5px/22px Cinzel,serif;display:grid;place-content:center;text-align:center}
-.t8-box-col.active .t8-box-val{border-color:var(--gold);background:rgba(229,192,123,.18);color:#fff}
-.t8-box-div{width:1px;height:30px;background:rgba(229,192,123,.38)}
-.t8-badge{position:relative;display:inline-grid;gap:2px;margin-top:clamp(18px,3vh,30px);padding:clamp(14px,2.2vh,20px) clamp(18px,4vw,32px) clamp(12px,2vh,18px);border-radius:120px;border:1px solid rgba(229,192,123,.55);background:linear-gradient(135deg,rgba(15,44,35,.72),rgba(5,18,15,.55));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 0 0 6px rgba(229,192,123,.07),0 18px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);animation:t8-float 5s ease-in-out infinite}
-@keyframes t8-float{50%{transform:translateY(-8px)}}
-.t8-badge .l{font:600 9.5px Cinzel,serif;letter-spacing:.34em;color:var(--gold)}
-.t8-badge strong{font:500 clamp(18px,4.5vw,26px) Cinzel,serif;letter-spacing:.14em}
-.t8-badge em{font:italic 400 14px "Cormorant Garamond",serif;color:#f2e6c4}
-.t8-cd{display:none;justify-content:center;gap:14px;margin-top:8px;padding-top:10px;border-top:1px solid rgba(229,192,123,.25)}
-.t8-cd.t8-live{display:flex}
-.t8-cd div{min-width:38px}
-.t8-cd b{display:block;font:500 17px Cinzel,serif;color:var(--bright);font-variant-numeric:tabular-nums}
-.t8-cd small{font:500 7.5px Cinzel,serif;letter-spacing:.18em;color:#cdbd93}
-.t8-cal-badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:10px auto 0;padding:6px 18px;border-radius:20px;border:1px solid rgba(229,192,123,.6);background:rgba(229,192,123,.14);color:var(--bright);text-decoration:none;font:600 9.5px Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;transition:all .3s ease}
-.t8-cal-badge:hover{background:rgba(229,192,123,.32);border-color:var(--gold);transform:scale(1.05)}
-.t8-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:clamp(18px,3vh,32px)}
-.t8-btn-cal{color:#04140e!important;font:800 12px Cinzel,serif!important;letter-spacing:.16em;background:linear-gradient(135deg,#b8862d 0%,#fef3c7 26%,#d9a441 50%,#fff7d6 74%,#b8862d 100%);background-size:200% auto;border:1px solid rgba(255,245,210,.7);box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 0 rgba(145,95,20,.4);text-shadow:none!important}
-.t8-btn-ghost{background:rgba(15,44,35,.82)!important;border:1.5px solid rgba(229,192,123,.9)!important;color:#fff6db!important;font:800 12.5px Cinzel,serif!important;letter-spacing:.18em!important;box-shadow:0 8px 24px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.15)!important;text-shadow:0 1px 4px rgba(0,0,0,.8)!important}
-.t8-btn-ghost span{color:#fff6db!important;font-weight:800!important}
-.t8-btn-ghost:hover{background:rgba(229,192,123,.28)!important;border-color:var(--gold)!important;color:#ffffff!important;transform:translateY(-3px)}
-.t8-btn-ghost:hover span{color:#ffffff!important}
-.t8-cue{position:relative;margin:clamp(28px,4.5vh,44px) auto 0;z-index:2;font:500 9.5px Cinzel,serif;letter-spacing:.28em;color:#d8bd7e;text-transform:uppercase;text-align:center}
-.t8-cue i{display:block;width:1px;height:36px;margin:8px auto 0;background:linear-gradient(var(--gold),transparent);transform-origin:top;animation:t8-drip 2s ease-in-out infinite}
-@keyframes t8-drip{0%{transform:scaleY(0)}60%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
-.t8-dust{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-/* polaroids */
-.t8-poem{max-width:420px;margin:0 auto 54px;text-align:center;font:italic 400 clamp(18px,4.4vw,22px)/1.8 "Cormorant Garamond",Georgia,serif;color:#f4e8ca}
-.t8-polaroids{display:grid;gap:56px;justify-items:center;padding:10px 0 20px}
-.t8-pol{--rot:-2deg;position:relative;width:min(100%,310px);margin:0;padding:13px 13px 0;background:linear-gradient(180deg,#fffefa,#f6f0e2);color:#12342a;border-radius:3px;transform:rotate(var(--rot));transition:transform .6s var(--ease),box-shadow .6s var(--ease),opacity .9s var(--ease);
-  box-shadow:0 1px 2px rgba(0,0,0,.35),0 14px 28px rgba(0,0,0,.4),0 38px 60px rgba(0,0,0,.35)}
-.t8-pol:nth-child(2){--rot:2.2deg}.t8-pol:nth-child(3){--rot:-1.4deg}
-.t8-pol:before{content:"";position:absolute;top:-15px;left:50%;width:98px;height:30px;transform:translateX(-50%) rotate(-3deg);background:repeating-linear-gradient(45deg,rgba(229,192,123,.78) 0 6px,rgba(244,216,150,.78) 6px 12px);box-shadow:0 2px 6px rgba(0,0,0,.25)}
-.t8-pol:nth-child(2):before{transform:translateX(-50%) rotate(4deg)}
-.t8-js .t8-pol.t8-reveal{transform:translateY(34px) rotate(var(--rot))}
-.t8-js .t8-pol.t8-reveal.t8-in{transform:rotate(var(--rot))}
-.t8-photo{aspect-ratio:1/1;overflow:hidden;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
-.t8-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,214,140,.16),transparent 45%,rgba(15,44,35,.22));mix-blend-mode:multiply;pointer-events:none}
-.t8-photo img{width:100%;height:100%;object-fit:cover;filter:sepia(.18) contrast(1.06) saturate(1.05);transition:transform 1.2s var(--ease)}
-.t8-pol figcaption{padding:20px 8px 26px;min-height:132px;text-align:center}
-.t8-pol h3{font:400 34px/1 "Great Vibes",cursive;margin:0 0 8px;color:#0f2c23}
-.t8-pol p{font:400 12.5px/1.7 Inter,sans-serif;color:#4b5f55;margin:0}
-.t8-pol:hover,.t8-pol:focus-within,.t8-js .t8-pol.t8-in:hover{transform:rotate(0) scale(1.06) translateY(-8px);z-index:3;box-shadow:0 2px 4px rgba(0,0,0,.3),0 26px 46px rgba(0,0,0,.5),0 0 40px rgba(229,192,123,.25)}
-.t8-pol:hover img{transform:scale(1.07)}
-/* ticket */
-.t8-ticket-wrap{max-width:420px;margin:0 auto;filter:drop-shadow(0 26px 34px rgba(0,0,0,.55)) drop-shadow(0 0 30px rgba(229,192,123,.12))}
-.t8-ticket{--top:150px;--r:16px;position:relative;color:#12342a;border-radius:14px;background:radial-gradient(ellipse at 20% 0,#fffdf6,transparent 60%),linear-gradient(160deg,#fffdf7,#f3ead6 70%,#e9dcbc);
-  -webkit-mask:radial-gradient(circle var(--r) at 0 var(--top),#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle var(--r) at 100% var(--top),#0000 97%,#000) right/51% 100% no-repeat;
-  mask:radial-gradient(circle var(--r) at 0 var(--top),#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle var(--r) at 100% var(--top),#0000 97%,#000) right/51% 100% no-repeat}
-.t8-ticket:before{content:"";position:absolute;inset:8px;border:1px solid rgba(184,135,59,.5);border-radius:8px;pointer-events:none}
-.t8-ticket-top{height:var(--top);padding:26px 24px 0;text-align:center}
-.t8-ticket-top .t8-eyebrow{color:#8c6b32;font-size:9.5px}
-.t8-ticket-top h3{font:400 clamp(28px,7.4vw,36px)/1.05 "Great Vibes",cursive;margin:8px 0 6px;color:#0f2c23}
-.t8-ticket-top p{font:500 9.5px Cinzel,serif;letter-spacing:.22em;color:#6b7c72;margin:0;text-transform:uppercase}
-.t8-perf{position:absolute;left:var(--r);right:var(--r);top:var(--top);border-top:2px dashed rgba(140,107,50,.45)}
-.t8-ticket-main{padding:26px 24px 22px}
-.t8-hint{text-align:center;font:500 10px Cinzel,serif;letter-spacing:.14em;color:#6b7c72;margin:0 0 14px}
-.t8-scratch{position:relative;height:122px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#0f2c23,#164838);box-shadow:inset 0 0 0 1px rgba(184,135,59,.55),inset 0 6px 14px rgba(0,0,0,.5)}
-.t8-reveal-date{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--bright);padding:0 10px}
-.t8-reveal-date small{font:500 8.5px Cinzel,serif;letter-spacing:.34em;color:var(--gold)}
-.t8-reveal-date strong{font:500 20px/1.35 Cinzel,serif;letter-spacing:.08em;margin:4px 0}
-.t8-reveal-date em{font:italic 400 14px "Cormorant Garamond",serif;color:#e8d9ae}
-.t8-scratch canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;transition:opacity .9s ease}
-.t8-scratch canvas.t8-cleared{opacity:0;pointer-events:none}
-.t8-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font:500 8.5px Cinzel,serif;letter-spacing:.2em;color:#8c6b32}
-.t8-barcode{width:96px;height:22px;background:repeating-linear-gradient(90deg,#12342a 0 2px,transparent 2px 4px,#12342a 4px 5px,transparent 5px 8px,#12342a 8px 11px,transparent 11px 13px)}
-.t8-skip{display:block;margin:12px auto 0;background:none;border:0;color:#7a6a45;font:500 10px Inter,sans-serif;letter-spacing:.08em;text-decoration:underline;text-underline-offset:3px}
-.t8-ticket.t8-revealed .t8-scratch{animation:t8-glowreveal 1.6s ease}
-@keyframes t8-glowreveal{40%{box-shadow:inset 0 0 0 1px #f0cf7e,0 0 44px rgba(229,192,123,.9)}}
-.t8-spark{position:fixed;z-index:997;width:6px;height:6px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fff6d2,#e5c07b 60%,transparent);animation:t8-spark .9s ease-out forwards}
-@keyframes t8-spark{to{transform:translate(var(--x,0),var(--y,-40px)) scale(.2);opacity:0}}
-/* zig-zag events */
-.t8-day{display:flex;align-items:center;gap:14px;margin:70px 0 30px;color:var(--gold);font:500 11px Cinzel,serif;letter-spacing:.26em;text-transform:uppercase}
-.t8-day:first-of-type{margin-top:0}
-.t8-day:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(229,192,123,.5),transparent)}
-.t8-zig{display:flex;flex-direction:column;gap:34px}
-.t8-ev{width:86%;overflow:hidden;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line);box-shadow:0 26px 50px rgba(0,0,0,.45);transition:opacity .9s var(--ease),transform .9s var(--ease),box-shadow .5s,border-color .5s;opacity:0;transform:translateY(50px)}
-.t8-ev.t8-in{opacity:1;transform:none}
-.t8-ev.t8-l{margin-right:auto}.t8-ev.t8-r{margin-left:auto}
-.t8-ev:hover{border-color:rgba(229,192,123,.7);box-shadow:0 30px 60px rgba(0,0,0,.55),0 0 40px rgba(229,192,123,.16)}
-.t8-ev-img{position:relative;height:clamp(195px,50vw,240px);overflow:hidden}
-.t8-ev-img img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform 1.4s var(--ease)}
-.t8-ev:hover .t8-ev-img img{transform:scale(1.05)}
-.t8-ev-img:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(5,18,15,.95) 0%,rgba(5,18,15,.45) 24%,transparent 55%)}
-.t8-ev-t{position:absolute;z-index:2;left:18px;right:18px;bottom:14px;display:flex;align-items:flex-end;gap:12px}
-.t8-ev-t .ic{font-size:26px;filter:drop-shadow(0 0 10px rgba(229,192,123,.5))}
-.t8-ev-t h3{font:500 21px/1.15 Cinzel,serif;letter-spacing:.06em;margin:0}
-.t8-ev-t small{display:block;font:400 12px "Noto Serif Devanagari",serif;color:#e1c88c;margin-top:3px}
-.t8-ev-day{position:absolute;z-index:2;top:12px;right:12px;padding:5px 12px;border-radius:20px;border:1px solid rgba(229,192,123,.55);background:rgba(5,18,15,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:600 8.5px Cinzel,serif;letter-spacing:.2em;color:var(--bright)}
-.t8-ev-b{padding:18px 20px 20px}
-.t8-meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:#f2ead9;margin-bottom:10px}
-.t8-meta b{color:var(--gold);font-weight:500;margin-right:5px}
-.t8-desc{font-size:13px;color:#c9d3cb;margin:0 0 14px}
-.t8-dress{display:inline-flex;align-items:center;gap:9px;padding:7px 14px 7px 9px;border-radius:30px;border:1px solid rgba(229,192,123,.3);background:rgba(0,0,0,.18);font-size:11px;color:#eadfc6}
-.t8-sw{width:16px;height:16px;border-radius:50%;border:1px solid rgba(255,255,255,.55);box-shadow:0 0 10px rgba(0,0,0,.4)}
-/* venue */
-.t8-venue-photo{position:relative;height:clamp(240px,52vw,420px);border-radius:22px;overflow:hidden;border:1px solid rgba(229,192,123,.5);box-shadow:0 30px 70px rgba(0,0,0,.55);margin:0}
-.t8-venue-photo img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s var(--ease)}
-.t8-venue-photo:hover img{transform:scale(1.07)}
-.t8-venue-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(5,18,15,.85),transparent 60%)}
-.t8-venue-photo figcaption{position:absolute;z-index:1;left:22px;right:22px;bottom:18px;font:500 11px Cinzel,serif;letter-spacing:.14em;color:#fff4d6;text-transform:uppercase}
-.t8-vgrid{display:grid;gap:18px;margin-top:22px}
-.t8-vcard{border-radius:20px;padding:30px 26px;text-align:center}
-.t8-vcard h3{font:500 clamp(20px,5vw,26px)/1.25 Cinzel,serif;letter-spacing:.06em;margin:6px 0 10px}
-.t8-vcard p{font-size:13.5px;color:#d3dcd4;margin:0 0 20px}
-.t8-travel{border-radius:20px;padding:28px 26px}
-.t8-travel h3{font:500 16px Cinzel,serif;letter-spacing:.1em;color:var(--bright);margin:0 0 6px}
-.t8-trow{display:grid;grid-template-columns:30px 1fr;gap:12px;margin-top:16px}
-.t8-trow>span{font-size:19px;color:var(--gold)}
-.t8-trow p{font-size:12.5px;color:#d3dcd4;margin:0}
-/* rsvp */
-/* upgraded RSVP matching user mockup */
-.t8-rsvp{position:relative;max-width:480px;margin:0 auto;padding:clamp(28px,4vh,40px) clamp(20px,4vw,32px);border-radius:24px;background:linear-gradient(175deg,rgba(255,253,247,.97),rgba(247,239,223,.95));color:#2a1b12;border:1.5px solid rgba(229,192,123,.75);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(229,192,123,.18)}
-.t8-rsvp-stamp{position:absolute;top:16px;right:18px;width:38px;height:44px;background:#1a4d3b;border:2px dashed #e5c07b;border-radius:4px;display:grid;place-content:center;color:#fff2cf;font:700 11px Cinzel,serif;box-shadow:0 4px 10px rgba(0,0,0,.25);transform:rotate(4deg)}
-.t8-rsvp h2{text-align:left;font:600 clamp(20px,4.5vw,26px)/1.25 Cinzel,serif;letter-spacing:.04em;color:#0f2c23;margin:0 0 8px}
-.t8-rsvp-intro{text-align:left;font-size:13px;line-height:1.6;color:#534638;margin:0 0 24px}
-.t8-field{margin:18px 0;text-align:left}
-.t8-field label{display:block;font:600 10.5px Cinzel,serif;letter-spacing:.18em;color:#7a5a22;margin-bottom:8px;text-transform:uppercase}
-.t8-field input[type="text"],.t8-field textarea{width:100%;display:block;background:#fffdf9;border:1.5px solid #d5c39e;border-radius:10px;padding:12px 14px;font:500 15px "Cormorant Garamond",Georgia,serif;color:#1a2b22;outline:none;transition:border-color .3s,box-shadow .3s}
-.t8-field input[type="text"]:focus,.t8-field textarea:focus{border-color:#b8873b;box-shadow:0 0 0 3px rgba(229,192,123,.25)}
-.t8-att-options{display:grid;grid-template-columns:1fr;gap:10px}
-.t8-att-btn{width:100%;min-height:48px;padding:10px 16px;border-radius:12px;border:1.5px solid #d5c39e;background:#fffcf5;display:flex;align-items:center;gap:12px;cursor:pointer;color:#2a1b12;font:600 14px "Cormorant Garamond",Georgia,serif;transition:all .25s ease;text-align:left}
-.t8-att-btn:hover{border-color:#b8873b;background:#fdf9ed}
-.t8-att-btn.selected{background:#164535;border-color:#164535;color:#fffdf7;box-shadow:0 6px 18px rgba(22,69,53,.35)}
-.t8-att-radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #c2b08a;display:grid;place-content:center;font-size:13px;flex-shrink:0;transition:all .2s}
-.t8-att-btn.selected .t8-att-radio{background:#fff;border-color:#fff;color:#164535;font-weight:bold}
-.t8-stepper{display:flex;align-items:center;justify-content:space-between;background:#f7eedb;border:1.5px solid #d8c6a0;border-radius:30px;padding:4px 8px;max-width:280px}
-.t8-step-btn{width:36px;height:36px;border-radius:50%;border:0;background:#0d3326;color:#ffffff!important;font:700 22px/1 sans-serif!important;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .2s;box-shadow:0 3px 8px rgba(0,0,0,.25)}
-.t8-step-btn:hover{background:#164e3c;transform:scale(1.08)}
-.t8-step-val{font:600 16px "Cormorant Garamond",Georgia,serif;color:#10382b}
-.t8-step-val strong{font-size:20px;margin-right:4px;color:#10382b}
-.t8-func-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-@media(max-width:380px){.t8-func-grid{grid-template-columns:1fr}}
-.t8-func-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 12px;border-radius:26px;border:1.5px solid #d5c39e;background:#ffffff;cursor:pointer;user-select:none;transition:all .25s ease;position:relative;min-height:58px;box-sizing:border-box;text-align:center}
-.t8-func-chip:hover{border-color:#10382b}
-.t8-func-chip.selected{background:#10382b;border-color:#10382b;box-shadow:0 4px 14px rgba(16,56,43,.3)}
-.t8-func-chip input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
-.t8-func-head{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%}
-.t8-func-check{width:20px;height:20px;border-radius:50%;border:1.5px solid #bdae95;background:transparent;color:transparent;display:grid;place-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .2s ease}
-.t8-func-chip.selected .t8-func-check{background:#ffffff;border-color:#ffffff;color:#10382b}
-.t8-func-name{font:700 13px Cinzel,serif;letter-spacing:.05em;color:#10382b;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s ease}
-.t8-func-chip.selected .t8-func-name{color:#ffffff}
-.t8-func-date{font:500 11px Cinzel,serif;letter-spacing:.08em;color:#7d6b52;text-align:center;text-transform:uppercase;line-height:1.2;margin:0 auto;transition:color .2s ease}
-.t8-func-chip.selected .t8-func-date{color:#f3e5c0}
-.t8-func-chip:last-child:nth-child(odd){grid-column:1/-1}
-.t8-send{width:100%;margin-top:18px;min-height:54px;border:0;border-radius:40px;position:relative;overflow:hidden;color:#04120c!important;font:800 13px Cinzel,sans-serif!important;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(120deg,#d4a34b,#fff0b8 32%,#e2b763 60%,#fde49e 82%,#d4a34b);background-size:220% 100%;box-shadow:0 10px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.8);display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .35s var(--ease),background-position .8s}
-.t8-send svg{width:20px;height:20px;fill:#04120c;flex-shrink:0}
-.t8-send span{color:#04120c!important;font-weight:800!important;text-shadow:none!important}
-.t8-send:hover{transform:translateY(-3px);background-position:100% 0}
-.t8-send:active{transform:scale(.98)}
-.t8-rsvp-note{text-align:center;font:italic 400 12px "Cormorant Garamond",Georgia,serif;color:#6b5a45;margin:12px 0 0}
-.t8-status{min-height:20px;margin:16px 0 0;font-size:12px;line-height:1.6;text-align:center;color:#0f2c23;font-weight:600}
-.t8-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px}
-.t8-contact{display:inline-block;padding:9px 16px;border-radius:30px;border:1.5px solid #d5c39e;background:#fffdf9;color:#0f2c23;text-decoration:none;font-size:12px;letter-spacing:.04em;font-weight:600}
-/* footer + music */
-.t8-end{text-align:center;padding:36px 22px clamp(60px,10vh,90px)}
-.t8-mono{display:inline-flex;align-items:center;justify-content:center;gap:clamp(16px,4.5vw,30px);margin:4px auto;font-family:"Great Vibes",cursive}
-.t8-mono-init{font:400 clamp(48px,12vw,72px)/1.2 "Great Vibes",cursive;display:inline-block}
-.t8-mono-amp{font:italic 400 clamp(24px,6vw,38px)/1 "Cormorant Garamond",Georgia,serif;color:var(--gold);display:inline-block;opacity:.95}
-.t8-end-blessing{font:italic 400 clamp(16px,3.8vw,21px)/1.5 "Cormorant Garamond",Georgia,serif;color:#f7edd4;margin:16px auto 10px;max-width:380px}
-.t8-end-love{font:500 11px Cinzel,serif;letter-spacing:.25em;color:var(--gold);margin:18px auto 4px;text-transform:uppercase}
-.t8-end-sig{font:600 clamp(12px,2.6vw,14.5px) Cinzel,serif;letter-spacing:.18em;color:#fffdf8;margin:4px auto 0;text-transform:uppercase}
-.t8-music{position:fixed;z-index:950;right:16px;top:16px;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--gold);background:rgba(15,44,35,.9);color:var(--bright);font-size:18px;display:inline-flex!important;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(0,0,0,.5);cursor:pointer;transition:transform .3s var(--ease),background .3s,box-shadow .3s}
-.t8-music:hover{transform:scale(1.08)}
-.t8-music.t8-playing{animation:t8-musicglow 2s ease-in-out infinite;background:#d4ad60!important;color:#143a2b!important}
-@keyframes t8-musicglow{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 0 0 rgba(229,192,123,.6)}50%{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 16px 4px rgba(229,192,123,.6)}}
-.t8-music[aria-pressed="true"]{background:#d4ad60;color:#143a2b}
-@media(min-width:760px){
-  .t8 section{padding:130px 0}
-  .t8-polaroids{grid-template-columns:repeat(3,1fr);gap:40px;align-items:start}
-  .t8-pol:nth-child(2){margin-top:46px}
-  .t8-ev{width:46%}.t8-ev-img{height:225px}
-  .t8-vgrid.t8-two{grid-template-columns:1fr 1fr}
-  .t8-rsvp{padding:56px 52px 46px}
+/* ---------- Scaled Vector Frieze & Garlands ---------- */
+const jasPetals = [0, 72, 144, 216, 288].map(r => `<ellipse cx="0" cy="-5.2" rx="2.7" ry="5.2" transform="rotate(${r})"/>`).join('');
+const spokes = [0, 45, 90, 135].map(a => `<path d="M-26 0H26" stroke="#8a5a12" stroke-width="2.4" transform="rotate(${a})"/>`).join('');
+
+const man = (x, s = 1, o = {}) => `<g transform="translate(${x} ${o.y ?? 172}) scale(${s * (o.flip ? -1 : 1)} ${s})">
+<ellipse cx="0" cy="-94" rx="13" ry="6.5" fill="${o.turban || '#d6322a'}"/><path d="M-9-96C-8-110 8-110 9-96Z" fill="${o.turban || '#c8281e'}"/>
+<circle cx="0" cy="-84" r="9.5" fill="#e6a56d"/><path d="M-5-85h2.4M2.6-85H5" stroke="#2b1a17" stroke-width="1.4" stroke-linecap="round"/><path d="M-4-80Q0-78 4-80" stroke="#2b1a17" stroke-width="1.2" fill="none"/>
+<path d="M-13-73L13-73L17-30L-17-30Z" fill="${o.shirt || '#f08a3c'}"/><path d="M-13-73L-8-30M13-73L8-30" stroke="#c96a22" stroke-width="1.4"/>
+${o.torso ? '' : '<path d="M-17-34H17L21 0H-21Z" fill="#fdf8ec"/><path d="M-21-5H21" stroke="#c8281e" stroke-width="3"/><path d="M-15 0h11v-4h-11zM4 0h11v-4H4z" fill="#e6a56d"/>'}
+${o.prop || ''}</g>`;
+const SPEAR = '<path d="M21-6V-128" stroke="#6b3a1e" stroke-width="3"/><path d="M21-128l-5 13h10z" fill="#bfc3c8"/><path d="M13-62L21-60" stroke="#e6a56d" stroke-width="5" stroke-linecap="round"/>';
+const STICK = '<path d="M20 0L24-104" stroke="#6b3a1e" stroke-width="3.5"/><path d="M13-62L22-60" stroke="#e6a56d" stroke-width="5" stroke-linecap="round"/>';
+const HORN = '<path d="M7-84L56-100Q66-102 70-92L60-82Q52-84 7-80Z" fill="#e8b02a" stroke="#a97a12" stroke-width="1.2"/><path d="M12-62L-4-78" stroke="#e6a56d" stroke-width="5" stroke-linecap="round"/>';
+const horse = (x, s = 1) => `<g transform="translate(${x} 172) scale(${s})">
+<path d="M6-56C-12-52-14-30-8-14" stroke="#b01f18" stroke-width="7" fill="none" stroke-linecap="round"/>
+<rect x="16" y="-34" width="9" height="34" rx="3" fill="#c8281e"/><rect x="30" y="-34" width="9" height="34" rx="3" fill="#a81b14"/><rect x="70" y="-34" width="9" height="34" rx="3" fill="#c8281e"/><rect x="84" y="-34" width="9" height="34" rx="3" fill="#a81b14"/>
+<path d="M16 0h9v-5h-9zM30 0h9v-5h-9zM70 0h9v-5h-9zM84 0h9v-5h-9z" fill="#3a1a10"/>
+<ellipse cx="55" cy="-50" rx="46" ry="23" fill="#d32f22"/><path d="M84-62L106-98L120-93L104-52Z" fill="#d32f22"/><path d="M100-98L108-111L114-96Z" fill="#a81b14"/>
+<ellipse cx="122" cy="-91" rx="14" ry="8" transform="rotate(28 122 -91)" fill="#d32f22"/><circle cx="124" cy="-95" r="1.7" fill="#1a0f0a"/>
+<path d="M86-62C94-78 100-86 104-98" stroke="#7d140f" stroke-width="5" fill="none"/>
+<rect x="40" y="-67" width="40" height="22" rx="4" fill="#f6c342"/><path d="M40-56H80" stroke="#c8281e" stroke-width="3"/><path d="M44-48h32" stroke="#c8281e" stroke-width="1.5" stroke-dasharray="3 3"/>
+<path d="M88-70L112-97M98-58L121-87" stroke="#fff" stroke-width="2" opacity=".85"/></g>`;
+const cart = (x, s = 1, inner = '') => `<g transform="translate(${x} 172) scale(${s})">
+<path d="M-26-44H4" stroke="#7a4a22" stroke-width="5"/><rect x="0" y="-52" width="116" height="9" rx="2" fill="#a8621f"/>${inner}
+${[28, 92].map(cx => `<g transform="translate(${cx} -26)"><circle r="26" fill="#e8b02a" stroke="#8a5a12" stroke-width="4"/><circle r="5" fill="#8a5a12"/>${spokes}</g>`).join('')}</g>`;
+const DOLI = '<rect x="12" y="-100" width="84" height="48" rx="3" fill="#c8281e"/><path d="M10-100Q54-128 98-100Z" fill="#a81b14"/><path d="M26-52V-88Q54-104 82-88V-52Z" fill="#6e0f12"/><circle cx="54" cy="-74" r="8" fill="#e6a56d"/><path d="M42-62Q54-52 66-62V-52H42Z" fill="#e0452a"/><path d="M45-80Q54-94 63-80Z" fill="#c8281e"/><path d="M10-100H98" stroke="#e8b02a" stroke-width="3"/><circle cx="54" cy="-116" r="3" fill="#e8b02a"/>';
+const elephant = (x, s = 1) => `<g transform="translate(${x} 172) scale(${s})">
+<rect x="22" y="-52" width="26" height="52" rx="8" fill="#7e4527"/><rect x="60" y="-52" width="26" height="52" rx="8" fill="#6d3b20"/><rect x="116" y="-52" width="26" height="52" rx="8" fill="#7e4527"/><rect x="150" y="-52" width="26" height="52" rx="8" fill="#6d3b20"/>
+<path d="M26 0h18M64 0h18M120 0h18M154 0h18" stroke="#f1e6cf" stroke-width="3" stroke-linecap="round"/>
+<rect x="8" y="-124" width="160" height="88" rx="42" fill="#8f4f2c"/><circle cx="178" cy="-98" r="34" fill="#8f4f2c"/>
+<path d="M198-84C216-70 216-30 200-12C193-5 184-10 191-19C202-35 200-62 188-72Z" fill="#8f4f2c"/>
+<ellipse cx="152" cy="-92" rx="16" ry="26" fill="#7e4527"/><path d="M188-66C200-60 208-64 212-72" stroke="#f6efdc" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="188" cy="-108" r="2.4" fill="#1a0f0a"/>
+<path d="M20-124Q88-152 156-124L150-68Q88-84 26-68Z" fill="#c8281e"/><path d="M20-124Q88-152 156-124" stroke="#e8b02a" stroke-width="5" fill="none"/><path d="M30-78Q88-92 146-78" stroke="#e8b02a" stroke-width="3" stroke-dasharray="4 5" fill="none"/>
+<path d="M170-124Q178-138 188-124" stroke="#e8b02a" stroke-width="4" fill="none"/>
+${man(0, .78, { torso: true, y: 0, prop: '' }).replace('translate(0 0)', 'translate(88 -118)')}</g>`;
+const FRIEZE = `<g id="t9-fz">${horse(4, .95)}${cart(124, .95, DOLI)}${man(300, 1, { prop: SPEAR })}${elephant(340, .9)}${man(570, 1, { prop: STICK })}${man(624, 1, { prop: STICK, flip: true })}${horse(700, .95)}${cart(820, .95)}${man(890, .92, { y: 172 - 50 * .95, prop: HORN })}${man(1010, 1, { prop: SPEAR })}${man(1066, 1, { prop: STICK, flip: true })}
+<g fill="#f08a1f" opacity=".9">${[[270, 168], [560, 170], [1130, 168], [1170, 160]].map(([x, y]) => `<path transform="translate(${x} ${y})" d="M0 0Q4-8 8 0Q4 6 0 0Z"/>`).join('')}</g></g>`;
+
+const DEFS = `<svg class="t9-defs" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<g id="t9-mg"><circle r="18" fill="#f6a31c"/><circle r="18" fill="none" stroke="#e8860e" stroke-width="3.4" stroke-dasharray="5.2 3.1"/><circle r="12.6" fill="#f2900f"/><circle r="12.6" fill="none" stroke="#d9720a" stroke-width="2.4" stroke-dasharray="3.8 2.5"/><circle r="6.6" fill="#d96b0b"/><circle r="2.6" fill="#f9c35a"/></g>
+<g id="t9-lf"><path d="M0 0C6-9 17-10 24-4C17 5 6 7 0 0Z" fill="#4f9a36"/><path d="M1 0L21-3.5" stroke="#2f6f24" stroke-width=".9" fill="none"/></g>
+<g id="t9-jas"><g fill="#fffdf6" stroke="#e3d9c0" stroke-width=".6">${jasPetals}</g><circle r="1.7" fill="#f0c94b"/></g>
+<linearGradient id="t9-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8dc82"/><stop offset=".5" stop-color="#c79a35"/><stop offset="1" stop-color="#ecc962"/></linearGradient>
+<linearGradient id="t9-sar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ea7a2c"/><stop offset=".55" stop-color="#d03a24"/><stop offset="1" stop-color="#b5121b"/></linearGradient>
+<linearGradient id="t9-leafg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9bd66e"/><stop offset=".6" stop-color="#4f9a36"/><stop offset="1" stop-color="#2d7a2a"/></linearGradient>
+${FRIEZE}</defs></svg>`;
+
+function garland(len = 600, bell = true) {
+  const end = bell ? len - 110 : len - 8;
+  let s = `<line x1="35" y1="0" x2="35" y2="${end + 6}" stroke="#8a6a35" stroke-width="1.3"/>`;
+  let y = 16, i = 0;
+  while (y < end) {
+    const dx = i % 2 ? 3 : -3;
+    s += `<use href="#t9-mg" transform="translate(${35 + dx} ${y}) scale(.54)"/><use href="#t9-mg" transform="translate(${35 - dx} ${y + 11}) scale(.46)"/>`;
+    s += `<use href="#t9-lf" transform="translate(35 ${y + 22}) rotate(-168) scale(.8)"/><use href="#t9-lf" transform="translate(35 ${y + 22}) rotate(-12) scale(.8)"/>`;
+    y += 32; i++;
+  }
+  if (bell) {
+    const by = end + 4;
+    s += `<g transform="translate(35 ${by})"><g class="t9-bell"><path d="M-3 0h6v5h-6z" fill="#b8892f"/><path d="M-13 31Q-13 8 0 6Q13 8 13 31L17 36H-17Z" fill="url(#t9-gold)" stroke="#8a6320" stroke-width=".8"/><path d="M-11 23H11" stroke="#8a6320" stroke-width=".8"/><circle cx="0" cy="40" r="3.2" fill="#b8892f"/></g>
+    <g class="t9-tas"><path d="M-9 38L-16 68M0 40V76M9 38L16 68" stroke="#8a6a35" stroke-width="1"/>
+    <use href="#t9-mg" transform="translate(-16 72) scale(.38)"/><use href="#t9-mg" transform="translate(0 82) scale(.38)"/><use href="#t9-mg" transform="translate(16 72) scale(.38)"/>
+    <use href="#t9-lf" transform="translate(-16 80) rotate(100) scale(.46)"/><use href="#t9-lf" transform="translate(16 80) rotate(80) scale(.46)"/></g></g>`;
+  }
+  return `<svg viewBox="0 0 70 ${len}" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">${s}</svg>`;
 }
-@media(max-width:360px){.t8-wrap{padding:0 16px}.t8-ev{width:92%}.t8-cd{gap:9px}.t8-badge{padding:16px 20px}}
-@media(prefers-reduced-motion:reduce){.t8 *,.t8 *:before,.t8 *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.t8-js .t8-reveal,.t8-js .t8-ev{opacity:1!important;transform:none!important}}
-@media print{.t8-noise,.t8-progress,.t8-entry,.t8-music,.t8-cue{display:none!important}.t8-js .t8-reveal,.t8-js .t8-ev{opacity:1!important;transform:none!important}}
+
+function banana(flip) {
+  const leaves = [[-158, 1.0], [-128, 1.08], [-98, 1.02], [-66, 1.1], [-36, .96]].map(([a, sc]) => {
+    const veins = [...Array(7)].map((_, i) => { const x = 22 + i * 17; return `<path d="M${x} -${1 + i * .6}L${x + 9} -${12 - i}M${x} ${1 + i * .6}L${x + 9} ${10 - i * .5}" stroke="rgba(255,255,255,.28)" stroke-width="1"/>`; }).join('');
+    return `<g transform="translate(100 252) rotate(${a}) scale(${sc})"><path d="M0 0C24-24 90-34 160-14C118 18 44 28 0 0Z" fill="url(#t9-leafg)" stroke="#2d6f26" stroke-width="1.2"/><path d="M2 0C50-4 110-8 158-14" stroke="#d6f0b0" stroke-width="2.2" fill="none"/>${veins}<path d="M92-17L86-4M118-18L112-2" stroke="#fbe8de" stroke-width="2.2"/></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 220 270" aria-hidden="true" focusable="false" style="${flip ? 'transform:scaleX(-1)' : ''}"><path d="M100 262Q98 240 104 214" stroke="#6b8f3a" stroke-width="7" fill="none" stroke-linecap="round"/>${leaves}</svg>`;
+}
+
+/* Authentic Bengali Alpona Divider */
+const ALPONA = `<svg class="t9-alp" viewBox="0 0 340 40" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+<g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <path class="t9-draw-path" pathLength="1" d="M170 8C160 16 160 28 170 34C180 28 180 16 170 8Z"/>
+  <path class="t9-draw-path" pathLength="1" d="M170 34C156 32 148 24 150 14C160 15 168 22 170 34"/>
+  <path class="t9-draw-path" pathLength="1" d="M170 34C184 32 192 24 190 14C180 15 172 22 170 34"/>
+  <path class="t9-draw-path" pathLength="1" d="M142 24C126 24 118 14 104 16C92 18 88 28 78 26C70 24 70 18 62 18H12"/>
+  <path class="t9-draw-path" pathLength="1" d="M198 24C214 24 222 14 236 16C248 18 252 28 262 26C270 24 270 18 278 18H328"/>
+  <circle class="t9-draw-path" pathLength="1" cx="8" cy="18" r="2.5"/>
+  <circle class="t9-draw-path" pathLength="1" cx="332" cy="18" r="2.5"/>
+  <path class="t9-draw-path" pathLength="1" d="M112 16C110 9 116 5 122 7M228 16C230 9 224 5 218 7"/>
+</g></svg>`;
+
+/* Footprints Cue */
+const FOOT = '<path d="M8 2C4 2 2 7 3 12C4 17 5 22 6 28C7 33 13 33 14 28C15 22 16 17 16 12C16 7 13 2 8 2Z"/><circle cx="3" cy="-2" r="1.6"/><circle cx="8" cy="-4" r="1.8"/><circle cx="13" cy="-2" r="1.6"/><circle cx="16" cy="2" r="1.4"/>';
+const FOOTPRINTS = `<svg class="t9-foot" viewBox="0 0 44 70" aria-hidden="true" focusable="false"><g class="t9-fp1" fill="#b5121b" transform="translate(4 28)">${FOOT}</g><g class="t9-fp2" fill="#b5121b" transform="translate(24 10)">${FOOT}</g></svg>`;
+
+/* Stamp & Postmark */
+function stampSvg(en, bn) {
+  const W = 62, H = 74, r = 2.7, gap = 7.4;
+  let holes = '';
+  for (let x = gap / 2; x < W; x += gap) holes += `<circle cx="${x}" cy="0" r="${r}"/><circle cx="${x}" cy="${H}" r="${r}"/>`;
+  for (let y = gap / 2; y < H; y += gap) holes += `<circle cx="0" cy="${y}" r="${r}"/><circle cx="${W}" cy="${y}" r="${r}"/>`;
+  return `<svg class="t9-stamp" viewBox="-3 -3 ${W + 6} ${H + 6}" aria-label="${esc(en)}" role="img"><defs><mask id="t9-stm"><rect x="-3" y="-3" width="${W + 6}" height="${H + 6}" fill="#fff"/><g fill="#000">${holes}</g></mask></defs>
+  <rect x="0" y="0" width="${W}" height="${H}" fill="var(--p)" mask="url(#t9-stm)"/><rect x="7" y="7" width="${W - 14}" height="${H - 14}" rx="1.5" fill="none" stroke="rgba(255,238,226,.55)" stroke-width=".8"/>
+  <path d="M14 16Q31 8 48 16" stroke="rgba(255,238,226,.5)" stroke-width=".8" fill="none"/>
+  <text data-l="en" x="31" y="44" class="t9-st">${esc(en)}</text><text data-l="bn" x="31" y="44" class="t9-st t9-st-bn">${esc(bn)}</text>
+  <path d="M20 56H42" stroke="rgba(255,238,226,.6)" stroke-width=".8"/><circle cx="31" cy="62" r="1.6" fill="rgba(255,238,226,.75)"/></svg>`;
+}
+function postmark(city, date) {
+  const txt = `${city} ✦ ${date} ✦`;
+  return `<svg class="t9-postmark" viewBox="0 0 80 80" aria-hidden="true" focusable="false"><defs><path id="t9-pm" d="M40 40m-27 0a27 27 0 1 1 54 0a27 27 0 1 1-54 0"/></defs><g fill="none" stroke="var(--p)" stroke-width="1.2"><circle cx="40" cy="40" r="35"/><circle cx="40" cy="40" r="20"/></g><text font-size="7.6" font-weight="600" letter-spacing="1.2" fill="var(--p)" font-family="Cormorant Garamond,serif"><textPath href="#t9-pm">${esc(txt.toUpperCase())}</textPath></text><path d="M30 40h20M32 44h16" stroke="var(--p)" stroke-width="1.2"/></svg>`;
+}
+
+const DIAMOND_BG = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170' viewBox='0 0 170 170'%3E%3Cpath d='M85 6L164 85L85 164L6 85Z' fill='none' stroke='%23c9a39d' stroke-opacity='.25' stroke-width='1.2'/%3E%3Cpath d='M85 34L136 85L85 136L34 85Z' fill='none' stroke='%23c9a39d' stroke-opacity='.15' stroke-width='1'/%3E%3C/svg%3E\")";
+const WHATSAPP = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 8 19.3z" stroke-linejoin="round"/><path d="M9 8.5c.2 3 3 5.8 6 6l1.2-1.4-2-1-.9.8c-.9-.4-1.7-1.2-2.1-2.1l.8-.9-1-2z" fill="currentColor" stroke="none"/></svg>';
+const CHECK = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+
+/* ---------- Complete Fixed Stylesheet ---------- */
+const STYLE = `
+.t9,.t9 *,.t9 *:before,.t9 *:after{box-sizing:border-box}
+.t9{--p:#8e1a34;--p-dark:#621023;--p-soft:#f9ebe9;--p-mid:#c7a6ae;--p-rgb:142,26,52;--a:#b5121b;--paper:#fbf5eb;--cream:#f7eed8;--gold:#c99738;--mg:#f19a1a;--ink:#320c16;--ink-rgb:50,12,22;--muted:rgba(var(--ink-rgb),.72);
+  --f-title:Galada,"Tiro Bangla",cursive;--f-head:"Cormorant Garamond","Tiro Bangla",Georgia,serif;--f-body:"Hind Siliguri","Cormorant Garamond",system-ui,sans-serif;--ease:cubic-bezier(.22,1,.36,1);
+  position:relative;width:100%;min-height:100vh;overflow-x:clip;overflow-anchor:none;color:var(--ink);font:500 17px/1.7 var(--f-body);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(ellipse 70% 30% at 90% 0,rgba(241,154,26,.08),transparent 70%),radial-gradient(ellipse 60% 28% at 0 45%,rgba(142,26,52,.05),transparent 70%),var(--paper)}
+.t9[data-lang="bn"]{--f-title:Galada,"Tiro Bangla",cursive;--f-head:"Tiro Bangla","Hind Siliguri",serif;--f-body:"Hind Siliguri",system-ui,sans-serif;font:400 16px/1.8 var(--f-body)}
+.t9[data-lang="bn"] [data-l="en"],.t9:not([data-lang="bn"]) [data-l="bn"]{display:none!important}
+.t9.t9-locked{height:100vh!important;height:100svh!important;max-height:100vh!important;max-height:100svh!important;overflow:hidden!important}
+.t9 h1,.t9 h2,.t9 h3,.t9 p,.t9 figure{margin-top:0}
+.t9 img{display:block;max-width:100%}
+.t9 button{font:inherit;color:inherit;cursor:pointer}
+.t9 a{color:inherit}
+.t9 [hidden]{display:none!important}
+.t9 :focus-visible{outline:2px solid var(--p);outline-offset:3px}
+
+/* Progress bar */
+.t9-progress{position:fixed;top:0;left:0;height:3.5px;width:100%;z-index:998;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--gold),var(--a),var(--p))}
+.t9-wrap{position:relative;width:100%;max-width:1040px;margin:0 auto;padding:0 24px}
+.t9 section{position:relative;padding:88px 0}
+.t9-eyebrow{font:700 12px var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--a);margin-bottom:8px}
+.t9[data-lang="bn"] .t9-eyebrow{letter-spacing:.08em;font-size:14px}
+.t9-head{text-align:center;margin-bottom:44px;position:relative;z-index:2}
+.t9-head h2{font:700 clamp(32px,7.5vw,52px)/1.15 var(--f-head);color:var(--p);margin:0 0 10px;letter-spacing:.01em}
+.t9-head p{max-width:520px;margin:0 auto;color:var(--muted);font-size:17.5px}
+
+/* Alpona Divider */
+.t9-alp{display:block;width:min(320px,75%);height:auto;margin:16px auto 0;color:var(--a);opacity:.85}
+.t9-alp path.t9-draw-path,.t9-alp circle.t9-draw-path{stroke-dasharray:1;stroke-dashoffset:1}
+.t9-revealed .t9-alp path.t9-draw-path,.t9-revealed .t9-alp circle.t9-draw-path,.t9-revealed.t9-alp path.t9-draw-path,.t9-revealed.t9-alp circle.t9-draw-path{animation:t9-draw 2.2s ease forwards}
+@keyframes t9-draw{to{stroke-dashoffset:0}}
+
+/* Placeholders & Animation */
+.t9-ph{background:linear-gradient(135deg,#fbf2e5,#ebd4c4)}
+.t9 img.t9-fi{opacity:0;transition:opacity .8s ease}
+.t9 img.t9-fi.t9-loaded{opacity:1}
+.t9 img.t9-failed{opacity:0!important}
+.t9-rv{opacity:0;transform:translateY(24px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.t9-rv.t9-revealed{opacity:1;transform:none}
+
+/* Buttons */
+.t9-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 28px;border-radius:30px;border:0;text-decoration:none;color:#fff;font:700 16px var(--f-head);background:var(--p);box-shadow:0 10px 24px rgba(var(--p-rgb),.32);transition:transform .3s var(--ease),box-shadow .3s;position:relative;overflow:hidden}
+.t9-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(var(--p-rgb),.4)}
+.t9-btn.t9-ghost{background:rgba(255,250,244,.85);color:var(--p);border:1.8px solid var(--p);box-shadow:none}
+.t9-btn.t9-ghost:hover{background:var(--p-soft)}
+.t9-btn:after{content:"";position:absolute;top:0;bottom:0;width:34%;left:-60%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:t9-sweep 4.2s ease-in-out infinite}
+@keyframes t9-sweep{0%,55%{transform:skewX(-22deg) translateX(0)}100%{transform:skewX(-22deg) translateX(520%)}}
+
+/* Language switch */
+.t9-lang{display:inline-flex;gap:3px;padding:3px;border-radius:24px;background:rgba(255,250,244,.95);border:1px solid rgba(var(--p-rgb),.3);box-shadow:0 4px 14px rgba(var(--ink-rgb),.12)}
+.t9-lang button{min-width:42px;height:30px;padding:0 10px;border:0;border-radius:20px;background:transparent;color:var(--p);font:700 13px "Hind Siliguri",var(--f-head);transition:background .3s,color .3s}
+.t9-lang button[aria-pressed="true"]{background:var(--p);color:#fff}
+.t9-lang-float{position:fixed;z-index:70;top:14px;right:14px}
+.t9-entry .t9-lang{position:absolute;z-index:10;top:14px;right:14px}
+
+/* Petals falling */
+.t9-petals{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.t9-petal{position:absolute;top:-24px;left:var(--l,50%);width:var(--s,10px);height:calc(var(--s,10px)*1.5);border-radius:100% 0 100% 0;background:linear-gradient(135deg,#f9b233,#e8700f);opacity:0;animation:t9-fall var(--d,14s) linear infinite;animation-delay:var(--dl,0s);will-change:transform}
+@keyframes t9-fall{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}8%{opacity:.85}92%{opacity:.7}100%{transform:translate3d(var(--x,40px),108vh,0) rotate(560deg);opacity:0}}
+
+/* Curtains / Entry Gate */
+.t9-entry{position:fixed;inset:0;width:100%;z-index:900;overflow:hidden;background:#fcf8f0}
+.t9-cur{position:absolute;top:0;bottom:0;width:50.3%;background:repeating-linear-gradient(90deg,rgba(180,140,90,.03) 0 1px,transparent 1px 4px),repeating-linear-gradient(0deg,rgba(180,140,90,.025) 0 1px,transparent 1px 4px),linear-gradient(180deg,#fffdf8,#fbf2e1);transition:transform 1.8s cubic-bezier(.7,0,.2,1);will-change:transform;box-shadow:0 0 50px rgba(60,20,20,.12)}
+.t9-cur.t9-cl{left:0;border-right:2.5px solid var(--gold)}
+.t9-cur.t9-cr{right:0;border-left:2.5px solid var(--gold)}
+.t9-cur:before{content:"";position:absolute;top:0;bottom:0;width:4px;background:linear-gradient(var(--gold),#fae6aa,var(--gold))}
+.t9-cl:before{right:-1px}.t9-cr:before{left:-1px}
+.t9-cur:after{display:none!important}
+.t9-open .t9-cl{transform:translateX(-102%) skewX(-3deg)}
+.t9-open .t9-cr{transform:translateX(102%) skewX(3deg)}
+.t9-gate-in{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:clamp(20px,4vh,48px) 20px clamp(16px,2vh,24px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;transition:opacity .6s ease,transform .6s var(--ease)}
+.t9-gate-in>*{margin:0}
+.t9-gate-card{position:relative;z-index:10;background:rgba(255,252,246,.96);border-radius:26px;border:1.5px solid rgba(201,162,74,.6);box-shadow:0 24px 60px rgba(var(--ink-rgb),.2),0 0 0 5px rgba(255,252,246,.85),0 0 0 7px rgba(201,162,74,.35);padding:clamp(20px,3.2vh,34px) clamp(18px,4vw,32px);display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.2vh,12px);max-width:440px;width:100%;text-align:center}
+.t9-gate-motif{display:block;width:min(260px,70%);margin:0 auto 2px;color:var(--a);opacity:.85}
+.t9-gate-invoc{font:italic 600 clamp(12px,1.6vh,14px) var(--f-head);color:var(--a);margin:0 0 2px;letter-spacing:.02em}
+.t9-boot .t9-gate-in{opacity:1;transform:none}
+.t9-open .t9-gate-in{opacity:0;transform:scale(1.05);pointer-events:none}
+.t9-kicker{font:600 clamp(10px,1.4vh,11.5px) var(--f-body);letter-spacing:.32em;color:var(--p);text-transform:uppercase}
+.t9[data-lang="bn"] .t9-kicker{letter-spacing:.08em;font-size:13px}
+.t9-gate-title{font:400 clamp(38px,7.5vh,64px)/1.05 var(--f-title);color:var(--a);margin:0;text-shadow:0 1px 0 rgba(255,255,255,.9)}
+.t9-gate-names{font:700 clamp(22px,3.8vh,30px)/1.2 var(--f-head);color:var(--p);margin:0}
+.t9-guest-box{width:100%;padding:10px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(255,245,230,.92),rgba(253,235,220,.88));border:1.2px solid rgba(201,162,74,.6);box-shadow:0 4px 14px rgba(var(--ink-rgb),.05);margin:2px 0}
+.t9-guest-kicker{display:block;font:700 11px var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--a);margin-bottom:2px}
+.t9[data-lang="bn"] .t9-guest-kicker{letter-spacing:.05em;font-size:13px}
+.t9-guest-name{font:700 clamp(17px,3.8vw,23px)/1.2 var(--f-head);color:var(--p);margin:0}
+.t9-guest-pill{display:inline-block;margin-top:5px;padding:2px 12px;border-radius:16px;background:rgba(201,162,74,.2);border:1px solid rgba(201,162,74,.4);font:600 12px var(--f-body);color:var(--ink)}
+.t9-bindi{position:relative;width:clamp(88px,13vh,110px);aspect-ratio:1;border-radius:50%;border:0;display:grid;place-content:center;gap:0;color:#fff4ea;margin-top:4px;background:radial-gradient(circle at 34% 28%,#e5343a,#b5121b 60%,#7f0b12);box-shadow:inset 0 3px 3px rgba(255,255,255,.35),inset 0 -8px 12px rgba(60,0,0,.4),0 12px 24px rgba(120,10,20,.4),0 0 0 5px rgba(201,162,74,.5);animation:t9-pulse 3s ease-in-out infinite;will-change:transform;cursor:pointer}
+.t9-bindi:before{content:"";position:absolute;inset:7px;border-radius:50%;border:1px dashed rgba(255,230,200,.6)}
+.t9-bindi:after{content:"";position:absolute;inset:-6px;border-radius:50%;box-shadow:0 0 36px rgba(229,52,58,.6);opacity:0;animation:t9-glow 3s ease-in-out infinite;pointer-events:none}
+.t9-bindi b{font:700 clamp(18px,3vh,24px) var(--f-head)}
+.t9-bindi.t9-burst{animation:t9-burst .5s ease-in forwards}
+@keyframes t9-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes t9-glow{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes t9-burst{45%{transform:scale(1.2)}100%{transform:scale(0);opacity:0}}
+.t9-gate-note{font:600 clamp(10.5px,1.4vh,12px) var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.t9[data-lang="bn"] .t9-gate-note{letter-spacing:.04em;text-transform:none}
+
+/* HERO SECTION: ROYAL ARCH & SPOTLIGHT */
+.t9-hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;overflow:hidden;padding:48px 24px calc(clamp(76px,12svh,120px) + 32px)}
+.t9-garland{position:absolute;top:0;width:clamp(32px,6.5vw,66px);pointer-events:none;z-index:2;transform-origin:50% 0;animation:t9-sway 7s ease-in-out infinite alternate}
+.t9-garland svg{display:block;width:100%;height:auto;max-height:80svh}
+.t9-gl{left:clamp(2px,1.5vw,16px)}.t9-gr{right:clamp(2px,1.5vw,16px);animation-delay:-3.5s}
+@keyframes t9-sway{from{transform:rotate(-.9deg)}to{transform:rotate(.9deg)}}
+.t9-bell{transform-box:fill-box;transform-origin:50% 0;animation:t9-swing 3.4s ease-in-out infinite alternate}
+.t9-tas{transform-box:fill-box;transform-origin:50% 0;animation:t9-swing 4.2s ease-in-out infinite alternate-reverse}
+@keyframes t9-swing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+
+.t9-leaf{position:absolute;bottom:calc(clamp(76px,12svh,120px) + 2%);width:clamp(110px,24vw,220px);pointer-events:none;z-index:2;transform-origin:50% 100%;animation:t9-leaf 6s ease-in-out infinite alternate}
+.t9-leaf svg{display:block;width:100%;height:auto}
+.t9-ll{left:-2vw}.t9-lr{right:-2vw;animation-delay:-3s}
+@keyframes t9-leaf{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
+
+.t9-frieze{position:absolute;left:0;right:0;bottom:0;height:clamp(74px,11svh,118px);overflow:hidden;z-index:3}
+.t9-fz-track{display:flex;height:100%;width:max-content;animation:t9-march 70s linear infinite}
+.t9-fz-track svg{flex:0 0 auto;height:100%;width:auto;aspect-ratio:1200/190}
+@keyframes t9-march{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
+
+.t9-hero-in{position:relative;z-index:4;width:100%;max-width:680px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
+.t9-spotlight-frame{position:relative;width:min(74vw,260px);aspect-ratio:1;border-radius:50%;padding:8px;background:conic-gradient(from 0deg,var(--gold),#fae6aa,var(--gold),#fae6aa,var(--gold));box-shadow:0 18px 46px rgba(var(--ink-rgb),.24),0 0 0 4px rgba(201,162,74,.25);margin:0 auto 16px;transition:transform .4s var(--ease)}
+.t9-spotlight-frame>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fffaf2;background:#f8eedc}
+.t9-spotlight-frame img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
+.t9-invoc{font:italic 600 clamp(16px,2.2svh,20px) var(--f-head);color:var(--p);margin-bottom:4px}
+.t9-title{font:400 clamp(50px,13vw,86px)/1.08 var(--f-title);color:var(--a);margin:0 0 4px;text-shadow:0 2px 0 rgba(255,255,255,.6)}
+.t9-sub{margin:0 0 6px;font:700 13px var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--p)}
+.t9[data-lang="bn"] .t9-sub{letter-spacing:.06em;text-transform:none;font-size:16px}
+.t9-names{font:700 clamp(28px,7.5vw,50px)/1.15 var(--f-head);color:var(--p);margin:4px 0 10px}
+.t9-names i{display:inline-block;font:italic 500 .58em var(--f-head);color:var(--a);margin:0 4px}
+.t9-hero-copy{max-width:440px;margin:0 auto;font:italic 500 clamp(16px,2.1svh,19px)/1.55 var(--f-head);color:var(--muted)}
+.t9-datebox{display:inline-block;margin:18px 0 6px;padding:12px 28px 10px;border-radius:16px;border:1.5px solid var(--gold);background:rgba(255,250,244,.85);box-shadow:0 0 0 5px rgba(201,162,74,.14),0 12px 26px rgba(var(--ink-rgb),.1)}
+.t9-datebox b{display:block;font:700 clamp(24px,4.5svh,34px)/1.15 var(--f-head);color:var(--a)}
+.t9-datebox em{font:italic 500 17px var(--f-head);color:var(--p)}
+.t9-where{margin:8px 0 0;font:600 17px var(--f-head);color:var(--ink)}
+.t9-togo{margin:6px 0 0;font:italic 600 18px var(--f-head);color:var(--a)}
+.t9-pill{display:inline-block;margin-top:10px;padding:5px 18px;border-radius:30px;border:1px solid rgba(var(--p-rgb),.4);background:rgba(255,250,244,.85);font:700 13px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--p)}
+.t9[data-lang="bn"] .t9-pill{letter-spacing:.03em;text-transform:none;font-size:15px}
+.t9-hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px}
+.t9-cue{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:3px;font:700 12px var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--a)}
+.t9[data-lang="bn"] .t9-cue{letter-spacing:.03em;text-transform:none;font-size:14px}
+.t9-foot{width:26px;height:42px}
+.t9-fp1{animation:t9-step 1.8s ease-in-out infinite}.t9-fp2{animation:t9-step 1.8s ease-in-out infinite .9s}
+@keyframes t9-step{0%,100%{opacity:.15}45%{opacity:1}}
+
+/* CENTERPIECE: ROYAL BENGALI HINDU INVITATION CARD ART */
+.t9-sec-card{background:linear-gradient(180deg,var(--paper),var(--cream) 30%,var(--cream) 70%,var(--paper));padding:80px 0 96px}
+.t9-card-outer{display:flex;flex-direction:column;align-items:center;gap:26px}
+.t9-invcard{
+  position:relative;
+  width:100%;
+  max-width:540px;
+  margin:0 auto;
+  aspect-ratio:682/1024;
+  border-radius:24px;
+  overflow:hidden;
+  background:#fcf7ed;
+  box-shadow:0 30px 80px rgba(var(--ink-rgb),.24),0 0 0 1px rgba(201,162,74,.4),0 0 0 8px #fcf7ed,0 0 0 10px rgba(201,162,74,.5);
+}
+.t9-card-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.t9-card-bg img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.t9-card-in{
+  position:absolute;
+  top:19.5%;
+  left:8%;
+  right:8%;
+  height:44.5%;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  pointer-events:auto;
+  overflow:hidden;
+  padding:4px;
+}
+.t9-card-invoc{
+  font:italic 600 clamp(11px,2.4vw,14px) var(--f-head);
+  color:var(--p);
+  margin:0 0 2px;
+  letter-spacing:.02em;
+}
+.t9-card-title{
+  font:400 clamp(28px,7.5vw,46px)/1.05 var(--f-title);
+  color:var(--a);
+  margin:0 0 4px;
+  text-shadow:0 1px 0 rgba(255,255,255,.9);
+}
+.t9-card-bless{
+  font:500 clamp(10px,2.5vw,13px)/1.35 var(--f-head);
+  color:var(--muted);
+  margin:0 0 8px;
+}
+.t9-card-names{
+  font:700 clamp(20px,5.8vw,34px)/1.15 var(--f-head);
+  color:var(--p);
+  margin:0;
+  letter-spacing:.01em;
+}
+.t9-card-names i{
+  display:inline-block;
+  font:italic 500 .62em var(--f-head);
+  color:var(--a);
+  margin:0 4px;
+}
+.t9-card-guest{
+  display:inline-block;
+  margin:4px 0 2px;
+  padding:2px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.6);
+  border:1px solid rgba(201,162,74,.35);
+  font:italic 600 clamp(10px,2.4vw,13px) var(--f-head);
+  color:var(--p);
+}
+.t9-card-date{
+  font:700 clamp(12px,3vw,16px)/1.2 var(--f-head);
+  color:var(--ink);
+  margin:4px 0 0;
+}
+.t9-card-lagna{
+  font:600 clamp(11px,2.6vw,14px) var(--f-head);
+  color:var(--a);
+  margin:1px 0 0;
+}
+.t9-card-venue{
+  font:700 clamp(11px,2.8vw,15px)/1.2 var(--f-head);
+  color:var(--p);
+  margin:4px 0 0;
+}
+.t9-card-addr{
+  font:500 clamp(9.5px,2.2vw,12px)/1.2 var(--f-head);
+  color:var(--muted);
+  margin:1px 0 0;
+}
+.t9-card-fine{
+  font:italic 500 clamp(9px,2.1vw,11.5px) var(--f-head);
+  color:var(--muted);
+  margin:4px 0 0;
+}
+.t9-card-contact{
+  font:600 clamp(9px,2.1vw,11.5px) var(--f-body);
+  color:var(--p);
+  margin:2px 0 0;
+}
+.t9-card-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+}
+
+/* Story Section */
+.t9-chap{display:grid;gap:18px;justify-items:center;text-align:center;max-width:560px;margin:0 auto 52px}
+.t9-chap:last-child{margin-bottom:0}
+.t9-medal{position:relative;width:min(66vw,220px);aspect-ratio:1;border-radius:50%;padding:10px;background:conic-gradient(from 0deg,var(--gold),#f6e2a0,var(--gold),#f6e2a0,var(--gold));box-shadow:0 18px 40px rgba(var(--ink-rgb),.18)}
+.t9-medal>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(160deg,#fff5e6,#f6dcc6);display:grid;place-items:center;border:4px solid var(--paper)}
+.t9-medal img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
+.t9-num{font:700 clamp(50px,12vw,68px)/1 var(--f-head);color:transparent;-webkit-text-stroke:1.2px var(--a);margin-top:4px}
+.t9-chap h3{font:700 clamp(24px,6vw,32px)/1.2 var(--f-head);color:var(--p);margin:-6px 0 6px}
+.t9-chap p{margin:0;color:var(--muted);font-size:17px;max-width:440px}
+.t9-poem{max-width:640px;margin:0 auto 56px;padding:32px 26px;text-align:center;border-radius:22px;background:rgba(255,250,244,.75);border:1px solid rgba(201,162,74,.5);box-shadow:0 18px 40px rgba(var(--ink-rgb),.08)}
+.t9-poem p{margin:0;font:italic 600 clamp(19px,4.4vw,25px)/1.65 var(--f-head);color:var(--p)}
+.t9-poem small{display:block;margin-top:12px;font:700 13px var(--f-body);letter-spacing:.24em;color:var(--a);text-transform:uppercase}
+
+/* Save the Date */
+.t9-sec-date{background:linear-gradient(180deg,var(--paper),#fef6ef 50%,var(--paper))}
+.t9-datecard{max-width:520px;margin:0 auto;padding:34px 22px 30px;text-align:center;border-radius:28px;background:linear-gradient(180deg,#fffaf6,#fff5ec);border:1px solid #ecd7bf;box-shadow:0 24px 56px rgba(120,50,50,.14);position:relative}
+.t9-datecard:before{content:"";position:absolute;inset:7px;border:1px solid rgba(201,162,74,.4);border-radius:22px;pointer-events:none}
+.t9-cal-m{font:700 clamp(28px,6.8vw,38px)/1.1 var(--f-head);color:var(--p)}
+.t9-cal-y{font:600 15px var(--f-body);letter-spacing:.3em;color:var(--muted);margin:2px 0 14px}
+.t9-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px 0;justify-items:center;margin:0 auto;max-width:360px}
+.t9-cal-h{font:700 13px var(--f-body);color:var(--a);padding-bottom:4px}
+.t9-cal-d{position:relative;width:38px;height:38px;display:grid;place-items:center;font:600 18px var(--f-head);font-variant-numeric:tabular-nums}
+.t9-cal-dot:after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--mg)}
+.t9-cal-on{color:#fff}
+.t9-cal-on b{position:relative;z-index:1}
+.t9-cal-on:before{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--a);box-shadow:0 4px 10px rgba(181,18,27,.4)}
+.t9-cal-on:after{content:"";position:absolute;inset:-3px;border:1.5px solid var(--a);border-radius:50%;opacity:.75}
+.t9-cal-time{margin:32px 0 0;font:italic 600 20px var(--f-head);color:var(--p)}
+.t9-cd{display:none;justify-content:center;gap:8px;margin:22px 0 0}
+.t9-cd.t9-live{display:flex}
+.t9-cd div{min-width:66px;padding:10px 6px 8px;border:1.8px solid var(--p);border-radius:18px;background:var(--p-soft);overflow:hidden}
+.t9-cd b{display:block;font:700 28px/1.1 var(--f-head);color:var(--p);font-variant-numeric:tabular-nums}
+.t9-cd b.t9-tick{animation:t9-tick .5s var(--ease)}
+@keyframes t9-tick{from{transform:translateY(-35%);opacity:0}to{transform:none;opacity:1}}
+.t9-cd small{font:700 11px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.t9-cd-done{font:italic 700 20px var(--f-head);color:var(--a)}
+.t9-datecard .t9-btn{margin-top:22px}
+
+/* Celebrations Section */
+.t9-sec-ev{background:radial-gradient(ellipse 60% 20% at 70% 10%,rgba(255,255,255,.7),transparent 70%),linear-gradient(180deg,var(--cream),#f6ead0 60%,var(--cream));overflow:hidden}
+.t9-ev-col{position:relative;z-index:2;max-width:880px;margin:0 auto;padding:0 4px}
+.t9-day{display:block;margin:32px 0 16px;font:700 15px var(--f-body);letter-spacing:.2em;text-transform:uppercase;color:var(--a);text-align:center}
+.t9[data-lang="bn"] .t9-day{letter-spacing:.03em;text-transform:none;font-size:17px}
+.t9-day:first-of-type{margin-top:0}
+
+.t9-evs{display:grid;gap:24px;position:relative}
+.t9-evcard{border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#fffaf3,#fff4e6);border:1px solid rgba(201,162,74,.55);box-shadow:0 16px 36px rgba(var(--ink-rgb),.1);transition:transform .4s var(--ease),box-shadow .4s}
+.t9-evcard:hover{transform:translateY(-3px);box-shadow:0 22px 46px rgba(var(--ink-rgb),.15)}
+.t9-evimg{height:clamp(230px,44vw,320px);overflow:hidden;position:relative;background:linear-gradient(135deg,#fcf2e3,#f5ded0)}
+.t9-evimg img{width:100%;height:100%;object-fit:cover;object-position:center 14%;display:block;transition:transform 1.2s var(--ease)}
+.t9-evcard:hover .t9-evimg img{transform:scale(1.06)}
+.t9-evtop{display:flex;align-items:center;gap:16px;padding:18px 20px 0}
+.t9-evdate{flex:0 0 auto;width:64px;padding:8px 0 6px;text-align:center;border-radius:14px;background:var(--p);color:#fff;box-shadow:0 6px 14px rgba(var(--p-rgb),.28)}
+.t9-evdate b{display:block;font:700 24px/1 var(--f-head)}
+.t9-evdate small{font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase}
+.t9-evtop h3{font:700 clamp(22px,5.4vw,28px)/1.2 var(--f-head);color:var(--p);margin:0}
+.t9-evtop small.t9-local{display:block;font:500 15px "Tiro Bangla","Hind Siliguri",serif;color:var(--a);margin-top:2px}
+.t9-evb{padding:12px 20px 20px}
+.t9-meta{font:600 16px var(--f-head);color:var(--ink);margin:4px 0}
+.t9-meta b{color:var(--a);margin-right:8px;font-weight:700}
+.t9-desc{font-size:16px;color:var(--muted);margin:8px 0 12px}
+.t9-dress{display:inline-flex;align-items:center;gap:9px;padding:6px 16px 6px 10px;border-radius:30px;border:1.6px solid var(--p-mid);background:var(--p-soft);font:600 14px var(--f-head)}
+.t9-sw{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.25)}
+
+/* Gallery / Moments */
+.t9-flow{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 24px 30px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.t9-flow::-webkit-scrollbar{display:none}
+.t9-flow figure{flex:0 0 min(68vw,290px);aspect-ratio:3/4;margin:0;position:relative;padding:10px 10px 32px;scroll-snap-align:center;cursor:zoom-in;background:#fffaf2;border:1px solid rgba(201,162,74,.6);border-radius:6px;box-shadow:0 16px 36px rgba(var(--ink-rgb),.18);transition:transform .4s var(--ease)}
+.t9-flow figure:nth-child(odd){transform:rotate(-1.4deg)}.t9-flow figure:nth-child(even){transform:rotate(1.2deg)}
+.t9-flow figure:hover{transform:rotate(0) translateY(-6px)}
+.t9-flow figure:before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:22px;transform:translateX(-50%) rotate(-3deg);background:repeating-linear-gradient(45deg,rgba(241,154,26,.75) 0 6px,rgba(249,194,90,.75) 6px 12px);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.t9-flow img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
+.t9-lb{position:fixed;inset:0;z-index:960;display:grid;place-items:center;padding:20px;background:rgba(40,12,20,.9);cursor:zoom-out;animation:t9-fadein .3s ease}
+.t9-lb img{max-width:min(94vw,900px);max-height:88vh;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+
+/* Venue */
+.t9-venue-grid{display:grid;gap:24px;max-width:880px;margin:0 auto}
+.t9-venue-photo{position:relative;height:clamp(240px,50vw,360px);margin:0;border-radius:200px 200px 22px 22px;overflow:hidden;border:1.5px solid var(--gold);box-shadow:0 24px 56px rgba(var(--ink-rgb),.22),0 0 0 6px rgba(201,162,74,.15);background:linear-gradient(#fbf3df,#f2e5c6)}
+.t9-venue-photo img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+.t9-vcard{padding:32px 24px;text-align:center;border-radius:26px;background:linear-gradient(180deg,#fffaf6,#fff5ec);border:1px solid #ecd7bf;box-shadow:0 20px 48px rgba(120,50,50,.12)}
+.t9-vcard h3{font:700 clamp(25px,6vw,35px)/1.2 var(--f-head);color:var(--p);margin:4px 0 8px}
+.t9-vcard p{font-size:17px;color:var(--muted);margin:0 0 20px}
+.t9-vbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.t9-chips{display:grid;gap:12px;margin-top:16px}
+.t9-chipc{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:16px 18px;border-radius:18px;background:var(--p-soft);border:1px solid var(--p-mid);font-size:16px;color:var(--ink)}
+.t9-chipc span{font-size:20px;color:var(--a)}
+.t9-chipc p{margin:0}
+
+/* RSVP */
+.t9-sec-rsvp{background:${DIAMOND_BG},linear-gradient(180deg,#f3ded8,#edd5cd);padding-bottom:70px}
+.t9-rsvp{position:relative;max-width:440px;margin:0 auto;padding:36px 22px 22px;border-radius:30px;background:linear-gradient(180deg,#fffaf6,#fff6ef);border:1px solid #ecd7bf;box-shadow:0 26px 60px rgba(120,50,50,.22)}
+.t9-rsvp:before{content:"";position:absolute;inset:7px;border:1px solid rgba(201,162,74,.38);border-radius:24px;pointer-events:none}
+.t9-stamp{position:absolute;top:-22px;right:14px;width:66px;height:auto;transform:rotate(6deg);filter:drop-shadow(0 6px 8px rgba(0,0,0,.25));z-index:3;transition:transform .4s var(--ease)}
+.t9-rsvp:hover .t9-stamp{transform:rotate(2deg) translateY(-2px)}
+.t9-st{font:700 21px "Cormorant Garamond",serif;fill:#fff4ea;text-anchor:middle;letter-spacing:.02em}
+.t9-st-bn{font:700 19px "Tiro Bangla","Hind Siliguri",serif}
+.t9-postmark{position:absolute;top:-10px;right:62px;width:78px;height:78px;transform:rotate(-14deg);opacity:.42;z-index:2;pointer-events:none}
+
+.t9-lab{display:block;font:600 19px var(--f-head);color:var(--ink);margin:0 0 8px}
+.t9-fld{margin:0 0 20px;position:relative}
+
+.t9-input{width:100%;height:54px;border-radius:18px;border:1.8px solid var(--p-mid);background:var(--p-soft);padding:0 16px;font:500 19px var(--f-body);color:var(--ink);outline:none;transition:border-color .3s,box-shadow .3s;-webkit-appearance:none;appearance:none}
+textarea.t9-input{height:110px;padding:12px 16px;resize:none;line-height:1.5}
+.t9-input:focus{border-color:var(--p);box-shadow:0 0 0 4px rgba(var(--p-rgb),.14)}
+.t9-input::placeholder{color:rgba(var(--ink-rgb),.38)}
+
+.t9-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;margin:0 0 12px;padding:0 16px;border-radius:18px;border:1.8px solid var(--p-mid);background:var(--p-soft);font:700 19px var(--f-head);color:var(--ink);text-align:left;transition:background .3s,color .3s,border-color .3s,box-shadow .3s}
+.t9-rd{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:2px solid var(--p-mid);display:grid;place-items:center;color:var(--p);background:transparent;transition:background .3s,border-color .3s}
+.t9-rd svg{opacity:0;transform:scale(.4);transition:opacity .25s,transform .3s var(--ease)}
+.t9-opt[aria-pressed="true"]{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 12px 24px rgba(var(--p-rgb),.32)}
+.t9-opt[aria-pressed="true"] .t9-rd{background:#fff;border-color:#fff}
+.t9-opt[aria-pressed="true"] .t9-rd svg,.t9-chip[aria-pressed="true"] .t9-rd svg{opacity:1;transform:none}
+
+.t9-step{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 8px;border-radius:30px;border:1.8px solid var(--p-mid);background:var(--p-soft)}
+.t9-step button{width:44px;height:44px;border-radius:50%;border:0;background:var(--p);color:#fff;font:600 26px/1 var(--f-head);display:grid;place-items:center;box-shadow:0 6px 14px rgba(var(--p-rgb),.28);transition:transform .2s var(--ease)}
+.t9-step button:active{transform:scale(.92)}
+.t9-step output{font:italic 700 30px var(--f-head);color:var(--ink)}
+.t9-step output small{font:600 16px var(--f-body);font-style:normal;color:var(--muted);margin-left:6px}
+
+.t9-chips-row{display:flex;flex-wrap:wrap;gap:10px}
+.t9-chip{flex:1 1 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 8px;border-radius:26px;border:1.8px solid var(--p-mid);background:transparent;font:700 17px var(--f-head);color:var(--ink);transition:background .3s,border-color .3s}
+.t9-chip .t9-rd{width:24px;height:24px}
+.t9-chip small{margin-left:auto;font:500 13.5px var(--f-body);color:var(--muted)}
+.t9-chip[aria-pressed="true"]{border-color:var(--p);background:var(--p-soft)}
+.t9-chip[aria-pressed="true"] .t9-rd{background:var(--p);border-color:var(--p);color:#fff}
+
+.t9-send{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;margin-top:6px;border:0;border-radius:32px;background:var(--p);color:#fff;font:700 19px var(--f-head);box-shadow:0 14px 26px rgba(var(--p-rgb),.38);transition:transform .3s var(--ease)}
+.t9-send:hover{transform:translateY(-2px)}
+.t9-send:active{transform:scale(.98)}
+.t9-cap{text-align:center;font:500 15px/1.5 var(--f-body);color:#8d7b79;margin:14px 10px 0}
+.t9-status{min-height:22px;margin:10px 0 0;font:700 15px var(--f-body);text-align:center;color:var(--a)}
+.t9-shake{animation:t9-shake .45s}
+@keyframes t9-shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.t9-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+.t9-contact{display:inline-block;padding:8px 16px;border-radius:30px;border:1.6px solid var(--p-mid);text-decoration:none;font:600 15px var(--f-body);color:var(--p)}
+.t9-hide{display:none!important}
+
+/* Finale */
+.t9-end{position:relative;text-align:center;padding:70px 22px calc(clamp(80px,14svh,140px) + 36px);background:linear-gradient(180deg,#eedcd6,var(--paper) 40%);overflow:hidden}
+
+/* Scratch / Reveal Surprise Card */
+.t9-sec-reveal{background:linear-gradient(180deg,var(--paper),#fef5ed 50%,var(--paper));padding:84px 0 96px}
+.t9-reveal-wrap{max-width:440px;margin:0 auto;text-align:center}
+.t9-scratch-card{position:relative;width:100%;min-height:220px;border-radius:24px;border:1.5px solid rgba(201,162,74,.6);box-shadow:0 20px 48px rgba(var(--ink-rgb),.14),0 0 0 5px rgba(255,250,244,.8);overflow:hidden;background:linear-gradient(180deg,#fffdf9,#fff8ee)}
+.t9-scratch-secret{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 20px;text-align:center;background:radial-gradient(ellipse at 50% 50%,#fffaf2 40%,#fbf0df 100%)}
+.t9-secret-star{color:var(--a);font-size:14px;letter-spacing:6px;margin-bottom:8px}
+.t9-secret-msg{font:italic 600 clamp(16px,3.8vw,20px)/1.55 var(--f-head);color:var(--p);margin:0 0 10px}
+.t9-secret-sign{font:600 13px var(--f-body);color:var(--a);letter-spacing:.08em;text-transform:uppercase}
+.t9-secret-sign b{display:block;font:700 18px var(--f-head);color:var(--ink);letter-spacing:0;text-transform:none;margin-top:2px}
+.t9-scratch-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:3;touch-action:none;cursor:crosshair;transition:opacity .6s ease}
+.t9-scratch-overlay{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:linear-gradient(135deg,rgba(181,18,27,.94),rgba(142,26,52,.96));color:#fff;pointer-events:none;transition:opacity .5s ease}
+.t9-scratch-card.t9-active .t9-scratch-overlay{opacity:0;pointer-events:none}
+.t9-scratch-card.t9-cleared .t9-scratch-canvas{opacity:0;pointer-events:none}
+.t9-so-content{padding:16px 20px;text-align:center}
+.t9-so-icon{font-size:24px;color:var(--gold);display:block;margin-bottom:6px;animation:t9-pulse 2s infinite}
+.t9-so-content b{font:700 19px var(--f-head);letter-spacing:.04em}
+.t9-so-content small{display:block;font:500 12.5px var(--f-body);opacity:.85;margin-top:4px}
+.t9-scratch-caption{margin-top:14px;font:italic 600 14.5px var(--f-head);color:var(--a)}
+.t9-end .t9-eyebrow{margin-bottom:6px}
+.t9-end h2{font:400 clamp(40px,10vw,72px)/1.1 var(--f-title);color:var(--a);margin:0}
+.t9-end p{font:700 13px var(--f-body);letter-spacing:.22em;color:var(--p);margin:10px 0 0;text-transform:uppercase}
+.t9[data-lang="bn"] .t9-end p{letter-spacing:.03em;text-transform:none;font-size:15px}
+.t9-end .t9-tag{font:italic 600 20px var(--f-head);letter-spacing:0;text-transform:none;color:var(--a)}
+.t9-end .t9-frieze{z-index:1}
+
+.t9-music{display:none;position:fixed;z-index:60;right:14px;bottom:14px;width:46px;height:46px;border-radius:50%;border:1.6px solid var(--p);background:rgba(255,250,244,.95);color:var(--p);font-size:18px;box-shadow:0 6px 18px rgba(var(--ink-rgb),.2)}
+.t9-js .t9-music.t9-has{display:block}
+.t9-music[aria-pressed="true"]{background:var(--p);color:#fff}
+
+@media(min-width:820px){
+  .t9 section{padding:110px 0}
+  .t9-chap{grid-template-columns:auto 1fr;gap:44px;text-align:left;justify-items:start;max-width:760px;align-items:center}
+  .t9-chap:nth-child(even){grid-template-columns:1fr auto}
+  .t9-chap:nth-child(even) .t9-medal{order:2}
+  .t9-chap:nth-child(even) .t9-chap-txt{text-align:right;justify-self:end}
+  .t9-venue-grid{grid-template-columns:1fr 1fr;align-items:center;max-width:960px}
+}
+@media(max-width:380px){
+  .t9-wrap{padding:0 16px}
+  .t9-cd div{min-width:56px}
+  .t9-cd{gap:5px}
+  .t9-cal-d{width:32px;height:32px}
+}
+@media(prefers-reduced-motion:reduce){
+  .t9 *,.t9 *:before,.t9 *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .t9-js .t9-rv{opacity:1!important;transform:none!important}
+  .t9-alp path.t9-draw-path,.t9-alp circle.t9-draw-path{stroke-dashoffset:0!important}
+}
+@media print{
+  .t9-progress,.t9-entry,.t9-music,.t9-petals,.t9-lang-float{display:none!important}
+  .t9-js .t9-rv{opacity:1!important;transform:none!important}
+  .t9-js img.t9-fi{opacity:1!important}
+  .t9-alp path.t9-draw-path,.t9-alp circle.t9-draw-path{stroke-dashoffset:0!important}
+}
 `;
 
-/* ---------- render ---------- */
+/* ---------- Render Function ---------- */
 export default function render({ guest, wedding, events = [] } = {}) {
   const w = wedding || {};
   const evs = Array.isArray(events) ? events : [];
   const offset = clean(w.timezone_offset) || '+05:30';
+  const lang0 = clean(w.lang || w.language).toLowerCase() || 'en';
+  const assetBase = clean(w.asset_base) || './assets/';
 
-  const bride = esc(clean(w.bride_name) || 'Bride');
-  const groom = esc(clean(w.groom_name) || 'Groom');
-  const [first, second] = clean(w.name_order) === 'bride_first' ? [bride, groom] : [groom, bride];
-  const init1 = esc(first.replace(/&[^;]+;/g, '').trim().charAt(0) || 'R').toUpperCase();
-  const init2 = esc(second.replace(/&[^;]+;/g, '').trim().charAt(0) || 'A').toUpperCase();
-  const initials = `${init1} &amp; ${init2}`;
+  /* Names */
+  const rb = clean(w.bride_name) || 'Bride', rg = clean(w.groom_name) || 'Groom';
+  const rbBn = clean(w.bride_name_bn) || rb, rgBn = clean(w.groom_name_bn) || rg;
+  const brideFirst = clean(w.name_order) === 'bride_first';
+  const [fEn, sEn] = brideFirst ? [rb, rg] : [rg, rb];
+  const [fBn, sBn] = brideFirst ? [rbBn, rgBn] : [rgBn, rbBn];
+  const namesLine = LH(`${esc(fEn)} <i>&amp;</i> ${esc(sEn)}`, `${esc(fBn)} <i>ও</i> ${esc(sBn)}`);
+  const namesPlain = L(`${fEn} & ${sEn}`, `${fBn} ও ${sBn}`);
+  const initEn = `${fEn.charAt(0).toUpperCase()}&${sEn.charAt(0).toUpperCase()}`;
+  const initBn = `${[...fBn][0] || ''}&${[...sBn][0] || ''}`;
+  const guestName = clean(guest?.name) || '';
+  const gEn = guestName || 'Respected Guest', gBn = guestName || 'শ্রদ্ধেয় অতিথি';
+  const hasFamily = Boolean(guest?.with_family);
+  const isFamilyAlreadyInName = /family/i.test(gEn);
+  const isBnFamilyAlreadyInName = /family|পরিবার/i.test(gBn);
+  const guestDisplayNameEn = hasFamily && !isFamilyAlreadyInName ? `${gEn} & Family` : gEn;
+  const guestDisplayNameBn = hasFamily && !isBnFamilyAlreadyInName ? `${gBn} ও পরিবার` : gBn;
+  const guestLine = L(guestDisplayNameEn, guestDisplayNameBn);
+  const guestBadgeText = hasFamily
+    ? L(guest?.persons && guest.persons > 1 ? `Family Invitation · ${guest.persons} Persons` : 'Family Invitation', guest?.persons && guest.persons > 1 ? `পরিবার সহ · ${toBn(guest.persons)} জন` : 'পরিবার সহ সাদর আমন্ত্রণ')
+    : (guest?.persons && guest.persons > 1 ? L(`${guest.persons} Persons`, `${toBn(guest.persons)} জন অতিথি`) : L('Personal Invitation', 'সাদর নিমন্ত্রণ'));
 
-  const rawGuest = clean(guest?.name) || 'Respected Guest';
-  const baseGuest = rawGuest.replace(/\s*(?:&|and)?\s*Family\s*$/i, '').trim() || 'Respected Guest';
-  const isFamily = Boolean(guest?.with_family);
-  const guestLine = isFamily ? `${esc(baseGuest)} &amp; Family` : esc(baseGuest);
-  const personsCount = esc(guest?.persons || 1);
-  const invocation = esc(clean(w.invocation) || 'Shree Ganeshaya Namah');
-  const venue = esc(clean(w.venue) || 'Wedding Venue');
-  const address = esc(clean(w.address));
-  const city = esc(clean(w.city));
-  const where = [venue, city].filter(Boolean).join(', ');
-  const signature = esc(clean(w.footer_text) || clean(w.families) || `The ${clean(w.bride_name).split(/\s+/).pop() || 'Bride'} & ${clean(w.groom_name).split(/\s+/).pop() || 'Groom'} Families`);
-  const poem = esc(clean(w.poem) || 'Two hearts, one beautiful story, one promise, a lifetime of love. May every tomorrow shine brighter together.').replace(/(?<=[,.])\s+(?=[A-Z])/g, '<br>');
+  const fld = (k, defEn, defBn) => {
+    const en = clean(w[k]), bn = clean(w[k + '_bn']);
+    return L(en || defEn, bn || en || defBn);
+  };
+  const raw = (k, def = '') => clean(w[k]) || def;
+  const ceremonyTitle = fld('ceremony_title', TXT.title[0], TXT.title[1]);
+  const invocation = fld('invocation', TXT.invocDef[0], TXT.invocDef[1]);
+  const inviteText = fld('invite_text', TXT.inviteDef[0], TXT.inviteDef[1]);
+  const venue = fld('venue', 'Wedding Venue', 'বিবাহ স্থান');
+  const address = fld('address', '', '');
+  const hasAddr = !!(raw('address') || raw('address_bn'));
+  const city = fld('city', '', '');
+  const hasCity = !!(raw('city') || raw('city_bn'));
+  const where = LH(
+    `${esc(clean(w.venue) || 'Wedding Venue')}${clean(w.city) ? ', ' + esc(clean(w.city)) : ''}`,
+    `${esc(clean(w.venue_bn) || clean(w.venue) || 'বিবাহ স্থান')}${(clean(w.city_bn) || clean(w.city)) ? ', ' + esc(clean(w.city_bn) || clean(w.city)) : ''}`
+  );
+  const families = fld('families', '', '');
+  const hasFam = !!(raw('families') || raw('families_bn'));
+  const poem = fld('poem', TXT.poemDef[0], TXT.poemDef[1]);
+  const hashtag = clean(w.hashtag), hashtagBn = clean(w.hashtag_bn);
+  const signature = fld(
+    'footer_text',
+    raw('families') ? raw('families') : `The ${clean(w.bride_name).split(/\s+/).pop() || 'Bride'} & ${clean(w.groom_name).split(/\s+/).pop() || 'Groom'} Families`,
+    raw('families_bn') || (raw('families') ? raw('families') : 'উভয় পরিবার')
+  );
 
+  /* Dates */
   const day = dparts(w.date);
-  const dateLong = day ? longDate(day) : 'Date to be announced';
-  const dateNums = day ? `${pad(day.d)} · ${pad(day.mo)} · ${day.y}` : 'To be announced';
-  const dayName = day ? weekday(day) : '';
-  const timeText = fmtTime(w.time);
-  const defaultMusic = safeUrl(w.music_url) || 'invitation.mp3';
-  const targetTs = parseWhen(w.date, w.time, offset) ?? parseWhen(w.date, '', offset);
-  const stCal = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const calTitle = encodeURIComponent(`Wedding: ${first.replace(/&amp;/g, '&')} & ${second.replace(/&amp;/g, '&')}`);
-  const calLoc = encodeURIComponent(where.replace(/&amp;/g, '&'));
-  const calDesc = encodeURIComponent(`We cordially invite you to celebrate the wedding of ${first.replace(/&amp;/g, '&')} & ${second.replace(/&amp;/g, '&')}.${where ? ` Venue: ${where.replace(/&amp;/g, '&')}.` : ''}`);
-  const calDates = targetTs ? `${stCal(targetTs)}/${stCal(targetTs + 4 * 3600 * 1000)}` : '';
-  const calUrl = targetTs ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${calDates}&details=${calDesc}&location=${calLoc}` : '';
+  const wd = day ? weekday(day) : null;
+  const dEn = day ? `${pad(day.d)} ${MONTHS[day.mo - 1]} ${day.y}` : 'Date to be announced';
+  const dBn = day ? `${toBn(day.d)} ${MONTHS_BN[day.mo - 1]} ${toBn(day.y)}` : 'তারিখ শীঘ্রই জানানো হবে';
+  const dateLong = L(dEn, dBn);
+  const dayName = day ? L(DAYS[wd], DAYS_BN[wd]) : '';
+  const tEn = timeEn(w.time), tBn = timeBn(w.time);
+  const timeL = clean(w.time) ? L(tEn, tBn) : '';
+  const numsEn = day ? `${pad(day.d)} · ${pad(day.mo)} · ${day.y}` : 'To be announced';
+  const numsBn = day ? `${toBn(pad(day.d))} · ${toBn(pad(day.mo))} · ${toBn(day.y)}` : 'শীঘ্রই জানানো হবে';
+  const whenTs = parseWhen(w.date, w.time, offset);
+  let targetTs = whenTs;
+  if ((!targetTs || targetTs <= Date.now()) && Array.isArray(evs) && evs.length) {
+    const mainEv = evs.find(e => /phere|vivah|biye|bibaho|wedding|ceremony|sampradan|jaimala|reception/i.test(clean(e.event_name)));
+    if (mainEv) {
+      const evTs = parseWhen(mainEv.event_date, mainEv.event_time, offset);
+      if (evTs && evTs > Date.now()) targetTs = evTs;
+    }
+    if (!targetTs || targetTs <= Date.now()) {
+      const futureEv = evs.map(e => parseWhen(e.event_date, e.event_time, offset)).filter(t => t && t > Date.now()).sort((a, b) => a - b)[0];
+      if (futureEv) targetTs = futureEv;
+    }
+  }
+  const activeWhen = targetTs ?? whenTs ?? parseWhen(w.date, '', offset) ?? '';
 
   const mapUrl = safeUrl(w.map_url) || (clean(w.venue) || clean(w.address)
     ? esc(`https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query: [w.venue, w.address].filter(Boolean).join(', ') })}`) : '');
+  const iso = x => new Date(x).toISOString().replace(/[-:]|\.\d{3}/g, '');
+  const calUrl = (whenTs && clean(w.time))
+    ? esc(`https://calendar.google.com/calendar/render?${new URLSearchParams({ action: 'TEMPLATE', text: `Wedding of ${fEn} & ${sEn}`, dates: `${iso(whenTs)}/${iso(whenTs + 4 * 3600e3)}`, location: [w.venue, w.address, w.city].map(clean).filter(Boolean).join(', ') })}`) : '';
+
   const contacts = lines(w.rsvp_contacts);
   const phoneRaw = clean(w.rsvp_number) || contacts[0] || '';
   const digits = phoneRaw.replace(/\D/g, '');
   const wa = digits.length === 10 ? `91${digits}` : digits;
   const canRsvp = wa.length >= 10;
-
-  const heroImg = safeImg(w.hero_image);
-  const heroBg = [
-    'linear-gradient(to bottom,rgba(15,44,35,.6),rgba(5,18,15,1))',
-    heroImg && `url('${heroImg}')`,
-    `url('${U('1477587458883-47145ed94245', 1800)}')`,
-    `url('${U('1599661046827-dacff0c0f09a', 1800)}')`,
-    `url('${U('1606216794074-735e91aa2c92', 1800)}')`,
-    'radial-gradient(ellipse at 50% 30%,#2a6b55,#0f2c23 60%,#05120f)'
-  ].filter(Boolean).join(',');
-
-  const venueImg = safeImg(w.venue_image) || U('1599661046827-dacff0c0f09a', 1400);
+  const heroImg = safeImg(w.hero_image) || `${assetBase}template-06-couple.webp`;
+  const venueImg = safeImg(w.venue_image) || `${assetBase}template-06-palace.jpg`;
+  const cardArtImg = safeImg(w.card_image) || `${assetBase}template-06-card-clean.webp`;
   const story = readStory(w.story);
+  const gallery = readGallery(w.gallery);
 
-  /* events grouped by day, sorted */
+  /* Events */
   const stamp = e => parseWhen(e.event_date, e.event_time, offset) ?? (dparts(e.event_date) ? Date.UTC(dparts(e.event_date).y, dparts(e.event_date).mo - 1, dparts(e.event_date).d) : Infinity);
   const sorted = [...evs].sort((a, b) => stamp(a) - stamp(b));
   const groups = [];
@@ -453,286 +937,338 @@ export default function render({ guest, wedding, events = [] } = {}) {
     if (!g) groups.push(g = { key, p, items: [] });
     g.items.push(e);
   });
-  let n = 0;
+  const evNames = e => { const en = clean(e.event_name) || 'Celebration'; return [en, clean(e.event_name_bn) || en]; };
+  const evShort = e => { const p = dparts(e.event_date); return p ? [`${p.d} ${MONTHS[p.mo - 1].slice(0, 3)}`, `${toBn(p.d)} ${MONTHS_BN[p.mo - 1]}`] : ['', '']; };
+
   const eventsHtml = groups.map((g, gi) => {
-    const label = `DAY ${ORD[gi] || gi + 1}${g.p ? ` · ${weekday(g.p)}, ${shortDate(g.p)}` : ''}`;
+    const label = g.p
+      ? LH(`Day ${ORD[gi] || gi + 1} · ${DAYS[weekday(g.p)]}, ${pad(g.p.d)} ${MONTHS[g.p.mo - 1].slice(0, 3)} ${g.p.y}`, `${ORD_BN[gi] || toBn(gi + 1)} দিন · ${DAYS_BN[weekday(g.p)]}, ${toBn(g.p.d)} ${MONTHS_BN[g.p.mo - 1]} ${toBn(g.p.y)}`)
+      : LH(`Day ${ORD[gi] || gi + 1}`, `${ORD_BN[gi] || toBn(gi + 1)} দিন`);
     const cards = g.items.map(e => {
-      const name = clean(e.event_name) || 'Celebration';
-      const k = kindOf(name);
-      const side = n++ % 2 === 0 ? 't8-l' : 't8-r';
-      const img = safeImg(e.image_url) || k.src || U(k.img);
-      const alt = U(k.alt);
+      const [nEn, nBn] = evNames(e);
+      const k = kindOf(nEn);
+      const img = safeImg(e.image_url) || (k.asset ? `${assetBase}${k.asset}` : '');
       const loc = clean(e.venue || e.address) || clean(w.venue);
-      const t = fmtTime(e.event_time);
-      const color = /^#[0-9a-f]{3,8}$/i.test(clean(e.dress_color)) ? clean(e.dress_color) : k.dress;
-      return `<article class="t8-ev ${side}">
-        <div class="t8-ev-img t8-ph"><img src="${esc(img)}" data-fallback="${esc(alt)}" alt="${esc(name)}" loading="lazy" decoding="async"><span class="t8-ev-day">DAY ${gi + 1}</span>
-          <div class="t8-ev-t"><span class="ic" aria-hidden="true">${k.icon}</span><div><h3>${esc(name)}</h3>${clean(e.local_name) ? `<small>${esc(e.local_name)}</small>` : ''}</div></div></div>
-        <div class="t8-ev-b">
-          <div class="t8-meta">${t ? `<span><b>◷</b>${esc(t)}</span>` : ''}${loc ? `<span><b>⌖</b>${esc(loc)}</span>` : ''}</div>
-          ${clean(e.description) ? `<p class="t8-desc">${esc(e.description)}</p>` : ''}
-          ${clean(e.dress_code) ? `<div class="t8-dress"><span class="t8-sw" style="background:${color}"></span>Dress code: ${esc(e.dress_code)}</div>` : ''}
-        </div></article>`;
+      const locBn = clean(e.venue_bn || e.address_bn) || loc;
+      const tm = clean(e.event_time) ? L(timeEn(e.event_time), timeBn(e.event_time)) : '';
+      const p = dparts(e.event_date);
+      const dressEn = clean(e.dress_code) || (k.dress ? k.dress.en : ''), dressBn = clean(e.dress_code_bn) || clean(e.dress_code) || (k.dress ? k.dress.bn : '');
+      const color = /^#[0-9a-f]{3,8}$/i.test(clean(e.dress_color)) ? clean(e.dress_color) : k.c;
+      const descEn = clean(e.description), descBn = clean(e.description_bn) || descEn;
+
+      return `<div class="t9-ev t9-rv">
+        <article class="t9-evcard">
+          ${img ? `<div class="t9-evimg t9-ph"><img class="t9-fi" src="${esc(img)}" alt="${esc(nEn)}" loading="lazy" decoding="async"></div>` : ''}
+          <div class="t9-evtop">
+            ${p ? `<div class="t9-evdate"><b>${LH(String(p.d), toBn(p.d))}</b><small>${LH(esc(MONTHS[p.mo - 1].slice(0, 3)), esc(MONTHS_BN[p.mo - 1]))}</small></div>` : ''}
+            <div><h3>${L(nEn, nBn)}</h3>${clean(e.local_name) ? `<small class="t9-local" dir="auto">${esc(e.local_name)}</small>` : ''}</div>
+          </div>
+          <div class="t9-evb">
+            ${tm ? `<div class="t9-meta"><b>◷</b>${tm}</div>` : ''}
+            ${loc ? `<div class="t9-meta"><b>⌖</b>${L(loc, locBn)}</div>` : ''}
+            ${descEn ? `<p class="t9-desc">${L(descEn, descBn)}</p>` : ''}
+            ${dressEn ? `<div class="t9-dress"><span class="t9-sw" style="background:${color}"></span>${t('dress')}: ${L(dressEn, dressBn)}</div>` : ''}
+          </div>
+        </article>
+      </div>`;
     }).join('');
-    return `<div class="t8-day t8-reveal">${esc(label)}</div><div class="t8-zig">${cards}</div>`;
+    return `<span class="t9-day t9-rv">${label}</span><div class="t9-evs">${cards}</div>`;
   }).join('');
 
-  const travel = [clean(w.travel_info) && ['✈', w.travel_info], clean(w.stay_info) && ['⌂', w.stay_info]].filter(Boolean);
-  const hasTravel = travel.length > 0;
+  /* RSVP function chips */
+  const seen = new Set();
+  const fchips = sorted.filter(e => { const [n] = evNames(e); const k = `${n}|${clean(e.event_date)}`; if (seen.has(k)) return false; seen.add(k); return true; }).map(e => {
+    const [nEn, nBn] = evNames(e); const [sEnD, sBnD] = evShort(e);
+    return `<button type="button" class="t9-chip" data-fn="${esc(nEn)}" data-fn-bn="${esc(nBn)}" data-fd="${esc(sEnD)}" data-fd-bn="${esc(sBnD)}" aria-pressed="true"><span class="t9-rd">${CHECK}</span><span>${L(nEn, nBn)}</span>${sEnD ? `<small>${L(sEnD, sBnD)}</small>` : ''}</button>`;
+  }).join('');
 
-  const fmtEventDate = e => {
-    const p = dparts(e?.event_date);
-    if (p) return `${p.d} ${MONTHS[p.mo - 1].slice(0, 3)}`;
-    if (e?.event_date) return String(e.event_date);
-    if (w.date && dparts(w.date)) {
-      const wp = dparts(w.date);
-      return `${wp.d} ${MONTHS[wp.mo - 1].slice(0, 3)}`;
-    }
-    return '';
-  };
+  /* Calendar Grid */
+  let calHtml = '';
+  if (day) {
+    const first = new Date(Date.UTC(day.y, day.mo - 1, 1)).getUTCDay();
+    const dim = new Date(Date.UTC(day.y, day.mo, 0)).getUTCDate();
+    const dots = new Set(evs.map(e => dparts(e.event_date)).filter(p => p && p.y === day.y && p.mo === day.mo).map(p => p.d));
+    const head = [['S', 'র'], ['M', 'সো'], ['T', 'ম'], ['W', 'বু'], ['T', 'বৃ'], ['F', 'শু'], ['S', 'শ']].map(([a, b]) => `<span class="t9-cal-h">${L(a, b)}</span>`).join('');
+    let cells = '';
+    for (let i = 0; i < first; i++) cells += '<span></span>';
+    for (let d = 1; d <= dim; d++) cells += d === day.d ? `<span class="t9-cal-d t9-cal-on" aria-label="Wedding day"><b>${L(String(d), toBn(d))}</b></span>` : `<span class="t9-cal-d${dots.has(d) ? ' t9-cal-dot' : ''}">${L(String(d), toBn(d))}</span>`;
+    calHtml = `<div class="t9-cal-grid" role="img" aria-label="${esc(MONTHS[day.mo - 1])} ${day.y}">${head}${cells}</div>`;
+  }
 
-  const rsvpFunctions = evs.length > 0
-    ? evs.map(e => ({
-        name: clean(e.event_name) || 'Celebration',
-        date: fmtEventDate(e)
-      }))
-    : [
-        { name: 'Haldi', date: '4 Dec' },
-        { name: 'Mehendi', date: '4 Dec' },
-        { name: 'Sangeet', date: '4 Dec' },
-        { name: 'Baarat', date: '5 Dec' },
-        { name: 'Jaimala', date: '5 Dec' },
-        { name: 'Phere', date: '5 Dec' },
-        { name: 'Reception', date: '6 Dec' }
-      ];
+  const travel = [clean(w.travel_info) && ['✈', 'travel_info'], clean(w.stay_info) && ['⌂', 'stay_info']].filter(Boolean);
+  const FRIEZE_USE = n => `<svg viewBox="0 0 1200 190" preserveAspectRatio="xMinYMax meet" aria-hidden="true" focusable="false"><use href="#t9-fz"/></svg>`.repeat(n);
+  const frieze = `<div class="t9-frieze" aria-hidden="true"><div class="t9-fz-track">${FRIEZE_USE(8)}</div></div>`;
+
+  const storyVignettes = [
+    `${assetBase}template-06-couple.webp`,
+    `${assetBase}template-06-jaimala.jpg`,
+    `${assetBase}template-06-phere.jpg`
+  ];
+
+  const defaultMoments = [
+    `${assetBase}template-06-card-art.jpg`,
+    `${assetBase}template-06-couple.webp`,
+    `${assetBase}template-06-phere.jpg`,
+    `${assetBase}template-06-jaimala.jpg`,
+    `${assetBase}template-06-reception.jpg`
+  ];
+  const galleryItems = gallery.length ? gallery : defaultMoments;
+
+  const stampEl = stampSvg(initEn, initBn);
+  const postEl = postmark(clean(w.city) || 'Kolkata', numsEn.replace(/ · /g, '.'));
+  const themeStyle = themeVars(w);
 
   return `
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="${FONT_HREF}" rel="stylesheet">
+<link href="${FONT_HREF}" rel="stylesheet" data-t9-fonts>
 <style>${STYLE}</style>
-<noscript><style>.t8-entry{display:none!important}.t8.t8-locked{height:auto!important;max-height:none!important;overflow:visible!important}.t8-reveal,.t8-ev{opacity:1!important;transform:none!important}</style></noscript>
-<div class="t8 t8-js t8-locked" data-when="${esc(String(parseWhen(w.date, w.time, offset) ?? parseWhen(w.date, '', offset) ?? ''))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${esc(defaultMusic)}">
-  <div class="t8-noise" aria-hidden="true"></div>
-  <div class="t8-progress" aria-hidden="true"></div>
+<noscript><style>.t9-entry{display:none!important}.t9.t9-locked{height:auto!important;max-height:none!important;overflow:visible!important}.t9-rv{opacity:1!important;transform:none!important}.t9 img.t9-fi{opacity:1!important}.t9-alp path.t9-draw-path,.t9-alp circle.t9-draw-path{stroke-dashoffset:0!important}</style></noscript>
+<div class="t9 t9-js t9-locked t9-boot" data-lang="${lang0}" style="${esc(themeStyle)}" data-when="${esc(String(activeWhen))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${safeUrl(w.music_url)}" data-names-en="${esc(`${fEn} & ${sEn}`)}" data-names-bn="${esc(`${fBn} ও ${sBn}`)}" data-venue="${esc(clean(w.venue))}" data-venue-bn="${esc(clean(w.venue_bn) || clean(w.venue))}">
+  ${DEFS}
+  <div class="t9-progress" aria-hidden="true"></div>
+  <div class="t9-petals" aria-hidden="true"></div>
 
-  <div class="t8-entry" role="dialog" aria-label="Wedding invitation entry">
-    <div class="t8-particles" aria-hidden="true"></div>
-    <div class="t8-entry-in">
-      <div class="t8-kicker">A CELEBRATION OF LOVE</div>
-      <p class="t8-entry-names t8-gold">${first} <span>&amp;</span> ${second}</p>
-      <div class="t8-entry-sub">${[city, day ? longDate(day) : ''].filter(Boolean).join(' · ').toUpperCase()}</div>
-      <div class="t8-guest-line">Dear ${guestLine}</div>
-      <button class="t8-seal" type="button" data-open aria-label="Open wedding invitation"><b>${initials}</b><small>OPEN INVITATION</small></button>
-      <div class="t8-entry-note">Tap the seal to begin</div>
+  <div class="t9-lang t9-lang-float" role="group" aria-label="Language" hidden><button type="button" data-setlang="en" aria-pressed="false">EN</button><button type="button" data-setlang="bn" aria-pressed="false">বাং</button></div>
+
+  <!-- Royal Gate Entrance -->
+  <div class="t9-entry" role="dialog" aria-label="Wedding invitation">
+    <div class="t9-cur t9-cl"></div><div class="t9-cur t9-cr"></div>
+    <div class="t9-lang" role="group" aria-label="Language"><button type="button" data-setlang="en" aria-pressed="false">EN</button><button type="button" data-setlang="bn" aria-pressed="false">বাং</button></div>
+    <div class="t9-gate-in">
+      <div class="t9-gate-card">
+        <div class="t9-gate-motif" aria-hidden="true">${ALPONA}</div>
+        <p class="t9-gate-invoc">${invocation}</p>
+        <h1 class="t9-gate-title">${ceremonyTitle}</h1>
+        <p class="t9-kicker">${t('kicker')}</p>
+        <p class="t9-gate-names">${namesPlain}</p>
+        
+        <!-- Person, family invitation box -->
+        <div class="t9-guest-box">
+          <span class="t9-guest-kicker">${t('guestSal')}</span>
+          <h2 class="t9-guest-name">${guestLine}</h2>
+          ${guestBadgeText ? `<span class="t9-guest-pill">${guestBadgeText}</span>` : ''}
+        </div>
+
+        <button class="t9-bindi" type="button" data-open aria-label="Open the invitation"><b>${t('open')}</b></button>
+        <div class="t9-gate-note">✦ ${t('tapOpen')} ✦</div>
+      </div>
     </div>
   </div>
-  <div class="t8-flash" aria-hidden="true"></div>
 
   <main>
-    <header class="t8-hero" data-hero>
-      <div class="t8-hero-bg" style="background-image:${heroBg}" aria-hidden="true"></div>
-      <div class="t8-dust" aria-hidden="true"></div>
-      <div class="t8-frame" aria-hidden="true"></div>
-      <div class="t8-hero-in">
-        <div class="t8-invoc">${invocation}</div>
-        <div class="t8-eyebrow">Together with their families</div>
-        <h1 class="t8-gold">${first} <span>&amp;</span> ${second}</h1>
-        <p class="t8-hero-copy">Request the pleasure of your company as they begin their beautiful journey together.</p>
-        <div class="t8-guest-pill" id="t8-guest-pill">Invited: ${guestLine}</div><br>
-        <div class="t8-guest-boxes" id="t8-guest-boxes" data-family="${isFamily ? 'true' : 'false'}" data-base="${esc(baseGuest)}" data-count="${personsCount}" role="group" aria-label="Guest invite category">
-          <span class="t8-box-star" aria-hidden="true">✦</span>
-          <div class="t8-box-col${isFamily ? '' : ' active'}">
-            <div class="t8-box-label">Person</div>
-            <div class="t8-box-val" data-box="person">${isFamily ? '—' : personsCount}</div>
-          </div>
-          <i class="t8-box-div" aria-hidden="true"></i>
-          <div class="t8-box-col${isFamily ? ' active' : ''}">
-            <div class="t8-box-label">Family</div>
-            <div class="t8-box-val" data-box="family">${isFamily ? '✓' : '✕'}</div>
-          </div>
-          <span class="t8-box-star" aria-hidden="true">✦</span>
-        </div><br>
-        <div class="t8-badge" aria-label="Save the date">
-          <span class="l">SAVE THE DATE</span>
-          <strong>${esc(dateNums)}</strong>
-          <em>${esc(where)}${timeText ? ` · ${esc(timeText)}` : ''}</em>
-          <div class="t8-cd" role="timer"><div><b data-u="d">--</b><small>DAYS</small></div><div><b data-u="h">--</b><small>HRS</small></div><div><b data-u="m">--</b><small>MIN</small></div><div><b data-u="s">--</b><small>SEC</small></div></div>
+    <!-- Hero Header -->
+    <header class="t9-hero" data-hero>
+      <div class="t9-garland t9-gl" aria-hidden="true">${garland(620)}</div>
+      <div class="t9-garland t9-gr" aria-hidden="true">${garland(620)}</div>
+      <div class="t9-leaf t9-ll" aria-hidden="true">${banana(false)}</div><div class="t9-leaf t9-lr" aria-hidden="true">${banana(true)}</div>
+      ${frieze}
+      <div class="t9-hero-in">
+        <div class="t9-spotlight-frame t9-rv" data-feet>
+          <div class="t9-ph"><img class="t9-fi" src="${esc(heroImg)}" alt="${esc(`${fEn} & ${sEn}`)}" decoding="async"></div>
         </div>
-        <div class="t8-cta">
-          ${calUrl ? `<a href="${calUrl}" target="_blank" rel="noopener noreferrer" class="t8-btn t8-btn-cal" id="t8-cal-cta">📅 &nbsp;SAVE THE DATE</a>` : ''}
-          <a href="#" data-goto="story" class="t8-btn t8-btn-ghost">DISCOVER OUR STORY <span aria-hidden="true">↓</span></a>
+        <div class="t9-invoc">${invocation}</div>
+        <h1 class="t9-title">${ceremonyTitle}</h1>
+        <p class="t9-sub">${t('weddingOf')}</p>
+        <h2 class="t9-names">${namesLine}</h2>
+        <p class="t9-hero-copy">${inviteText}</p>
+        <div class="t9-datebox"><b>${dateLong}</b><em>${[dayName, timeL].filter(Boolean).map((x, i) => i ? ' · ' + x : x).join('')}</em></div>
+        <p class="t9-togo" data-togo hidden></p>
+        <div class="t9-pill">${t('invited')}: ${guestLine}</div>
+        <div class="t9-hero-actions">
+          <a href="#" data-goto="card" class="t9-btn">${t('viewCard')} <span aria-hidden="true">↓</span></a>
+          ${calUrl ? `<a href="${calUrl}" target="_blank" rel="noopener noreferrer" class="t9-btn t9-ghost">✦ &nbsp;${t('addCal')}</a>` : ''}
         </div>
-        <div class="t8-cue" aria-hidden="true">A new chapter begins<i></i></div>
+        <div class="t9-cue" aria-hidden="true">${FOOTPRINTS}<span>${t('scrollDown')}</span></div>
       </div>
     </header>
 
-    <section data-sec="story">
-      <div class="t8-wrap">
-        <div class="t8-head t8-reveal"><div class="t8-eyebrow">A little bit of forever</div><h2 class="t8-gold">Our Journey</h2>
-          <p>Every love story is special. Ours is a collection of little moments that led us here.</p><div class="t8-rule"><span>✦</span></div></div>
-        <p class="t8-poem t8-reveal">${poem}</p>
-        <div class="t8-polaroids">
-          ${story.map(s => `<figure class="t8-pol t8-reveal" tabindex="0">
-            <div class="t8-photo t8-ph"><img src="${esc(s.image)}" data-fallback="${esc(s.alt)}" alt="${esc(s.title)}" loading="lazy" decoding="async"></div>
-            <figcaption><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></figcaption></figure>`).join('')}
+    <!-- Centerpiece Royal Bengali Wedding Card (Exact Match to User Reference Plate) -->
+    <section class="t9-sec-card" data-sec="card">
+      <div class="t9-wrap">
+        <div class="t9-head t9-rv">
+          <div class="t9-eyebrow">${t('weddingOf')}</div>
+          <h2>${namesPlain}</h2>
+          <p>${t('inviteDef')}</p>
+          ${ALPONA}
         </div>
-      </div>
-    </section>
-
-    <section style="padding-top:40px">
-      <div class="t8-wrap">
-        <div class="t8-head t8-reveal"><div class="t8-eyebrow">A little surprise</div><h2 class="t8-gold">Reveal the Date</h2>
-          <p>Make a wish, then gently scratch away the golden foil to reveal our special day.</p></div>
-        <div class="t8-ticket-wrap t8-reveal">
-          <div class="t8-ticket">
-            <div class="t8-ticket-top"><div class="t8-eyebrow">✦ ADMIT TWO HEARTS ✦</div><h3>The Wedding of ${first} &amp; ${second}</h3><p>${esc(clean(w.city) || clean(w.venue))}</p></div>
-            <div class="t8-perf" aria-hidden="true"></div>
-            <div class="t8-ticket-main">
-              <p class="t8-hint">SCRATCH THE GOLD FOIL BELOW</p>
-              <div class="t8-scratch">
-                <div class="t8-reveal-date"><small>${esc(clean(w.surprise_message) ? 'A MESSAGE FOR YOU' : 'OUR WEDDING DAY')}</small>
-                  <strong>${clean(w.surprise_message) ? esc(w.surprise_message) : `${dayName ? esc(dayName) + '<br>' : ''}${esc(dateLong)}`}</strong>
-                  <em>${esc(where)}</em></div>
-                <canvas aria-label="Gold foil. Scratch to reveal."></canvas>
+        <div class="t9-card-outer t9-rv">
+          <article class="t9-invcard">
+            <picture class="t9-card-bg">
+              <source srcset="${assetBase}template-06-card-clean.webp" type="image/webp">
+              <img src="${esc(cardArtImg)}" alt="${esc(`${fEn} & ${sEn}`)}" loading="eager" decoding="async">
+            </picture>
+            <div class="t9-card-in">
+              <p class="t9-card-invoc">${invocation}</p>
+              <h2 class="t9-card-title">${ceremonyTitle}</h2>
+              <p class="t9-card-bless">${t('bless1')}<br>${t('bless2')}</p>
+              <div class="t9-card-couple">
+                <h3 class="t9-card-names">${namesLine}</h3>
               </div>
-              <button class="t8-skip" type="button" data-skip>Reveal without scratching</button>
-              ${calUrl ? `<div style="text-align:center;margin-top:10px;"><a href="${calUrl}" target="_blank" rel="noopener noreferrer" class="t8-skip" style="display:inline-block;color:#8c6b32;font-weight:600;">📅 Add wedding to Google Calendar</a></div>` : ''}
-              <div class="t8-foot"><span>NO. ${day ? `${pad(day.d)}${pad(day.mo)}${String(day.y).slice(2)}` : '000000'}</span><span class="t8-barcode" aria-hidden="true"></span><span>ADMIT ALL</span></div>
+              <div class="t9-card-guest">
+                <span>${t('dear')} ${guestLine}</span>
+              </div>
+              <div class="t9-card-datetime">
+                <p class="t9-card-date">${dateLong}</p>
+                ${timeL ? `<p class="t9-card-lagna">${t('lagna')}: ${timeL}</p>` : ''}
+              </div>
+              <p class="t9-card-venue">${venue}</p>
+              ${(hasAddr || hasCity) ? `<p class="t9-card-addr">${hasAddr ? address : ''}${hasAddr && hasCity ? ', ' : ''}${hasCity ? city : ''}</p>` : ''}
+              <p class="t9-card-fine">${t('presence')}</p>
+              ${phoneRaw ? `<p class="t9-card-contact">${t('contact')}: ${esc(phoneRaw)}</p>` : ''}
             </div>
+          </article>
+          <div class="t9-card-actions">
+            ${mapUrl ? `<a class="t9-btn" href="${mapUrl}" target="_blank" rel="noopener noreferrer">⌖ &nbsp;${t('directions')}</a>` : ''}
+            ${calUrl ? `<a class="t9-btn t9-ghost" href="${calUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;${t('addCal')}</a>` : ''}
           </div>
         </div>
       </div>
     </section>
 
-    ${groups.length ? `<section>
-      <div class="t8-wrap">
-        <div class="t8-head t8-reveal"><div class="t8-eyebrow">The festivities</div><h2 class="t8-gold">Wedding Celebrations</h2>
-          <p>Traditions, laughter, music, and memories. We would be delighted to have you with us.</p><div class="t8-rule"><span>✦</span></div></div>
-        ${eventsHtml}
+    <!-- Sacred Story & Journey -->
+    <section data-sec="story">
+      <div class="t9-wrap">
+        <div class="t9-poem t9-rv"><p>${poem}</p>${hasFam ? `<small>${families}</small>` : ''}</div>
+        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('storyEy')}</div><h2>${t('storyH')}</h2><p>${t('storySub')}</p>${ALPONA}</div>
+        ${story.map((s, i) => `<article class="t9-chap t9-rv"><div class="t9-medal"><div class="t9-ph"><img class="t9-fi" src="${esc(s.image || storyVignettes[i] || storyVignettes[0])}" alt="${esc(s.altTitle)}" loading="lazy" decoding="async"></div></div>
+          <div class="t9-chap-txt"><span class="t9-num" aria-hidden="true">${LH(pad(i + 1), toBn(pad(i + 1)))}</span><h3>${s.title}</h3><p>${s.text}</p></div></article>`).join('')}
       </div>
+    </section>
+
+    <!-- Save the Date & Live Countdown -->
+    <section class="t9-sec-date" data-sec="date">
+      <div class="t9-wrap">
+        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('dateEy')}</div><h2>${t('dateH')}</h2>${ALPONA}</div>
+        <div class="t9-rv"><div class="t9-datecard" data-date>
+          ${day ? `<div class="t9-cal-m">${LH(esc(MONTHS[day.mo - 1]), esc(MONTHS_BN[day.mo - 1]))}</div><div class="t9-cal-y">${LH(String(day.y), toBn(day.y))}</div>${calHtml}` : `<div class="t9-cal-m">${L('To be announced', 'শীঘ্রই জানানো হবে')}</div>`}
+          <p class="t9-cal-time">${[dayName, timeL].filter(Boolean).map((x, i) => i ? ' · ' + x : x).join('')}</p>
+          <div class="t9-cd" role="timer"><div><b data-u="d">--</b><small>${t('days')}</small></div><div><b data-u="h">--</b><small>${t('hrs')}</small></div><div><b data-u="m">--</b><small>${t('min')}</small></div><div><b data-u="s">--</b><small>${t('sec')}</small></div></div>
+          ${calUrl ? `<a class="t9-btn" href="${calUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;${t('addCal')}</a>` : ''}
+        </div></div>
+      </div>
+    </section>
+
+    <!-- Bengali Rituals Timeline -->
+    ${groups.length ? `<section class="t9-sec-ev">
+      <div class="t9-wrap"><div class="t9-ev-col">
+        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('evEy')}</div><h2>${t('evH')}</h2><p>${t('evSub')}</p>${ALPONA}</div>
+        ${eventsHtml}
+      </div></div>
     </section>` : ''}
 
-    <section>
-      <div class="t8-wrap">
-        <div class="t8-head t8-reveal"><div class="t8-eyebrow">Join us</div><h2 class="t8-gold">The Venue</h2><p>A beautiful setting for a celebration close to our hearts.</p></div>
-        <figure class="t8-venue-photo t8-ph t8-reveal"><img src="${esc(venueImg)}" data-fallback="${esc(U('1477587458883-47145ed94245', 1400))}" alt="${venue}" loading="lazy" decoding="async"><figcaption>${esc(where)}</figcaption></figure>
-        <div class="t8-vgrid${hasTravel ? ' t8-two' : ''}">
-          <div class="t8-vcard t8-glass t8-reveal">
-            <div class="t8-eyebrow">The wedding destination</div>
-            <h3 class="t8-gold">${venue}</h3>
-            <p>${address || city || ''}${dayName ? `<br>${esc(dayName)}, ${esc(dateLong)}${timeText ? ` · ${esc(timeText)}` : ''}` : ''}</p>
-            ${mapUrl ? `<a class="t8-btn" href="${mapUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;GET DIRECTIONS</a>` : ''}
+    <!-- Interactive Scratch & Reveal Surprise Card -->
+    <section class="t9-sec-reveal" data-sec="reveal">
+      <div class="t9-wrap">
+        <div class="t9-head t9-rv">
+          <div class="t9-eyebrow">${t('revEy')}</div>
+          <h2>${t('revH')}</h2>
+          <p>${L('A heartfelt secret blessing for you from the couple', 'আমাদের পক্ষ থেকে আপনার জন্য এক আন্তরিক বিশেষ বার্তা')}</p>
+          ${ALPONA}
+        </div>
+        <div class="t9-reveal-wrap t9-rv">
+          <div class="t9-scratch-card" data-scratch>
+            <div class="t9-scratch-secret">
+              <span class="t9-secret-star">✦ ✦ ✦</span>
+              <p class="t9-secret-msg">${t('revMsg')}</p>
+              <div class="t9-secret-sign">
+                <span>${t('revSign')}</span>
+                <b>${namesPlain}</b>
+              </div>
+            </div>
+            <canvas class="t9-scratch-canvas" aria-label="Scratch card"></canvas>
+            <div class="t9-scratch-overlay" data-scratch-cover>
+              <div class="t9-so-content">
+                <span class="t9-so-icon">✦</span>
+                <b>${t('revTap')}</b>
+                <small>${t('scratchHint')}</small>
+              </div>
+            </div>
           </div>
-          ${hasTravel ? `<div class="t8-travel t8-glass t8-reveal"><h3>Travel &amp; Stay</h3>${travel.map(([i, t]) => `<div class="t8-trow"><span aria-hidden="true">${i}</span><p>${esc(t)}</p></div>`).join('')}</div>` : ''}
+          <p class="t9-scratch-caption">${t('scratchHint')}</p>
         </div>
       </div>
     </section>
 
-    <section style="padding-bottom:70px">
-      <div class="t8-wrap">
-        <div class="t8-head t8-reveal"><div class="t8-eyebrow">Your presence is our present</div><h2 class="t8-gold">Kindly RSVP</h2></div>
-        <form class="t8-rsvp t8-reveal" data-rsvp novalidate>
-          <div class="t8-rsvp-stamp" aria-hidden="true"><span>${initials}</span></div>
-          <h2>Will you grace us<br>with your presence?</h2>
-          <p class="t8-rsvp-intro">Please let us know if you can join our celebration. We cannot wait to share this special day with you.</p>
-          ${canRsvp ? `
-          <div class="t8-field">
-            <label for="t8-name">YOUR NAME</label>
-            <input id="t8-name" name="name" type="text" placeholder="Enter your full name" autocomplete="name" value="${clean(guest?.name) ? esc(guest.name) : ''}" required>
-          </div>
-          <div class="t8-field">
-            <label>WILL YOU BE JOINING US?</label>
-            <div class="t8-att-options" role="radiogroup" aria-label="Will you be joining us?">
-              <button type="button" class="t8-att-btn selected" data-att="Yes, we'll be there" aria-checked="true">
-                <span class="t8-att-radio">✓</span>
-                <strong>Yes, we'll be there</strong>
-              </button>
-              <button type="button" class="t8-att-btn" data-att="Sorry, can't make it" aria-checked="false">
-                <span class="t8-att-radio"></span>
-                <strong>Sorry, can't make it</strong>
-              </button>
-            </div>
-            <input type="hidden" name="attendance" id="t8-att-val" value="Yes, we'll be there">
-          </div>
+    <!-- Moments of Love Gallery -->
+    <section style="padding-top:20px">
+      <div class="t9-wrap"><div class="t9-head t9-rv" style="margin-bottom:6px"><div class="t9-eyebrow">${t('momEy')}</div><h2>${t('momH')}</h2>${ALPONA}</div></div>
+      <div class="t9-flow">${galleryItems.map((g, i) => `<figure class="t9-ph" data-lb="${esc(g)}"><img class="t9-fi" src="${esc(g)}" alt="Moment ${i + 1}" loading="lazy" decoding="async"></figure>`).join('')}</div>
+    </section>
 
-          <div id="t8-rsvp-details">
-            <div class="t8-field">
-              <label>HOW MANY OF YOU?</label>
-              <div class="t8-stepper">
-                <button type="button" class="t8-step-btn" data-step="-1" aria-label="Decrease guest count">−</button>
-                <span class="t8-step-val"><strong id="t8-person-count">${esc(guest?.persons || 1)}</strong> <span id="t8-person-label">${(guest?.persons || 1) > 1 ? 'persons' : 'person'}</span></span>
-                <button type="button" class="t8-step-btn" data-step="1" aria-label="Increase guest count">+</button>
-              </div>
-              <input type="hidden" name="persons" id="t8-persons-val" value="${esc(guest?.persons || 1)}">
-            </div>
-
-            <div class="t8-field">
-              <label>WHICH FUNCTIONS?</label>
-              <div class="t8-func-grid" role="group" aria-label="Select functions">
-                ${rsvpFunctions.map((f, i) => `
-                  <label class="t8-func-chip selected" data-fn="${esc(f.name)}">
-                    <input type="checkbox" name="functions" value="${esc(f.name)}" checked>
-                    <div class="t8-func-head">
-                      <span class="t8-func-check" aria-hidden="true">✓</span>
-                      <span class="t8-func-name">${esc(f.name)}</span>
-                    </div>
-                    ${f.date ? `<span class="t8-func-date">${esc(f.date)}</span>` : ''}
-                  </label>
-                `).join('')}
+    <!-- Venue Destination -->
+    <section>
+      <div class="t9-wrap">
+        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('venEy')}</div><h2>${t('venH')}</h2><p>${t('venSub')}</p>${ALPONA}</div>
+        <div class="t9-venue-grid">
+          <figure class="t9-venue-photo t9-rv"><img class="t9-fi" src="${esc(venueImg)}" alt="${esc(clean(w.venue) || 'Venue')}" loading="lazy" decoding="async"></figure>
+          <div class="t9-rv">
+            <div class="t9-vcard">
+              <div class="t9-eyebrow">${t('venTag')}</div>
+              <h3>${venue}</h3>
+              <p>${(hasAddr || hasCity) ? `${hasAddr ? address : ''}${hasAddr && hasCity ? ', ' : ''}${hasCity ? city : ''}<br>` : ''}${day ? `${dayName}, ${dateLong}${timeL ? ' · ' + timeL : ''}` : ''}</p>
+              <div class="t9-vbtns">
+                ${mapUrl ? `<a class="t9-btn" href="${mapUrl}" target="_blank" rel="noopener noreferrer">⌖ &nbsp;${t('directions')}</a>` : ''}
+                ${calUrl ? `<a class="t9-btn t9-ghost" href="${calUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;${t('calendar')}</a>` : ''}
               </div>
             </div>
-
-            <div class="t8-field">
-              <label for="t8-note">A NOTE FOR THE FAMILY (OPTIONAL)</label>
-              <textarea id="t8-note" name="note" rows="2" placeholder="Share your wishes..."></textarea>
-            </div>
+            ${travel.length ? `<div class="t9-chips">${travel.map(([i, k]) => `<div class="t9-chipc"><span aria-hidden="true">${i}</span><p>${L(clean(w[k]), clean(w[k + '_bn']) || clean(w[k]))}</p></div>`).join('')}</div>` : ''}
           </div>
-
-          <button class="t8-send" type="submit">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            <span>Send reply on WhatsApp</span>
-          </button>
-          <p class="t8-rsvp-note">Thank you. If WhatsApp did not open, tap the button once more.</p>
-          <p class="t8-status" role="status" aria-live="polite"></p>` : ''}
-          ${contacts.length ? `<div class="t8-contacts">${contacts.map(c => `<a class="t8-contact" href="tel:${esc(c.replace(/[^\d+]/g, ''))}">${esc(c)}</a>`).join('')}</div>` : ''}
-        </form>
+        </div>
       </div>
     </section>
 
-    <footer class="t8-end">
-      <div class="t8-rule"><span>❦</span></div>
-      <div class="t8-mono t8-gold" aria-label="${init1} and ${init2}">
-        <span class="t8-mono-init">${init1}</span>
-        <span class="t8-mono-amp">&amp;</span>
-        <span class="t8-mono-init">${init2}</span>
+    <!-- Interactive WhatsApp RSVP -->
+    <section class="t9-sec-rsvp" data-sec="rsvp">
+      <div class="t9-wrap">
+        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('rsvpEy')}</div><h2>${t('rsvpH')}</h2></div>
+        <div class="t9-rv"><form class="t9-rsvp" data-rsvp novalidate>
+          ${postEl}${stampEl}
+          ${canRsvp ? `
+          <div class="t9-fld"><label class="t9-lab" for="t9-name">${t('yourName')}</label><input class="t9-input" id="t9-name" name="name" type="text" autocomplete="name" value="${guestName ? esc(guestName) : ''}" required></div>
+          <div class="t9-fld" role="group" aria-label="Attendance">
+            <button type="button" class="t9-opt" data-att="yes" aria-pressed="true"><span class="t9-rd">${CHECK}</span><span>${t('yes')}</span></button>
+            <button type="button" class="t9-opt" data-att="no" aria-pressed="false" style="margin-bottom:0"><span class="t9-rd">${CHECK}</span><span>${t('no')}</span></button>
+          </div>
+          <div class="t9-fld" data-guests><span class="t9-lab">${t('howMany')}</span><div class="t9-step"><button type="button" data-step="-1" aria-label="Fewer">−</button><output data-count aria-live="polite">${guest?.with_family ? 2 : 1} <small>${t('people')}</small></output><button type="button" data-step="1" aria-label="More">+</button></div></div>
+          ${fchips ? `<div class="t9-fld" data-fns><span class="t9-lab">${t('which')}</span><div class="t9-chips-row">${fchips}</div></div>` : ''}
+          <div class="t9-fld"><label class="t9-lab" for="t9-note">${t('note')}</label><textarea class="t9-input" id="t9-note" name="note" rows="3"></textarea></div>
+          <button class="t9-send" type="submit">${WHATSAPP}<span>${t('send')}</span></button>
+          <p class="t9-status" role="status" aria-live="polite"></p>
+          <p class="t9-cap">${t('cap')}</p>` : ''}
+          ${contacts.length ? `<div class="t9-contacts">${contacts.map(c => `<a class="t9-contact" href="tel:${esc(c.replace(/[^\d+]/g, ''))}">${esc(c)}</a>`).join('')}</div>` : ''}
+        </form></div>
       </div>
-      <p class="t8-end-blessing">Your presence is the blessing<br>we are waiting for</p>
-      <p class="t8-end-love">With love,</p>
-      <p class="t8-end-sig">${signature}</p>
+    </section>
+
+    <!-- Finale -->
+    <footer class="t9-end">
+      <div class="t9-eyebrow t9-rv">${t('endEy')}</div>
+      <h2 class="t9-rv">${namesPlain}</h2>
+      ${ALPONA}
+      ${hashtag ? `<p class="t9-tag">${L(hashtag.startsWith('#') ? hashtag : '#' + hashtag, hashtagBn || (hashtag.startsWith('#') ? hashtag : '#' + hashtag))}</p>` : ''}
+      <p>${t('endBless')}</p>
+      <p>${signature}</p>
+      <p style="margin-top:12px">${LH(esc(numsEn), esc(numsBn))}${hasCity ? ' &nbsp;|&nbsp; ' + city : ''}</p>
+      ${frieze}
     </footer>
   </main>
 
-  <audio class="t8-audio" preload="auto" src="${esc(defaultMusic)}"></audio>
-  <button class="t8-music" type="button" aria-label="Toggle music" aria-pressed="false" title="Toggle music">♫</button>
+  <button class="t9-music" type="button" aria-label="Toggle music" aria-pressed="false">♫</button>
 </div>`;
 }
 
-/* ---------- mount: interactivity ---------- */
+/* ---------- Mount Function ---------- */
 export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
-  const host = root?.classList?.contains('t8') ? root : root?.querySelector?.('.t8');
+  const host = root?.classList?.contains('t9') ? root : root?.querySelector?.('.t9');
   if (!host) return () => {};
-
-  if (typeof host._t8Cleanup === 'function') {
-    host._t8Cleanup();
-  }
+  if (typeof host._t9Cleanup === 'function') host._t9Cleanup();
 
   const doc = host.ownerDocument || document;
   const win = doc.defaultView || window;
-
-  if (!doc.querySelector('link[data-t8-fonts]')) {
+  if (!doc.querySelector('link[data-t9-fonts]')) {
     const l = doc.createElement('link');
-    l.rel = 'stylesheet'; l.href = FONT_HREF; l.setAttribute('data-t8-fonts', '');
+    l.rel = 'stylesheet'; l.href = FONT_HREF; l.setAttribute('data-t9-fonts', '');
     (doc.head || doc.body).appendChild(l);
   }
 
@@ -741,404 +1277,412 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   const reduce = typeof win.matchMedia === 'function' ? win.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const rand = (a, b) => a + Math.random() * (b - a);
   const undo = [];
-  const on = (t, e, f, o) => { if (t) { t.addEventListener(e, f, o); undo.push(() => t.removeEventListener(e, f, o)); } };
+  const on = (tg, e, f, o) => { if (tg) { tg.addEventListener(e, f, o); undo.push(() => tg.removeEventListener(e, f, o)); } };
   const timers = [];
+  const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+  let dead = false;
 
-  host.classList.add('t8-js');
-  const prevDocOverflow = doc.documentElement.style.overflow;
-  const prevBodyOverflow = doc.body.style.overflow;
-  doc.documentElement.style.overflow = 'hidden';
-  doc.body.style.overflow = 'hidden';
-  if (typeof win.scrollTo === 'function') {
-    win.scrollTo(0, 0);
-  }
+  /* Hard scroll lock while curtains are closed */
+  const html = doc.documentElement, body = doc.body;
+  let locked = false, saved = null;
+  const lock = () => {
+    if (locked) return; locked = true;
+    if (typeof win.scrollTo === 'function') win.scrollTo(0, 0);
+    const sbw = Math.max(0, (win.innerWidth || 0) - (html.clientWidth || 0));
+    const b = body.style;
+    saved = { ho: html.style.overflow, p: b.position, t: b.top, l: b.left, r: b.right, w: b.width, pr: b.paddingRight, bs: b.boxSizing };
+    html.style.overflow = 'hidden';
+    b.position = 'fixed'; b.top = '0'; b.left = '0'; b.right = '0'; b.width = '100%'; b.boxSizing = 'border-box';
+    if (sbw) b.paddingRight = sbw + 'px';
+  };
+  const unlock = () => {
+    if (!locked) return; locked = false;
+    const b = body.style;
+    html.style.overflow = saved.ho;
+    b.position = saved.p; b.top = saved.t; b.left = saved.l; b.right = saved.r; b.width = saved.w; b.paddingRight = saved.pr; b.boxSizing = saved.bs;
+    if (typeof win.scrollTo === 'function') win.scrollTo(0, 0);
+  };
+  host.classList.add('t9-js');
+  lock();
 
-  /* image fallbacks */
+  /* Smooth boot */
+  host.classList.remove('t9-boot');
+  (() => {
+    const f = doc.fonts;
+    const ready = (!f || typeof f.load !== 'function') ? Promise.resolve()
+      : Promise.all([f.load('40px Galada'), f.load('600 20px "Cormorant Garamond"'), f.load('16px "Hind Siliguri"'), f.load('16px "Tiro Bangla"')]).catch(() => {});
+    Promise.race([ready, new Promise(r => later(r, 600))]).then(() => { if (!dead) win.requestAnimationFrame(() => host.classList.remove('t9-boot')); });
+  })();
+
+  /* Language toggle */
+  let lang = host.dataset.lang || 'en';
+  try { const s = win.localStorage?.getItem('t9-lang'); if (!host.dataset.lang && (s === 'bn' || s === 'en')) lang = s; } catch { /* ignore */ }
+  const bn = () => lang === 'bn';
+  const num = n => (bn() ? toBn(n) : String(n));
+  const applyLang = l => {
+    lang = l; host.dataset.lang = l;
+    try { win.localStorage?.setItem('t9-lang', l); } catch { /* ignore */ }
+    $$('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setlang === l)));
+    if (doc.documentElement) doc.documentElement.setAttribute('lang', l === 'bn' ? 'bn' : 'en');
+    if (typeof updateAllCountdowns === 'function') updateAllCountdowns();
+    updateCount();
+  };
+  $$('[data-setlang]').forEach(b => on(b, 'click', () => applyLang(b.dataset.setlang)));
+
+  /* Image load states */
   $$('img').forEach(img => {
-    const fail = () => {
-      if (img.dataset.fallback && !img.dataset.tried) { img.dataset.tried = '1'; img.src = img.dataset.fallback; }
-      else img.classList.add('t8-failed');
-    };
-    on(img, 'error', fail);
-    if (img.complete && img.naturalWidth === 0 && img.currentSrc) fail();
+    const ok = () => img.classList.add('t9-loaded');
+    const fail = () => img.classList.add('t9-failed');
+    on(img, 'load', ok); on(img, 'error', fail);
+    if (img.complete) { if (img.naturalWidth > 0) ok(); else if (img.currentSrc) fail(); }
   });
+  later(() => $$('img.t9-fi').forEach(i => i.classList.add('t9-loaded')), 4500);
 
-  /* particles */
-  const dots = (hostEl, n, big) => {
-    if (!hostEl) return;
-    for (let i = 0; i < n; i++) {
-      const p = doc.createElement('span'); p.className = 't8-pt';
-      const s = rand(1, big ? 4 : 3);
-      p.style.cssText = `--l:${rand(0, 100)}%;--d:${rand(7, 15)}s;--dl:${-rand(0, 14)}s;width:${s}px;height:${s}px`;
-      hostEl.appendChild(p);
+  /* Petals falling */
+  const pet = $('.t9-petals');
+  if (pet && !reduce) {
+    for (let i = 0; i < 14; i++) {
+      const p = doc.createElement('span'); p.className = 't9-petal';
+      p.style.cssText = `--l:${rand(0, 100)}%;--s:${rand(6, 11)}px;--d:${rand(14, 22)}s;--dl:${-rand(0, 20)}s;--x:${rand(-60, 80)}px`;
+      pet.appendChild(p);
     }
-  };
-  dots($('.t8-particles'), 30, true);
-  dots($('.t8-dust'), 18, false);
-
-  /* audio & music */
-  const musicBtn = $('.t8-music');
-  const audioEl = $('.t8-audio') || new Audio(host.dataset.music || 'invitation.mp3');
-  audioEl.loop = false;
-
-  if (win.__t8Audio && win.__t8Audio !== audioEl) {
-    try { win.__t8Audio.pause(); } catch (_) {}
   }
-  win.__t8Audio = audioEl;
-
-  const setMusicState = playing => {
-    if (!musicBtn) return;
-    musicBtn.setAttribute('aria-pressed', String(playing));
-    if (playing) {
-      musicBtn.classList.add('t8-playing');
-      musicBtn.textContent = '♪';
-      musicBtn.title = 'Stop music';
-      musicBtn.setAttribute('aria-label', 'Stop music');
-    } else {
-      musicBtn.classList.remove('t8-playing');
-      musicBtn.textContent = '♫';
-      musicBtn.title = 'Play music';
-      musicBtn.setAttribute('aria-label', 'Play music');
+  const burstPetals = () => {
+    if (!pet || reduce) return;
+    for (let i = 0; i < 24; i++) {
+      const p = doc.createElement('span'); p.className = 't9-petal';
+      p.style.cssText = `--l:${rand(20, 80)}%;--s:${rand(8, 14)}px;--d:${rand(3.5, 6)}s;--dl:${-rand(0, 1)}s;--x:${rand(-120, 120)}px;top:${rand(30, 60)}%;animation-iteration-count:1`;
+      pet.appendChild(p); later(() => p.remove(), 6000);
     }
   };
 
-  const toggleMusic = () => {
-    if (audioEl.paused) {
-      audioEl.play().then(() => setMusicState(true)).catch(() => {});
-    } else {
-      audioEl.pause();
-      setMusicState(false);
-    }
-  };
-  if (musicBtn) on(musicBtn, 'click', toggleMusic);
-  on(audioEl, 'ended', () => setMusicState(false));
-  undo.push(() => {
-    try { audioEl.pause(); } catch (_) {}
-    setMusicState(false);
-    if (win.__t8Audio === audioEl) win.__t8Audio = null;
-  });
-
-  /* entry seal */
-  const entry = $('.t8-entry'), seal = $('[data-open]'), flash = $('.t8-flash'), note = $('.t8-entry-note');
+  /* Entry Gate Open */
+  const entry = $('.t9-entry'), bindi = $('[data-open]'), note = $('.t9-gate-note');
   let opened = false;
-  let audioTriggered = false;
   const open = () => {
-    if (opened) return;
-    opened = true;
-    if (seal) seal.classList.add('t8-burst');
-    if (flash) flash.classList.add('t8-on');
-    // Start music on user interaction (seal tap) - only one time
-    if (audioEl && audioEl.paused && !audioTriggered) {
-      audioTriggered = true;
-      audioEl.play().then(() => setMusicState(true)).catch(() => {});
-    }
-    timers.push(setTimeout(() => { if (entry) entry.classList.add('t8-leaving'); }, 180));
-    timers.push(setTimeout(() => {
+    if (opened) return; opened = true;
+    if (bindi) bindi.classList.add('t9-burst');
+    if (entry) entry.classList.add('t9-open');
+    burstPetals();
+    later(() => {
       if (entry) entry.remove();
-      if (flash) flash.remove();
-      host.classList.remove('t8-locked');
-      doc.documentElement.style.overflow = 'auto';
-      doc.body.style.overflow = 'visible';
-      if (typeof win.scrollTo === 'function') {
-        win.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      } else {
-        doc.documentElement.scrollTop = 0;
-        doc.body.scrollTop = 0;
-      }
-    }, 900));
+      host.classList.remove('t9-locked');
+      const fl = $('.t9-lang-float'); if (fl) fl.hidden = false;
+      unlock(); onScroll(true);
+    }, 1800);
   };
-  if (seal) on(seal, 'click', open);
-  if (note) on(note, 'click', open);
+  on(bindi, 'click', open);
+  on(note, 'click', open);
 
-  /* smooth anchor */
   $$('[data-goto]').forEach(a => on(a, 'click', e => {
     e.preventDefault();
-    const target = $(`[data-sec="${a.dataset.goto}"]`);
-    if (target) {
-      const top = target.getBoundingClientRect().top + (win.scrollY ?? doc.documentElement.scrollTop ?? 0);
-      if (typeof win.scrollTo === 'function') {
-        win.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
-      } else {
-        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-      }
-    }
+    $(`[data-sec="${a.dataset.goto}"]`)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }));
 
-  /* guest person / family toggle */
-  const guestBoxes = $('#t8-guest-boxes');
-  const guestPill = $('#t8-guest-pill');
-  if (guestBoxes) {
-    on(guestBoxes, 'click', () => {
-      const isFam = guestBoxes.dataset.family === 'true';
-      const nextFam = !isFam;
-      guestBoxes.dataset.family = String(nextFam);
-      const base = guestBoxes.dataset.base || 'Respected Guest';
-      const count = guestBoxes.dataset.count || '1';
-      const colPerson = $('.t8-box-col:first-of-type', guestBoxes);
-      const colFamily = $('.t8-box-col:last-of-type', guestBoxes);
-      const valPerson = $('[data-box="person"]', guestBoxes);
-      const valFamily = $('[data-box="family"]', guestBoxes);
-
-      if (nextFam) {
-        colPerson?.classList.remove('active');
-        colFamily?.classList.add('active');
-        if (valPerson) valPerson.textContent = '—';
-        if (valFamily) valFamily.textContent = '✓';
-        if (guestPill) guestPill.textContent = `Invited: ${base} & Family`;
-      } else {
-        colPerson?.classList.add('active');
-        colFamily?.classList.remove('active');
-        if (valPerson) valPerson.textContent = count;
-        if (valFamily) valFamily.textContent = '✕';
-        if (guestPill) guestPill.textContent = `Invited: ${base}`;
-      }
-    });
-  }
-
-  /* progress + parallax */
-  const bar = $('.t8-progress'), heroBg = $('.t8-hero-bg'), hero = $('[data-hero]');
+  /* Scroll Progress */
+  const bar = $('.t9-progress'), feet = $('[data-feet]');
   let tick = false;
-  const onScroll = () => {
-    if (tick) return; tick = true;
+  function onScroll(force) {
+    if (tick && !force) return; tick = true;
     win.requestAnimationFrame(() => {
-      const scY = win.scrollY ?? doc.documentElement.scrollTop ?? 0;
-      const vh = win.innerHeight || doc.documentElement.clientHeight || 800;
-      const max = (doc.documentElement.scrollHeight || doc.body.scrollHeight || vh) - vh;
-      if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scY / max) : 0})`;
-      if (hero && heroBg) {
-        const top = hero.getBoundingClientRect().top;
-        if (!reduce && top < 0 && -top < vh * 1.3) heroBg.style.transform = `translate3d(0,${-top * .3}px,0) scale(1.08)`;
-      }
-      tick = false;
+      tick = false; if (dead) return;
+      const scY = win.scrollY ?? html.scrollTop ?? 0;
+      const vh = win.innerHeight || html.clientHeight || 800;
+      const max = (html.scrollHeight || body.scrollHeight || vh) - vh;
+      if (bar) bar.style.transform = `scaleX(${max > 0 ? clamp(scY / max, 0, 1) : 0})`;
+      if (feet && !reduce && scY < vh * 0.8) feet.style.transform = `translateY(${(scY * .08).toFixed(1)}px)`;
     });
-  };
-  on(win, 'scroll', onScroll, { passive: true });
-  onScroll();
+  }
+  on(win, 'scroll', () => onScroll(false), { passive: true });
 
-  /* reveals + zig-zag (100ms stagger) */
+  /* REVEALS: Target class `.t9-revealed` */
+  const clearDelay = el => later(() => { el.style.transitionDelay = ''; }, 1200);
   if (typeof IntersectionObserver !== 'undefined') {
-    const mkObs = (delayStep, opts) => new IntersectionObserver(es => {
+    const io = new IntersectionObserver(es => {
       es.filter(e => e.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left)
-        .forEach((e, k) => { e.target.style.transitionDelay = `${k * delayStep}ms`; e.target.classList.add('t8-in'); obsOf.get(e.target)?.unobserve(e.target); });
-    }, opts);
-    const obsOf = new WeakMap();
-    const revObs = mkObs(90, { threshold: .12, rootMargin: '0px 0px -5% 0px' });
-    const evObs = mkObs(100, { threshold: .18, rootMargin: '0px 0px -6% 0px' });
-    $$('.t8-reveal').forEach(el => { obsOf.set(el, revObs); revObs.observe(el); });
-    $$('.t8-ev').forEach(el => { obsOf.set(el, evObs); evObs.observe(el); });
-    undo.push(() => { revObs.disconnect(); evObs.disconnect(); });
-  } else {
-    $$('.t8-reveal').forEach(el => el.classList.add('t8-in'));
-    $$('.t8-ev').forEach(el => el.classList.add('t8-in'));
-  }
-
-  /* countdown */
-  const when = Number(host.dataset.when);
-  const cdBox = $('.t8-cd');
-  if (when && cdBox) {
-    const set = (k, v) => { const el = $(`[data-u="${k}"]`, cdBox); if (el) el.textContent = pad(v); };
-    const step = () => {
-      const s = Math.max(0, Math.floor((when - Date.now()) / 1000));
-      set('d', Math.floor(s / 86400)); set('h', Math.floor(s % 86400 / 3600)); set('m', Math.floor(s % 3600 / 60)); set('s', s % 60);
-    };
-    cdBox.classList.add('t8-live'); step();
-    const id = setInterval(step, 1000); timers.push(id);
-  }
-
-  /* realistic gold-foil scratch card */
-  const box = $('.t8-scratch'), canvas = $('.t8-scratch canvas'), ticket = $('.t8-ticket');
-  if (box && canvas && ticket) {
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    let scratching = false, cleared = false, last = null, lastCheck = 0, lastSpark = 0;
-    const paintFoil = () => {
-      const r = box.getBoundingClientRect(); if (!r.width) return;
-      const dpr = Math.min(2.5, win.devicePixelRatio || 1);
-      canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
-      const w = r.width, h = r.height;
-      ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const g = ctx.createLinearGradient(0, 0, w, h);
-      [[0, '#8f6420'], [.14, '#e9c776'], [.3, '#b98532'], [.46, '#fff0b5'], [.6, '#c79a45'], [.78, '#f4d88a'], [1, '#9a6c24']].forEach(([o, c]) => g.addColorStop(o, c));
-      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-      for (let i = 0; i < h * 2.2; i++) {
-        ctx.fillStyle = Math.random() > .5 ? `rgba(255,248,205,${rand(.03, .2)})` : `rgba(88,52,10,${rand(.03, .16)})`;
-        ctx.fillRect(Math.random() * w * .3, Math.random() * h, rand(w * .25, w), rand(.3, 1.3));
-      }
-      const sh = ctx.createLinearGradient(w * .12, 0, w * .62, h);
-      sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(.5, 'rgba(255,255,255,.38)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = sh; ctx.fillRect(0, 0, w, h);
-      const vg = ctx.createRadialGradient(w / 2, h / 2, h * .2, w / 2, h / 2, w * .7);
-      vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(70,40,5,.38)');
-      ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      const img = ctx.getImageData(0, 0, canvas.width, canvas.height), d = img.data;
-      for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - .5) * 46; d[i] += n; d[i + 1] += n * .92; d[i + 2] += n * .62; }
-      ctx.putImageData(img, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      for (let i = 0; i < 90; i++) { ctx.fillStyle = `rgba(255,255,235,${rand(.35, .9)})`; const s = rand(.4, 1.5); ctx.fillRect(Math.random() * w, Math.random() * h, s, s); }
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '600 12px Cinzel, serif';
-      if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
-      const t = '✦ SCRATCH TO REVEAL ✦';
-      ctx.fillStyle = 'rgba(255,247,205,.85)'; ctx.fillText(t, w / 2 + 1, h / 2 + 1.5);
-      ctx.fillStyle = 'rgba(70,40,5,.6)'; ctx.fillText(t, w / 2 - .8, h / 2 - 1);
-      ctx.fillStyle = '#7b5216'; ctx.fillText(t, w / 2, h / 2);
-      ctx.strokeStyle = 'rgba(255,240,180,.7)'; ctx.lineWidth = 1.5; ctx.strokeRect(1.5, 1.5, w - 3, h - 3);
-      ctx.strokeStyle = 'rgba(90,55,10,.5)'; ctx.strokeRect(3.5, 3.5, w - 7, h - 7);
-      ctx.globalCompositeOperation = 'destination-out'; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 38;
-    };
-    const pt = e => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
-    const sparkle = (x, y) => {
-      const now = performance.now();
-      if (now - lastSpark < 45 || reduce) return; lastSpark = now;
-      const s = doc.createElement('span'); s.className = 't8-spark';
-      s.style.left = x + 'px'; s.style.top = y + 'px';
-      s.style.setProperty('--x', rand(-24, 24) + 'px'); s.style.setProperty('--y', rand(-44, -10) + 'px');
-      (host || doc.body).appendChild(s); timers.push(setTimeout(() => s.remove(), 900));
-    };
-    const progress = () => {
-      const px = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let c = 0, t = 0;
-      for (let i = 3; i < px.length; i += 64) { t++; if (px[i] < 40) c++; }
-      if (t && c / t > .42) reveal();
-    };
-    const reveal = () => {
-      if (cleared) return; cleared = true;
-      canvas.classList.add('t8-cleared'); ticket.classList.add('t8-revealed');
-      const r = box.getBoundingClientRect();
-      if (!reduce) for (let i = 0; i < 46; i++) {
-        const s = doc.createElement('span'); s.className = 't8-spark';
-        s.style.left = r.left + r.width / 2 + 'px'; s.style.top = r.top + r.height / 2 + 'px';
-        s.style.setProperty('--x', rand(-170, 170) + 'px'); s.style.setProperty('--y', rand(-120, 90) + 'px');
-        s.style.width = s.style.height = rand(4, 9) + 'px';
-        (host || doc.body).appendChild(s); timers.push(setTimeout(() => s.remove(), 950));
-      }
-    };
-    const stroke = e => {
-      if (!scratching || cleared) return;
-      const p = pt(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x + .01, p.y + .01); ctx.stroke(); last = p;
-      sparkle(e.clientX, e.clientY);
-      const now = performance.now(); if (now - lastCheck > 140) { lastCheck = now; progress(); }
-      if (e.cancelable) e.preventDefault();
-    };
-    on(canvas, 'pointerdown', e => { if (cleared) return; scratching = true; last = pt(e); canvas.setPointerCapture?.(e.pointerId); stroke(e); });
-    on(canvas, 'pointermove', stroke);
-    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => on(canvas, t, () => { scratching = false; if (!cleared) progress(); }));
-    on($('[data-skip]'), 'click', reveal);
-    (doc.fonts?.ready || Promise.resolve()).then(paintFoil);
-    let rz; on(win, 'resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!cleared && Math.round(box.getBoundingClientRect().width) !== paintedW) paintFoil(); }, 200); });
-  }
-
-  /* RSVP via WhatsApp & Interactive controls */
-  const form = $('[data-rsvp]');
-  const waNum = host.dataset.wa || '919876543210';
-  if (form) {
-    // Attendance buttons toggle
-    const attButtons = $$('.t8-att-btn', form);
-    const attVal = $('#t8-att-val', form);
-    const rsvpDetails = $('#t8-rsvp-details', form);
-
-    attButtons.forEach(btn => {
-      on(btn, 'click', () => {
-        attButtons.forEach(b => {
-          b.classList.remove('selected');
-          b.setAttribute('aria-checked', 'false');
-          const r = $('.t8-att-radio', b);
-          if (r) r.textContent = '';
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+        .forEach((e, k) => {
+          e.target.style.transitionDelay = `${k * 80}ms`;
+          e.target.classList.add('t9-revealed');
+          clearDelay(e.target);
+          io.unobserve(e.target);
         });
-        btn.classList.add('selected');
-        btn.setAttribute('aria-checked', 'true');
-        const r = $('.t8-att-radio', btn);
-        if (r) r.textContent = '✓';
-        const choice = btn.dataset.att;
-        if (attVal) attVal.value = choice;
-        if (rsvpDetails) {
-          rsvpDetails.style.display = choice.startsWith('Yes') ? 'block' : 'none';
-        }
+    }, { threshold: .08, rootMargin: '0px 0px -4% 0px' });
+
+    $$('.t9-rv').forEach(el => io.observe(el));
+    undo.push(() => io.disconnect());
+
+    const aio = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('t9-revealed');
+        aio.unobserve(e.target);
+      }
+    }), { threshold: .3 });
+    $$('.t9-alp').forEach(el => aio.observe(el));
+    undo.push(() => aio.disconnect());
+  } else {
+    $$('.t9-rv,.t9-alp').forEach(el => el.classList.add('t9-revealed'));
+  }
+
+  /* Countdown */
+  const when = Number(host.dataset.when);
+  const cdBox = $('.t9-cd'), togo = $('[data-togo]');
+
+  const setUnit = (unit, val, root) => {
+    if (!root) return;
+    const el = root.querySelector(`[data-u="${unit}"]`);
+    if (!el) return;
+    const tx = num(pad(val));
+    if (el.textContent !== tx) {
+      el.textContent = tx;
+      if (!reduce) { el.classList.remove('t9-tick'); void el.offsetWidth; el.classList.add('t9-tick'); }
+    }
+  };
+
+  function updateAllCountdowns() {
+    if (!when) return;
+    const left = when - Date.now();
+    const isPast = left <= 0;
+
+    if (isPast) {
+      setUnit('d', 0, cdBox); setUnit('h', 0, cdBox); setUnit('m', 0, cdBox); setUnit('s', 0, cdBox);
+      if (togo) {
+        togo.hidden = false;
+        togo.textContent = bn() ? TXT.today[1] : TXT.today[0];
+      }
+      return;
+    }
+
+    const s = Math.floor(left / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+
+    setUnit('d', d, cdBox);
+    setUnit('h', h, cdBox);
+    setUnit('m', m, cdBox);
+    setUnit('s', sec, cdBox);
+
+    if (togo) {
+      togo.hidden = false;
+      togo.textContent = bn() ? `${toBn(d)} ${TXT.daysToGo[1]}` : `${d} ${TXT.daysToGo[0]}`;
+    }
+  }
+
+  if (when) {
+    if (cdBox) cdBox.classList.add('t9-live');
+    updateAllCountdowns();
+    const id = setInterval(updateAllCountdowns, 1000);
+    timers.push(id);
+  }
+
+  /* Interactive Scratch & Reveal Card */
+  const scWrap = $('[data-scratch]');
+  if (scWrap) {
+    const canvas = $('.t9-scratch-canvas', scWrap);
+    const cover = $('[data-scratch-cover]', scWrap);
+    let scratched = false;
+    let isDrawing = false;
+    let painted = false;
+
+    const initCanvas = () => {
+      if (!canvas || painted) return;
+      const rect = scWrap.getBoundingClientRect();
+      const w = Math.round(rect.width) || 360;
+      const h = Math.round(rect.height) || 200;
+      const dpr = Math.min(2, win.devicePixelRatio || 1);
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.scale(dpr, dpr);
+
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#c99738');
+      grad.addColorStop(0.3, '#fae6aa');
+      grad.addColorStop(0.7, '#c99738');
+      grad.addColorStop(1, '#e5b850');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+      ctx.lineWidth = 1.8;
+      ctx.strokeRect(8, 8, w - 16, h - 16);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      for (let i = 0; i < 45; i++) {
+        ctx.beginPath();
+        ctx.arc((i * 41) % w, (i * 31) % h, (i % 3) + 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#611624';
+      ctx.font = 'bold 17px "Cormorant Garamond", Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✦ SCRATCH TO REVEAL ✦', w / 2, h / 2 - 8);
+      ctx.font = '600 12.5px "Hind Siliguri", sans-serif';
+      ctx.fillText('আঙুল দিয়ে ঘষে বার্তাটি দেখুন', w / 2, h / 2 + 16);
+      painted = true;
+    };
+
+    const clearScratch = () => {
+      if (scratched) return;
+      scratched = true;
+      scWrap.classList.add('t9-cleared');
+      burstPetals();
+    };
+
+    const scratchAt = (clientX, clientY) => {
+      if (scratched || !canvas) return;
+      scWrap.classList.add('t9-active');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(2, win.devicePixelRatio || 1);
+      const x = (clientX - rect.left) * dpr;
+      const y = (clientY - rect.top) * dpr;
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 26 * dpr, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    on(scWrap, 'pointerdown', e => {
+      initCanvas();
+      isDrawing = true;
+      scWrap.classList.add('t9-active');
+      scratchAt(e.clientX, e.clientY);
+    });
+    on(win, 'pointermove', e => {
+      if (!isDrawing) return;
+      scratchAt(e.clientX, e.clientY);
+    });
+    on(win, 'pointerup', () => {
+      if (isDrawing) {
+        isDrawing = false;
+        try {
+          const ctx = canvas.getContext('2d');
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          let empty = 0;
+          for (let i = 3; i < data.length; i += 16) {
+            if (data[i] === 0) empty++;
+          }
+          if (empty > (data.length / 16) * 0.25) {
+            clearScratch();
+          }
+        } catch { /* ignore cross-origin check */ }
+      }
+    });
+
+    if (cover) {
+      on(cover, 'click', () => {
+        initCanvas();
+        scWrap.classList.add('t9-active');
       });
-    });
+    }
+    on(scWrap, 'dblclick', clearScratch);
 
-    // Stepper for persons count
-    const stepBtns = $$('.t8-step-btn', form);
-    const pCountEl = $('#t8-person-count', form);
-    const pLblEl = $('#t8-person-label', form);
-    const pInput = $('#t8-persons-val', form);
-    let count = Number(pInput?.value || 1);
+    later(initCanvas, 1400);
+  }
 
-    stepBtns.forEach(btn => {
-      on(btn, 'click', () => {
-        const delta = Number(btn.dataset.step || 0);
-        count = Math.max(1, Math.min(20, count + delta));
-        if (pCountEl) pCountEl.textContent = String(count);
-        if (pLblEl) pLblEl.textContent = count > 1 ? 'persons' : 'person';
-        if (pInput) pInput.value = String(count);
-      });
-    });
+  /* Lightbox */
+  const closeLb = () => { $('.t9-lb')?.remove(); };
+  $$('[data-lb]').forEach(f => on(f, 'click', () => {
+    const src = f.dataset.lb; if (!src) return;
+    closeLb();
+    const lb = doc.createElement('div'); lb.className = 't9-lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-label', 'Photo');
+    const im = doc.createElement('img'); im.src = src; im.alt = 'Moment';
+    lb.appendChild(im); lb.addEventListener('click', closeLb); host.appendChild(lb);
+  }));
+  on(doc, 'keydown', e => { if (e.key === 'Escape') closeLb(); });
 
-    // Function selection chips toggle
-    const funcChips = $$('.t8-func-chip', form);
-    funcChips.forEach(chip => {
-      const cb = $('input[type="checkbox"]', chip);
-      const chk = $('.t8-func-check', chip);
-      if (!cb) return;
-      const sync = () => {
-        if (cb.checked) {
-          chip.classList.add('selected');
-          if (chk) chk.textContent = '✓';
-        } else {
-          chip.classList.remove('selected');
-          if (chk) chk.textContent = '';
-        }
-      };
-      on(cb, 'change', sync);
-      on(chip, 'click', () => setTimeout(sync, 0));
-    });
-
-    // Submit handler matching Image 2 WhatsApp format
+  /* RSVP Handling */
+  const form = $('[data-rsvp]');
+  const waNum = host.dataset.wa;
+  let count = 1;
+  const outEl = form && $('[data-count]', form);
+  function updateCount() {
+    if (!outEl) return;
+    outEl.firstChild.nodeValue = `${num(count)} `;
+  }
+  if (form && waNum) {
+    let att = 'yes';
+    const guestsBox = $('[data-guests]', form), fnBox = $('[data-fns]', form);
+    count = Number(outEl?.textContent) || (guest?.with_family ? 2 : 1);
+    updateCount();
+    const opts = $$('[data-att]', form);
+    opts.forEach(b => on(b, 'click', () => {
+      att = b.dataset.att;
+      opts.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      const no = att === 'no';
+      if (guestsBox) guestsBox.classList.toggle('t9-hide', no);
+      if (fnBox) fnBox.classList.toggle('t9-hide', no);
+    }));
+    $$('[data-step]', form).forEach(b => on(b, 'click', () => {
+      count = clamp(count + Number(b.dataset.step), 1, 20);
+      updateCount();
+    }));
+    $$('.t9-chip', form).forEach(c => on(c, 'click', () => c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'))));
     on(form, 'submit', e => {
       e.preventDefault();
-      const name = $('[name="name"]', form)?.value.trim() || 'Guest';
-      const att = attVal?.value || "Yes, we'll be there";
-      const isComing = att.startsWith('Yes');
-      const persons = isComing ? (pInput?.value || '1') : '0';
-      const checkedFuncs = isComing
-        ? $$('[name="functions"]:checked', form).map(c => c.value)
-        : [];
-      const note = $('[name="note"]', form)?.value.trim();
-      const status = $('.t8-status', form);
-
-      const groom = wedding.groom_name || 'Groom';
-      const bride = wedding.bride_name || 'Bride';
-      let greeting = 'Namaste! ';
-      if (clean(wedding.invocation) && /allah|bismillah|insha/i.test(wedding.invocation)) {
-        greeting = 'Salam! ';
+      const name = $('[name="name"]', form).value.trim();
+      const nt = $('[name="note"]', form).value.trim();
+      const status = $('.t9-status', form);
+      if (!name) {
+        status.textContent = bn() ? 'অনুগ্রহ করে আপনার নাম লিখুন।' : 'Please add your name.';
+        form.classList.remove('t9-shake'); void form.offsetWidth; form.classList.add('t9-shake');
+        return;
       }
-
-      const lines = [
-        `${greeting}Reply for ${groom} weds ${bride}.`,
-        `Name: ${name}`,
-        `Coming: ${isComing ? `Yes, ${persons} ${Number(persons) > 1 ? 'persons' : 'person'}` : "Sorry, can't make it"}`
-      ];
-      if (isComing && checkedFuncs.length) {
-        lines.push(`Functions: - ${checkedFuncs.join(' - ')}`);
-      }
-      if (note) {
-        lines.push(`Note: ${note}`);
-      }
-      const msg = lines.join(' ');
+      const B = bn();
+      const fns = att === 'yes' ? $$('.t9-chip[aria-pressed="true"]', form).map(c => `${B ? c.dataset.fnBn : c.dataset.fn}${(B ? c.dataset.fdBn : c.dataset.fd) ? ' (' + (B ? c.dataset.fdBn : c.dataset.fd) + ')' : ''}`) : [];
+      const names = B ? host.dataset.namesBn : host.dataset.namesEn;
+      const venueTxt = B ? host.dataset.venueBn : host.dataset.venue;
+      const msg = [
+        `${B ? 'বিবাহ আমন্ত্রণ — উত্তর' : 'Wedding RSVP'} — ${names || ''}`,
+        `${B ? 'নাম' : 'Name'}: ${name}`,
+        `${B ? 'উত্তর' : 'Response'}: ${att === 'yes' ? (B ? TXT.yes[1] : TXT.yes[0]) : (B ? TXT.no[1] : TXT.no[0])}`,
+        att === 'yes' && `${B ? 'অতিথি সংখ্যা' : 'Guests'}: ${num(count)}`,
+        fns.length && `${B ? 'অনুষ্ঠান' : 'Functions'}: ${fns.join(', ')}`,
+        nt && `${B ? 'বার্তা' : 'Note'}: ${nt}`,
+        venueTxt && `${B ? 'স্থান' : 'Venue'}: ${venueTxt}`
+      ].filter(Boolean).join('\n');
       win.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
-      if (status) status.textContent = 'Thank you! Your WhatsApp reply is opening now.';
+      status.textContent = B ? 'ধন্যবাদ! হোয়াটসঅ্যাপ নতুন ট্যাবে খুলছে।' : 'Thank you! WhatsApp is opening in a new tab.';
     });
   }
 
+  /* Audio */
+  const musicBtn = $('.t9-music'), musicUrl = host.dataset.music;
+  if (musicBtn && musicUrl) {
+    const audio = new Audio(musicUrl); audio.loop = true; audio.preload = 'none';
+    musicBtn.classList.add('t9-has');
+    on(musicBtn, 'click', () => {
+      const play = audio.paused;
+      (play ? audio.play() : Promise.resolve(audio.pause())).catch(() => {});
+      musicBtn.setAttribute('aria-pressed', String(play));
+      musicBtn.textContent = play ? '♪' : '♫';
+    });
+    undo.push(() => audio.pause());
+  }
 
+  applyLang(lang);
+  onScroll(true);
 
   const cleanup = () => {
-    timers.forEach(t => { clearTimeout(t); clearInterval(t); });
+    dead = true;
+    timers.forEach(tm => { clearTimeout(tm); clearInterval(tm); });
     undo.forEach(f => f());
-    doc.documentElement.style.overflow = prevDocOverflow;
-    doc.body.style.overflow = prevBodyOverflow;
-    host.classList.remove('t8-js');
-    host.classList.remove('t8-locked');
-    delete host._t8Cleanup;
+    closeLb();
+    unlock();
+    host.classList.remove('t9-js', 't9-locked');
+    delete host._t9Cleanup;
   };
-  host._t8Cleanup = cleanup;
+  host._t9Cleanup = cleanup;
   return cleanup;
 }

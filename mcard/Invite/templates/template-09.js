@@ -73,6 +73,15 @@ function parseWhen(dv, tv, offset = '+05:30') {
 }
 
 /* ---------- imagery ---------- */
+
+const T09_THEMES = {
+  maroon: { plum: '#190408', wine: '#4a0816', rose: '#e5b66d', rose2: '#c99242', champ: '#faedd2', moon: '#ffd4a8', pearl: '#fffaf4', line: 'rgba(229,182,109,.34)', bg: 'radial-gradient(ellipse 90% 45% at 50% 0,#5c0c1e 0,transparent 70%),radial-gradient(ellipse 60% 30% at 90% 60%,rgba(201,146,66,.14),transparent 70%),linear-gradient(180deg,#1f050b 0,#100206 55%,#080103 100%)' },
+  royal: { plum: '#190408', wine: '#4a0816', rose: '#e5b66d', rose2: '#c99242', champ: '#faedd2', moon: '#ffd4a8', pearl: '#fffaf4', line: 'rgba(229,182,109,.34)', bg: 'radial-gradient(ellipse 90% 45% at 50% 0,#5c0c1e 0,transparent 70%),radial-gradient(ellipse 60% 30% at 90% 60%,rgba(201,146,66,.14),transparent 70%),linear-gradient(180deg,#1f050b 0,#100206 55%,#080103 100%)' },
+  emerald: { plum: '#021610', wine: '#073324', rose: '#dfba61', rose2: '#b8933b', champ: '#f5edd4', moon: '#a8e6d0', pearl: '#f9fdfa', line: 'rgba(223,186,97,.34)', bg: 'radial-gradient(ellipse 90% 45% at 50% 0,#0b4a34 0,transparent 70%),radial-gradient(ellipse 60% 30% at 90% 60%,rgba(184,147,59,.14),transparent 70%),linear-gradient(180deg,#041e15 0,#02120c 55%,#010906 100%)' },
+  navy: { plum: '#040b1e', wine: '#0d1d44', rose: '#e0b95e', rose2: '#b8923a', champ: '#f5edd6', moon: '#a0c2f8', pearl: '#f8faff', line: 'rgba(224,185,94,.34)', bg: 'radial-gradient(ellipse 90% 45% at 50% 0,#13285c 0,transparent 70%),radial-gradient(ellipse 60% 30% at 90% 60%,rgba(184,146,58,.14),transparent 70%),linear-gradient(180deg,#06112c 0,#030a1c 55%,#01050f 100%)' },
+  rose: { plum: '#14051a', wine: '#3d0a2c', rose: '#e8b58f', rose2: '#c7875e', champ: '#f7e7d0', moon: '#c8b8f0', pearl: '#fff7f2', line: 'rgba(232,181,143,.34)', bg: 'radial-gradient(ellipse 90% 45% at 50% 0,#4d1038 0,transparent 70%),radial-gradient(ellipse 60% 30% at 90% 60%,rgba(199,135,94,.14),transparent 70%),linear-gradient(180deg,#190621 0,#0c0310 55%,#060108 100%)' }
+};
+
 const U = (id, w = 800) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 const KINDS = [
   { re: /haldi|ubtan|pithi|gaye\s*holud/i, icon: '🌼', src: './assets/haldi.jpg', img: '1606216794074-735e91aa2c92', alt: '1599661046827-dacff0c0f09a', dress: '#f4c542' },
@@ -390,6 +399,10 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const dateNums = day ? `${pad(day.d)} · ${pad(day.mo)} · ${day.y}` : 'To be announced';
   const dayName = day ? weekday(day) : '';
   const timeText = fmtTime(w.time);
+  const t09Key = clean(w.theme || w.theme_name).toLowerCase();
+  const t09Th = T09_THEMES[t09Key] || T09_THEMES.rose;
+  const t09Vars = `--plum:${t09Th.plum};--wine:${t09Th.wine};--rose:${t09Th.rose};--rose2:${t09Th.rose2};--champ:${t09Th.champ};--moon:${t09Th.moon};--pearl:${t09Th.pearl};--line:${t09Th.line};background:${t09Th.bg};`;
+
   const defaultMusic = safeUrl(w.music_url) || 'invitation.mp3';
   const targetTs = parseWhen(w.date, w.time, offset) ?? parseWhen(w.date, '', offset);
   const stCal = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -466,7 +479,7 @@ export default function render({ guest, wedding, events = [] } = {}) {
 <link href="${FONT_HREF}" rel="stylesheet">
 <style>${STYLE}</style>
 <noscript><style>.t9-gate{display:none!important}.t9.t9-locked{height:auto!important;max-height:none!important;overflow:visible!important}.t9-reveal,.t9-ev{opacity:1!important;transform:none!important}.t9-flip-in{transform:rotateY(180deg)!important}</style></noscript>
-<div class="t9 t9-js t9-locked" data-when="${esc(String(targetTs ?? ''))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${esc(defaultMusic)}">
+<div class="t9 t9-js t9-locked" style="${t09Vars}" data-when="${esc(String(targetTs ?? ''))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${esc(defaultMusic)}">
   <div class="t9-progress" aria-hidden="true"></div>
 
   <div class="t9-gate" role="dialog" aria-label="Wedding invitation entry">

@@ -82,9 +82,11 @@ function parseWhen(dv, tv, offset = '+05:30') {
 
 /* ---------- theme: midnight stage + gold + silver ---------- */
 const PRESETS = {
-  royal: { bg: '#0a0d1c', g: '#d4af37', s: '#c8cdd6' },
-  emerald: { bg: '#06150f', g: '#d4af37', s: '#cfd8d2' },
   maroon: { bg: '#1b0709', g: '#d9b24c', s: '#d8d0d4' },
+  royal: { bg: '#1b0709', g: '#d9b24c', s: '#d8d0d4' },
+  emerald: { bg: '#06150f', g: '#d4af37', s: '#cfd8d2' },
+  navy: { bg: '#050c20', g: '#dfb85f', s: '#cbcfd8' },
+  rose: { bg: '#180518', g: '#e4b67a', s: '#e4c8d3' },
   noir: { bg: '#09090b', g: '#d4af37', s: '#d0d0d4' }
 };
 const hex6 = v => {
@@ -96,10 +98,14 @@ const rgbOf = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const hexOf = a => '#' + a.map(c => pad(Math.max(0, Math.min(255, Math.round(c))).toString(16))).join('');
 const scale = (h, k) => hexOf(rgbOf(h).map(c => c * k));
 const mix = (h1, h2, t) => { const a = rgbOf(h1), b = rgbOf(h2); return hexOf(a.map((c, i) => c + (b[i] - c) * t)); };
+const lumOf = h => { const [r, g, b] = rgbOf(h); return 0.299 * r + 0.587 * g + 0.114 * b; };
 
 function themeVars(w) {
-  const p = PRESETS[clean(w.theme).toLowerCase()] || PRESETS.royal;
-  const g = hex6(w.accent_color) || p.g, s = hex6(w.accent2_color) || p.s, bg = hex6(w.paper_color) || p.bg;
+  const p = PRESETS[clean(w.theme || w.theme_name).toLowerCase()] || PRESETS.maroon || PRESETS.royal;
+  const g = hex6(w.accent_color) || p.g, s = hex6(w.accent2_color) || p.s;
+  const paperCand = hex6(w.paper_color);
+  // Protect Template 08: Must maintain a midnight stage background (lum < 65)
+  const bg = (paperCand && lumOf(paperCand) < 65) ? paperCand : p.bg;
   const rgb = h => rgbOf(h).join(',');
   return `--bg:${bg};--bg2:${mix(bg, '#ffffff', .07)};--card:${mix(bg, '#ffffff', .05)};--g:${g};--gl:${mix(g, '#ffffff', .5)};--gx:${mix(g, '#ffffff', .85)};--gd:${scale(g, .5)};--s:${s};--sl:${mix(s, '#ffffff', .6)};--sd:${scale(s, .5)};--g-rgb:${rgb(g)};--s-rgb:${rgb(s)};--bg-rgb:${rgb(bg)};--ivory:#f6efe0`;
 }

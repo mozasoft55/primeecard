@@ -110,6 +110,15 @@ const sameDay = (a, b) => a && b && a.year === b.year && a.month === b.month && 
 
 /* ---------- inline SVG icons (crisp at any size) ---------- */
 const ICON_ATTR = 'viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+
+const T05_THEMES = {
+  maroon: { wine: '#650b19', wine2: '#861b2a', wined: '#32040c', gold: '#b98a2e', gold2: '#f2d58a', goldd: '#80541b', paper: '#fff0d5', bg: 'radial-gradient(ellipse at 50% 20%,#8b2731 0,#4d0915 62%,#220309 100%)' },
+  royal: { wine: '#650b19', wine2: '#861b2a', wined: '#32040c', gold: '#b98a2e', gold2: '#f2d58a', goldd: '#80541b', paper: '#fff0d5', bg: 'radial-gradient(ellipse at 50% 20%,#8b2731 0,#4d0915 62%,#220309 100%)' },
+  emerald: { wine: '#0b4d3a', wine2: '#12614b', wined: '#04281e', gold: '#d4af37', gold2: '#fae6a2', goldd: '#8a6e1a', paper: '#f7fbf4', bg: 'radial-gradient(ellipse at 50% 20%,#185e48 0,#0b3d2e 62%,#041a13 100%)' },
+  navy: { wine: '#1b2f5e', wine2: '#263f7a', wined: '#0a1633', gold: '#dfb85f', gold2: '#fce7b0', goldd: '#8c6e26', paper: '#fbfaff', bg: 'radial-gradient(ellipse at 50% 20%,#243c75 0,#14244b 62%,#060d1f 100%)' },
+  rose: { wine: '#8c2349', wine2: '#ad3561', wined: '#4a0f25', gold: '#d4a24c', gold2: '#fce1aa', goldd: '#8f6524', paper: '#fff7f9', bg: 'radial-gradient(ellipse at 50% 20%,#aa345e 0,#6a1535 62%,#2f0717 100%)' }
+};
+
 const ICONS = {
   person: `<svg ${ICON_ATTR}><circle cx="24" cy="15" r="8"/><path d="M8 42c1-10 7-15 16-15s15 5 16 15"/></svg>`,
   family: `<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><circle cx="24" cy="13" r="6.5"/><path d="M12 38c0-8 5-13 12-13s12 5 12 13z"/><circle cx="9" cy="19" r="4.6"/><path d="M0 36c0-6 3-10 9-10 2 0 4 .5 5 1.5-2 2.4-3 5.600-3 8.500z"/><circle cx="39" cy="19" r="4.6"/><path d="M48 36c0-6-3-10-9-10-2 0-4 .5-5 1.500 2 2.400 3 5.600 3 8.500z"/></svg>`,
@@ -590,11 +599,15 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`
   ];
 
+  const t05Key = clean(w.theme || w.theme_name).toLowerCase();
+  const t05Th = T05_THEMES[t05Key] || T05_THEMES.maroon;
+  const t05Vars = `--wine:${t05Th.wine}!important;--wine2:${t05Th.wine2}!important;--wine-d:${t05Th.wined}!important;--gold:${t05Th.gold}!important;--gold2:${t05Th.gold2}!important;--gold-d:${t05Th.goldd}!important;--paper:${t05Th.paper}!important;background:${t05Th.bg}!important;`;
+
   const steps = STEP_LABELS.map((label, i) =>
     `<button class="t05-step${i === 0 ? ' active' : ''}" type="button" data-step="${i}" style="--i:${i}" aria-label="${esc(label)}"${i === 0 ? ' aria-current="step"' : ''}><span>${esc(label)}</span></button>`).join('');
 
   return `<style>${FONT_CSS}${STYLE}</style>
-<main class="t05">
+<main class="t05" style="${t05Vars}">
   
   <div class="t05-shell"><div class="t05-stage">
     <nav class="t05-top" aria-label="Invitation sections">

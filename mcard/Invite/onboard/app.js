@@ -254,7 +254,7 @@ function renderThemePreview() {
   }
   const colors = [theme.primary_color, theme.primary_dark_color, theme.accent_color, theme.paper_top_color, theme.paper_bottom_color, theme.text_color]
     .filter(color => /^#[\da-f]{6}$/i.test(String(color || '')));
-  preview.replaceChildren(document.createTextNode(`${theme.theme_name} palette `));
+  preview.replaceChildren(document.createTextNode(`${theme.label || theme.theme_name} palette `));
   for (const color of colors) {
     const swatch = document.createElement('span');
     swatch.className = 'theme-swatch';
@@ -287,7 +287,7 @@ function renderDesignChoices(styles, availableThemes, warning = '') {
   form.elements.template_style.innerHTML = '<option value="">Choose a style</option>' + allStyles
     .map(style => `<option value="${escapeHtml(style.template_id)}">${escapeHtml(style.template_id)} · ${escapeHtml(style.style_name)}</option>`).join('');
   form.elements.theme_name.innerHTML = '<option value="">Choose a theme</option>' + themes
-    .map(theme => `<option value="${escapeHtml(theme.theme_name)}">${escapeHtml(theme.theme_name)}</option>`).join('');
+    .map(theme => `<option value="${escapeHtml(theme.theme_name)}">${escapeHtml(theme.label || theme.theme_name)}</option>`).join('');
   const currentVal = form.elements.template_style.value;
   form.elements.template_style.value = (currentVal && allStyles.some(s => s.template_id === currentVal))
     ? currentVal
@@ -463,6 +463,7 @@ function updateReview() {
     ['Phone', input.phone],
     ['Couple', `${input.bride_name} & ${input.groom_name}`],
     ['Wedding date', input.event_date],
+    ['Ceremony', [input.ceremony_title, input.invocation].filter(Boolean).join(' · ') || 'To be confirmed'],
     ['Venue', input.venue || 'To be confirmed'],
     ['Design', `${input.template_style} · ${input.theme_name}`],
     ['Programme', `${input.events.length} event(s)`],
@@ -598,6 +599,26 @@ form.addEventListener('change', event => {
   if (event.target.name === 'theme_name') renderThemePreview();
   if (event.target.name === 'template_style') updateTemplatePreview();
   if (event.target.name === 'consent') syncSubmitAvailability();
+  if (event.target.name === 'invocation_preset') {
+    const val = event.target.value;
+    const invocInput = form.elements.invocation;
+    const ceremonyInput = form.elements.ceremony_title;
+    if (val === 'custom') {
+      if (invocInput) {
+        invocInput.value = '';
+        invocInput.focus();
+      }
+    } else if (val) {
+      if (invocInput) invocInput.value = val;
+      if (ceremonyInput && !ceremonyInput.value) {
+        if (val.includes('প্রজাপতয়ে') || val.includes('শ্রী শ্রী')) ceremonyInput.value = 'Shubho Bibaho';
+        else if (val.includes('गणेशाय') || val.includes('राधाकृष्ण') || val.includes('विष्णवे')) ceremonyInput.value = 'Shubh Vivah';
+        else if (val.includes('بِسْمِ') || val.includes('Allah')) ceremonyInput.value = 'Nikah Ceremony';
+        else if (val.includes('ੴ')) ceremonyInput.value = 'Anand Karaj';
+        else if (val.includes('Almighty')) ceremonyInput.value = 'Holy Matrimony';
+      }
+    }
+  }
   // Sync ceremony_time hidden field from the 12h picker selects
   if (['ceremony_hour','ceremony_minute','ceremony_ampm'].includes(event.target.name)) {
     const h = form.elements.ceremony_hour?.value || '';
@@ -607,6 +628,14 @@ form.addEventListener('change', event => {
   }
 });
 form.elements.template_style?.addEventListener('input', updateTemplatePreview);
+form.elements.invocation?.addEventListener('input', () => {
+  const current = (form.elements.invocation.value || '').trim();
+  const presetSel = document.getElementById('invocation-preset');
+  if (!presetSel) return;
+  const match = Array.from(presetSel.options).find(opt => opt.value && opt.value === current);
+  if (match) presetSel.value = match.value;
+  else if (current) presetSel.value = 'custom';
+});
 
 document.getElementById('copy-vpa').addEventListener('click', async () => {
   try {

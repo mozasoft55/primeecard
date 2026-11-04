@@ -76,6 +76,15 @@ function parseWhen(dv, tv, offset = '+05:30') {
 }
 
 /* ---------- imagery ---------- */
+
+const T10_THEMES = {
+  navy: { ink: '#0a0a22', lapis: '#1a1e50', orch: '#4d2a8a', peach: '#ffb38a', teal: '#1fa58f', lotus: '#8faaff', pearl: '#fffaf0', gold: '#f3c969', gold2: '#ffe9a8', line: 'rgba(243,201,105,.4)', bg: 'linear-gradient(180deg,#070a1c 0,#101940 40%,#19255a 72%,#0b1028 100%)' },
+  maroon: { ink: '#1a050b', lapis: '#4a0d1b', orch: '#8a1b32', peach: '#ffd0a8', teal: '#a32840', lotus: '#ff8fa3', pearl: '#fffaf4', gold: '#f3c969', gold2: '#ffe9a8', line: 'rgba(243,201,105,.4)', bg: 'linear-gradient(180deg,#16040a 0,#330713 40%,#540d21 72%,#1c040c 100%)' },
+  royal: { ink: '#1a050b', lapis: '#4a0d1b', orch: '#8a1b32', peach: '#ffd0a8', teal: '#a32840', lotus: '#ff8fa3', pearl: '#fffaf4', gold: '#f3c969', gold2: '#ffe9a8', line: 'rgba(243,201,105,.4)', bg: 'linear-gradient(180deg,#16040a 0,#330713 40%,#540d21 72%,#1c040c 100%)' },
+  emerald: { ink: '#04140e', lapis: '#0c3826', orch: '#1a6b4d', peach: '#e3f5d8', teal: '#1f8f67', lotus: '#8fe6b8', pearl: '#f7fbf6', gold: '#f3c969', gold2: '#ffe9a8', line: 'rgba(243,201,105,.4)', bg: 'linear-gradient(180deg,#02100a 0,#062417 40%,#0c3d28 72%,#03140d 100%)' },
+  rose: { ink: '#17040e', lapis: '#3d0c26', orch: '#7a1a4f', peach: '#ffd4e5', teal: '#8a245a', lotus: '#ff8fb8', pearl: '#fff6f9', gold: '#f3c969', gold2: '#ffe9a8', line: 'rgba(243,201,105,.4)', bg: 'linear-gradient(180deg,#12030b 0,#2c061a 40%,#4c0b2c 72%,#17030e 100%)' }
+};
+
 const U = (id, w = 800) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 const KINDS = [
   { re: /haldi|ubtan|pithi|gaye\s*holud/i, icon: '🌼', src: './assets/haldi.jpg', img: '1606216794074-735e91aa2c92', alt: '1599661046827-dacff0c0f09a', dress: '#f4c542' },
@@ -393,6 +402,10 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const dateNums = day ? `${pad(day.d)} · ${pad(day.mo)} · ${day.y}` : 'To be announced';
   const dayName = day ? weekday(day) : '';
   const timeText = fmtTime(w.time);
+  const t10Key = clean(w.theme || w.theme_name).toLowerCase();
+  const t10Th = T10_THEMES[t10Key] || T10_THEMES.navy;
+  const t10Vars = `--ink:${t10Th.ink};--lapis:${t10Th.lapis};--orch:${t10Th.orch};--peach:${t10Th.peach};--teal:${t10Th.teal};--lotus:${t10Th.lotus};--pearl:${t10Th.pearl};--gold:${t10Th.gold};--gold2:${t10Th.gold2};--line:${t10Th.line};background:${t10Th.bg};`;
+
   const defaultMusic = safeUrl(w.music_url) || 'invitation.mp3';
   const targetTs = parseWhen(w.date, w.time, offset) ?? parseWhen(w.date, '', offset);
   const stCal = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -452,7 +465,7 @@ export default function render({ guest, wedding, events = [] } = {}) {
 <link href="${FONT_HREF}" rel="stylesheet">
 <style>${STYLE}</style>
 <noscript><style>.t10-gate,.t10-dock{display:none!important}.t10.t10-locked{height:auto!important;max-height:none!important;overflow:visible!important}.t10-reveal{opacity:1!important;transform:none!important}.t10 .t10-pt{transform:rotate(calc(var(--i)*45deg)) scaleY(1)!important}.t10 .t10-pt.in{transform:rotate(calc(var(--i)*45deg + 22.5deg)) scaleY(1)!important}.t10-cdate{opacity:1!important}.t10-hint{display:none}.t10-ch{opacity:1!important}</style></noscript>
-<div class="t10 t10-js t10-locked" data-when="${esc(String(targetTs ?? ''))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${esc(defaultMusic)}">
+<div class="t10 t10-js t10-locked" style="${t10Vars}" data-when="${esc(String(targetTs ?? ''))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${esc(defaultMusic)}">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="t10g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1fa58f"/><stop offset=".5" stop-color="#f3c969"/><stop offset="1" stop-color="#ff8fb8"/></linearGradient></defs></svg>
   <div class="t10-progress" aria-hidden="true"></div>
   <div class="t10-toast" role="status" aria-live="polite"></div>

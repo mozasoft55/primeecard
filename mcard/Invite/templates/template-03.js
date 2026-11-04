@@ -85,10 +85,15 @@ function parseWhen(dv, tv, offset = '+05:30') {
 
 /* ---------- theme: night + jewel + gold ---------- */
 const PRESETS = {
-  peacock: { bg: '#04222a', g: '#e0b95e', j: '#b8205f' },
-  maharani: { bg: '#1d0b24', g: '#e8c47d', j: '#d4486f' },
-  ruby: { bg: '#240509', g: '#e2b458', j: '#c1272d' },
-  sapphire: { bg: '#071230', g: '#dfb85f', j: '#3f64d8' }
+  maroon: { bg: '#220509', g: '#e2b458', j: '#c1272d' },
+  royal: { bg: '#220509', g: '#e2b458', j: '#c1272d' },
+  emerald: { bg: '#031c15', g: '#dfba61', j: '#0f7d54' },
+  navy: { bg: '#050e26', g: '#e2b85e', j: '#2c52ba' },
+  rose: { bg: '#1c061e', g: '#e8bca5', j: '#ba266d' },
+  peacock: { bg: '#031c15', g: '#dfba61', j: '#0f7d54' },
+  maharani: { bg: '#1c061e', g: '#e8bca5', j: '#ba266d' },
+  ruby: { bg: '#220509', g: '#e2b458', j: '#c1272d' },
+  sapphire: { bg: '#050e26', g: '#e2b85e', j: '#2c52ba' }
 };
 const hex6 = v => {
   const m = clean(v).match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
@@ -99,10 +104,15 @@ const rgbOf = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const hexOf = a => '#' + a.map(c => pad(Math.max(0, Math.min(255, Math.round(c))).toString(16))).join('');
 const scale = (h, k) => hexOf(rgbOf(h).map(c => c * k));
 const mix = (h1, h2, t) => { const a = rgbOf(h1), b = rgbOf(h2); return hexOf(a.map((c, i) => c + (b[i] - c) * t)); };
+const lumOf = h => { const [r, g, b] = rgbOf(h); return 0.299 * r + 0.587 * g + 0.114 * b; };
 
 function themeVars(w) {
-  const p = PRESETS[clean(w.theme).toLowerCase()] || PRESETS.peacock;
-  const g = hex6(w.accent_color) || p.g, j = hex6(w.accent2_color) || p.j, bg = hex6(w.paper_color) || p.bg;
+  const p = PRESETS[clean(w.theme || w.theme_name).toLowerCase()] || PRESETS.maroon || PRESETS.peacock;
+  const g = hex6(w.accent_color) || p.g, j = hex6(w.accent2_color) || p.j;
+  const paperCand = hex6(w.paper_color);
+  // Protect Template 03: Must maintain a rich velvet night palace background.
+  // If paper_color is a light paper tone (lum >= 65), retain the royal velvet p.bg.
+  const bg = (paperCand && lumOf(paperCand) < 65) ? paperCand : p.bg;
   const rgb = h => rgbOf(h).join(',');
   return `--bg:${bg};--bg2:${mix(bg, '#ffffff', .05)};--bg3:${mix(bg, j, .16)};--g:${g};--gl:${mix(g, '#ffffff', .45)};--gx:${mix(g, '#ffffff', .8)};--gd:${scale(g, .5)};--j:${j};--jl:${mix(j, '#ffffff', .45)};--jd:${scale(j, .52)};--g-rgb:${rgb(g)};--j-rgb:${rgb(j)};--bg-rgb:${rgb(bg)};--ivory:#f7efdc`;
 }

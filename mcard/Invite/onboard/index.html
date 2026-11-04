@@ -75,7 +75,48 @@
             <p class="section-hint">Add ceremony, venue, programme and card design details.</p>
             <div class="field-grid">
               <label class="field">Wedding date<input name="event_date" type="date" required></label>
-              <label class="field">Ceremony title<input name="ceremony_title" placeholder="Nikah / Marriage Ceremony" maxlength="120"></label>
+              <label class="field">Religious blessing / Invocation
+                <select id="invocation-preset" name="invocation_preset">
+                  <option value="">Select tradition / blessing</option>
+                  <optgroup label="Hindu Traditions">
+                    <option value="|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||">Hindu (Bengali) — || শ্রী শ্রী প্রজাপতয়ে নমঃ ||</option>
+                    <option value="|| श्री गणेशाय नमः ||">Hindu (Ganesh) — || श्री गणेशाय नमः ||</option>
+                    <option value="|| श्री राधाकृष्णाभ्यां नमः ||">Hindu (Radha Krishna) — || श्री राधाकृष्णाभ्यां नमः ||</option>
+                    <option value="|| ॐ श्री विष्णवे नमः ||">Hindu (Vishnu / Vedic) — || ॐ श्री विष्णवे नमः ||</option>
+                  </optgroup>
+                  <optgroup label="Islamic Tradition">
+                    <option value="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ">Muslim — بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ (Bismillah)</option>
+                    <option value="In the name of Allah, Most Gracious, Most Merciful">Muslim (English) — In the name of Allah</option>
+                  </optgroup>
+                  <optgroup label="Sikh Tradition">
+                    <option value="ੴ ਸਤਿਗੁਰ ਪ੍ਰਸਾਦਿ">Sikh — ੴ ਸਤਿਗੁਰ ਪ੍ਰਸਾਦਿ (Ik Onkar)</option>
+                  </optgroup>
+                  <optgroup label="Christian & Secular">
+                    <option value="With the Blessings of Almighty God">Christian — With the Blessings of Almighty God</option>
+                    <option value="Together with their Families">Universal / Secular — Together with their Families</option>
+                  </optgroup>
+                  <option value="custom">✍ Other / Write your own...</option>
+                </select>
+              </label>
+              <label class="field field-wide" id="invocation-field-wrap">
+                <span class="field-label-row">
+                  <span>Blessing text (Invocation)</span>
+                  <small class="optional">Pre-filled or write your custom text · shown at card top</small>
+                </span>
+                <input name="invocation" id="invocation-input" placeholder="e.g. || শ্রী শ্রী প্রজাপতয়ে নমঃ || or بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" maxlength="200">
+              </label>
+              <label class="field">Ceremony title
+                <input name="ceremony_title" id="ceremony-title-input" list="ceremony-title-presets" placeholder="Shubho Bibaho / Shubh Vivah / Nikah" maxlength="120">
+                <datalist id="ceremony-title-presets">
+                  <option value="Shubho Bibaho">
+                  <option value="Shubh Vivah">
+                  <option value="Nikah Ceremony">
+                  <option value="Walima Reception">
+                  <option value="Anand Karaj">
+                  <option value="Holy Matrimony">
+                  <option value="Wedding Celebration">
+                </datalist>
+              </label>
               <label class="field">Ceremony time
                 <div class="time-picker-row">
                   <select name="ceremony_hour" class="time-part">

@@ -215,7 +215,7 @@ export default function render({ guest, wedding: rawWedding, events = [] } = {})
 
   const th = (wedding.theme_colors && typeof wedding.theme_colors === 'object')
     ? { ...THEMES.maroon, ...w.theme_colors }
-    : (THEMES[String(wedding.theme || '').toLowerCase()] || THEMES.maroon);
+    : (THEMES[String(wedding.theme || wedding.theme_name || '').toLowerCase()] || THEMES.maroon);
 
   const sd = saveTheDate(wedding.date);
   const contacts = lines(wedding.rsvp_contacts);

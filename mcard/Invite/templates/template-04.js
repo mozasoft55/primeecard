@@ -130,6 +130,15 @@ const CORNER_ARABESQUE = (pos = 'tl') => `<svg viewBox="0 0 60 60" class="t04-co
 </svg>`;
 
 // Islamic Jali Geometrical Motif Divider
+
+const T04_THEMES = {
+  emerald: { d: '#04241c', m: '#073f30', l: '#0e5b46', gs: '#e8c66e', gm: '#cf9f38', gd: '#956f1f', paper: '#fffdf9', cream: '#faf3e4', bgGrad: 'radial-gradient(circle at 50% 12%, #073f30 0%, #04241c 65%, #02120e 100%)' },
+  maroon: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 12%, #651122 0%, #2a070f 65%, #150307 100%)' },
+  royal: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 12%, #651122 0%, #2a070f 65%, #150307 100%)' },
+  navy: { d: '#061024', m: '#13264d', l: '#1f3d7a', gs: '#f5d98b', gm: '#d8ab48', gd: '#a37a28', paper: '#fcfdff', cream: '#eef2f9', bgGrad: 'radial-gradient(circle at 50% 12%, #13264d 0%, #061024 65%, #030814 100%)' },
+  rose: { d: '#2d0a17', m: '#661a37', l: '#9c2d58', gs: '#f8d48e', gm: '#d99f49', gd: '#9f6927', paper: '#fffbfa', cream: '#faebee', bgGrad: 'radial-gradient(circle at 50% 12%, #661a37 0%, #2d0a17 65%, #18050c 100%)' }
+};
+
 const JALI_DIVIDER = () => `<div class="t04-jali-div" aria-hidden="true">
   <i></i>
   <svg viewBox="0 0 36 36" class="t04-jali-star"><polygon points="18,3 22,14 33,18 22,22 18,33 14,22 3,18 14,14" fill="var(--gold-shine)"/><circle cx="18" cy="18" r="4" fill="var(--emerald-d)"/></svg>
@@ -1177,6 +1186,10 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`
   ];
 
+  const t04Key = clean(w.theme || w.theme_name).toLowerCase();
+  const t04Th = T04_THEMES[t04Key] || T04_THEMES.emerald;
+  const t04Vars = `--emerald-d:${t04Th.d};--emerald-m:${t04Th.m};--emerald-l:${t04Th.l};--gold-shine:${t04Th.gs};--gold-mid:${t04Th.gm};--gold-d:${t04Th.gd};--paper:${t04Th.paper};--paper-cream:${t04Th.cream};--t04-bg:${t04Th.bgGrad};`;
+
   const stepsIndicators = STEP_LABELS.map((label, idx) => `
     <button class="t04-step${idx === 0 ? ' active' : ''}" type="button" data-step="${idx}" style="--i:${idx}" aria-label="${esc(label)}"${idx === 0 ? ' aria-current="step"' : ''}>
       <span>${esc(label)}</span>
@@ -1184,7 +1197,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   `).join('');
 
   return `<style>${STYLE}</style>
-<main class="t04">
+<main class="t04" style="${t04Vars}">
   <div class="t04-shell">
     <div class="t04-stage">
       <nav class="t04-top" aria-label="Shadi sections">
