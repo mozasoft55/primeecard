@@ -1,0 +1,284 @@
+:root{color-scheme:light;--wine:#6e1429;--wine-deep:#260b14;--wine-mid:#441321;--gold:#c79b51;--gold-light:#ead8ad;--cream:#fffaf1;--ink:#34262a;--muted:#766b6d;--line:#e9dfd2;--green:#245a43;--error:#9c2435;font-family:"Cormorant Garamond",Georgia,serif;font-size:18px}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(ellipse at 15% 20%,#512233 0,#30111c 35%,#1a0911 78%);font-size:1rem}
+button,input,select,textarea{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+.topbar{height:78px;max-width:1440px;margin:auto;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;color:#fff8e9;border-bottom:1px solid #ffffff20}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-family:"Playfair Display",serif;font-size:17px;letter-spacing:.02em}
+.brand small{display:block;margin-top:4px;color:#d9be87;font:9px Arial,sans-serif;letter-spacing:.19em}
+.brand-mark{color:var(--gold);font-size:26px}
+.secure-note{color:#e8d7b5;font:12px Arial,sans-serif}
+.secure-note span{color:var(--gold);margin-right:7px}
+.layout{max-width:1250px;margin:48px auto 56px;padding:0 24px;display:grid;grid-template-columns:minmax(230px,.72fr) minmax(0,1.5fr);gap:clamp(24px,5vw,68px);align-items:start}
+.story{color:#fff8ed;padding:32px 0;position:sticky;top:30px}
+.eyebrow{font:10px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#a2824b;margin:0 0 12px}
+.story .eyebrow{color:#dfbf7b}
+.story h1{font:clamp(38px,5vw,64px)/1.04 "Playfair Display",Georgia,serif;font-weight:500;margin:0 0 20px}
+.story h1 em{font-weight:500;color:#d7b576}
+.story-copy{max-width:380px;color:#e0d4d0;font-size:21px;line-height:1.4}
+.story-rule{width:80px;height:1px;background:var(--gold);margin:34px 0 20px}
+.story-quote{max-width:330px;color:#d9cbb9;font-style:italic;font-size:22px;line-height:1.25}
+.trust-list{display:grid;gap:12px;margin-top:44px;color:#eee2d8;font-size:17px}
+.trust-list b{display:inline-block;color:#d6b673;font:10px Arial,sans-serif;letter-spacing:.12em;margin-right:10px}
+.wizard-card{background:var(--cream);border:1px solid #d2b678;border-radius:18px;padding:clamp(22px,4vw,46px);box-shadow:0 24px 75px #10050a70;min-width:0}
+.wizard-head{display:flex;justify-content:space-between;align-items:end;gap:16px}
+.wizard-head h2,.success-view h2{font:500 clamp(28px,4vw,40px)/1.15 "Playfair Display",Georgia,serif;color:var(--wine);margin:0}
+.step-count{white-space:nowrap;color:var(--muted);font:12px Arial,sans-serif}
+.progress{margin:26px 0 32px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.progress:before{content:"";position:absolute;top:15px;left:9%;right:9%;height:1px;background:#e1d5c5}
+.progress li{z-index:1;display:grid;justify-items:center;gap:7px;color:#938887;font:10px Arial,sans-serif}
+.progress li span{width:30px;height:30px;border:1px solid #d9ccba;background:var(--cream);border-radius:50%;display:grid;place-items:center;font-size:12px}
+.progress li.active,.progress li.complete{color:var(--wine)}
+.progress li.active span,.progress li.complete span{color:#fff;background:var(--wine);border-color:var(--wine)}
+.form-step h3{font:600 27px "Playfair Display",Georgia,serif;color:#502132;margin:0 0 5px}
+.section-hint{margin:0 0 22px;color:var(--muted);font-size:17px}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 18px}
+.field{display:grid;gap:6px;font-weight:600;color:#47393c;font-size:17px;min-width:0}
+.field input,.field select,.field textarea{width:100%;min-height:45px;padding:9px 12px;border:1px solid #d7cabb;border-radius:8px;background:#fffefa;color:#30272a;outline:none}
+.field textarea{resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#9f712d;box-shadow:0 0 0 3px #d3ad6433}
+.field input[aria-invalid=true],.field select[aria-invalid=true]{border-color:var(--error)}
+.field-wide{grid-column:1/-1}
+.optional{font:12px Arial,sans-serif;color:#897d7d;font-weight:400}
+.subsection-head{display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid var(--line);margin-top:28px;padding-top:20px}
+.subsection-head h4{margin:0;color:#502132;font:600 21px "Playfair Display",Georgia,serif}
+.subsection-head p{margin:4px 0;color:var(--muted);font-size:15px}
+.event-list{display:grid;gap:12px;margin-top:12px}
+.event-empty{margin:0;padding:14px;border:1px dashed #cbbba7;border-radius:8px;color:var(--muted);font-size:15px}
+.event-card{border:1px solid #e5dacb;border-radius:10px;padding:13px;background:#fffdf8}
+.event-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.event-card-head input{flex:1;min-width:0;font-weight:700}
+.event-card input,.event-card textarea{width:100%;min-height:38px;padding:7px 9px;border:1px solid #ddd1c1;border-radius:6px;background:#fff;color:var(--ink)}
+.event-card textarea{grid-column:1/-1;min-height:42px;resize:vertical}
+.event-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.event-action{border:0;background:transparent;color:var(--wine);cursor:pointer;padding:6px;font:13px Arial,sans-serif}
+.event-action:disabled{opacity:.35;cursor:not-allowed}
+.design-grid{margin-top:24px}
+.theme-preview{display:flex;align-items:center;gap:8px;min-height:24px;margin-top:12px;color:var(--muted);font:12px Arial,sans-serif}
+.theme-swatch{width:22px;height:22px;border:1px solid #0002;border-radius:50%;box-shadow:inset 0 0 0 2px #fff8}
+.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:45px;padding:0 20px;border-radius:999px;border:1px solid transparent;text-decoration:none;cursor:pointer;font:600 14px Arial,sans-serif;transition:transform .15s ease,background .15s ease}
+.button:hover{transform:translateY(-1px)}
+.button:focus-visible{outline:3px solid #cda755;outline-offset:3px}
+.button:disabled{opacity:.58;cursor:not-allowed;transform:none}
+.button-gold{background:#c89c51;color:#28131a}
+.button-primary{background:var(--wine);color:#fff8ed}
+.button-muted{background:#f4eee5;color:#514448;border-color:#e2d9cc}
+.button-outline{background:transparent;border-color:#c7a35f;color:#5a2835}
+.button-small{min-height:35px;padding:0 13px;font-size:12px}
+.wizard-actions{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:28px;padding-top:20px}
+.action-spacer{flex:1}
+.form-error,.inline-error{padding:12px 14px;border-radius:8px;background:#fff0ef;color:#842336;font-size:16px;margin-top:16px}
+.package-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.package-card{display:flex;gap:10px;border:1px solid #dfd2c0;border-radius:10px;padding:15px;background:#fffefa;cursor:pointer}
+.package-card:has(input:checked){border-color:#7a2639;box-shadow:0 0 0 2px #7a263925}
+.package-card input{accent-color:var(--wine);margin-top:5px}
+.package-copy{display:grid;gap:5px}
+.package-copy b{font:600 17px "Playfair Display",Georgia,serif;color:#512638}
+.package-price{font:600 19px Georgia,serif;color:#4e1e2b}
+.package-copy small,.package-copy ul{color:var(--muted);font-size:14px}
+.package-copy ul{padding-left:18px;margin:3px 0}
+.payment-methods{display:flex;gap:12px;margin:22px 0}
+.payment-choice{flex:1;display:flex;align-items:center;gap:10px;border:1px solid #dfd2c0;border-radius:9px;padding:13px;background:#fffefa;cursor:pointer}
+.payment-choice:has(input:checked){border-color:#7a2639}
+.payment-choice input{accent-color:var(--wine)}
+.payment-choice:has(input:disabled){opacity:.58;cursor:not-allowed}
+.payment-choice input:disabled{cursor:not-allowed}
+.payment-choice span{display:grid}
+.payment-choice small{color:var(--muted);font-size:13px}
+.upi-panel{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:18px;border:1px solid #e7dac8;border-radius:12px;background:#fffdf8}
+.upi-qr{display:grid;place-items:center;min-height:150px;background:white;border:1px solid var(--line);border-radius:8px;padding:8px}
+.upi-qr img{width:128px;height:128px;object-fit:contain}
+.upi-amount{font:600 28px "Playfair Display",Georgia,serif;color:var(--wine)}
+.upi-details>p{margin:7px 0}
+.copy-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.copy-row code{font:14px monospace;background:#f2ede5;padding:8px;border-radius:6px}
+.fine-print,.privacy-note{font:13px/1.5 Arial,sans-serif;color:#72686a}
+.notice-box{padding:16px;border:1px solid #ddcba9;background:#fff6e3;border-radius:9px;color:#593a17}
+.captcha-wrap{margin-top:18px;min-height:65px}
+.review-card{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px;border:1px solid #e5dacb;border-radius:10px;background:#fffdf8}
+.review-card div{display:grid;gap:4px;min-width:0}
+.review-card div.full{grid-column:1/-1}
+.review-card dt{font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#887c7d}
+.review-card dd{margin:0;overflow-wrap:anywhere;font-size:17px}
+.consent{display:flex;gap:10px;align-items:start;margin:19px 0 8px;font-size:16px;line-height:1.35}
+.consent input{margin-top:5px;accent-color:var(--wine)}
+.privacy-note{margin:12px 0 0}
+.success-view{text-align:center;padding:30px 0 12px}
+.success-icon{display:grid;place-items:center;width:58px;height:58px;border:1px solid #c39c5d;border-radius:50%;margin:0 auto 20px;background:#faf0dc;color:var(--green);font-size:30px}
+.success-view>p:not(.eyebrow){color:var(--muted)}
+.success-details{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin:26px 0}
+.success-details div{padding:14px;border:1px solid var(--line);border-radius:8px}
+.success-details dt{font:10px Arial,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.success-details dd{margin:7px 0 0;color:var(--wine);font-weight:700;overflow-wrap:anywhere}
+.success-link{width:100%;max-width:330px}
+.footer{max-width:1250px;margin:0 auto;padding:0 24px 28px;display:flex;justify-content:space-between;color:#d5c5bd;font:12px Arial,sans-serif}
+.loading-line{color:var(--muted)}
+.package-retry{grid-column:1/-1;justify-self:start}
+.cash-fallback{display:grid;gap:12px;margin-top:16px;padding:16px;border:1px solid #d9c28e;border-radius:10px;background:#fff7e5}
+.cash-fallback p{margin:0;color:#593a17;font-size:15px;line-height:1.45}
+.cash-fallback .button{justify-self:start}
+.request-summary{grid-column:1/-1;margin:0;padding:14px;border:1px solid #ddcba9;border-radius:8px;background:#fff7e5;color:#593a17;font-size:15px;line-height:1.5}
+[hidden]{display:none!important}
+@media(max-width:800px){.layout{grid-template-columns:1fr;margin:15px auto 30px;gap:12px}.story{position:static;padding:22px 4px 8px}.story h1{font-size:42px}.story-copy{font-size:18px}.story-rule,.story-quote,.trust-list{display:none}.wizard-card{padding:24px 20px}.topbar{height:64px}.footer{font-size:11px}}
+@media(max-width:520px){:root{font-size:17px}.secure-note{font-size:0}.secure-note span{font-size:15px}.layout{padding:0 12px}.wizard-card{padding:20px 15px;border-radius:13px}.field-grid{grid-template-columns:1fr;gap:12px}.field-wide{grid-column:auto}.wizard-head{align-items:center}.progress{margin:21px 0 25px}.progress li{font-size:9px}.progress li span{width:27px;height:27px}.progress:before{top:13px}.event-fields{grid-template-columns:1fr 1fr}.upi-panel{grid-template-columns:1fr}.upi-qr{min-height:120px}.upi-qr img{width:110px;height:110px}.payment-methods{flex-direction:column}.review-card{grid-template-columns:1fr}.review-card div.full{grid-column:auto}.success-details{grid-template-columns:1fr}.footer{padding:0 14px 20px;gap:12px;flex-direction:column}.copy-row code{max-width:100%;overflow-wrap:anywhere}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+.field-label-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.preview-template-link{font:500 12px Arial,sans-serif;color:var(--wine);text-decoration:none}
+.preview-template-link:hover{text-decoration:underline;color:var(--gold)}
+
+/* ── 12h AM/PM Time Picker ─────────────────────────────────────────── */
+.time-picker-row{display:flex;align-items:center;gap:6px}
+.time-picker-row .time-part{flex:1;min-width:0;min-height:45px;padding:9px 6px;border:1px solid #d7cabb;border-radius:8px;background:#fffefa;color:#30272a;outline:none;text-align:center;cursor:pointer}
+.time-picker-row .time-part:focus{border-color:#9f712d;box-shadow:0 0 0 3px #d3ad6433}
+.time-picker-row .time-ampm{font-weight:700;color:var(--wine)}
+.time-sep{color:#a08070;font-size:20px;font-weight:700;line-height:1;flex-shrink:0}
+
+/* ── Payment Pending Notice ────────────────────────────────────────── */
+.payment-pending-notice{text-align:center;margin:20px 0 10px;padding:24px 22px;border:1px solid #d9c28e;border-radius:14px;background:linear-gradient(135deg,#fff9ef,#fdf0d8)}
+.ppn-icon{font-size:38px;line-height:1;margin-bottom:12px}
+.ppn-title{font:700 21px "Playfair Display",Georgia,serif;color:var(--wine);margin:0 0 10px}
+.ppn-body{color:#5a4040;font-size:16px;line-height:1.55;margin:0 0 12px;max-width:440px;margin-left:auto;margin-right:auto}
+.ppn-hint{font:12px Arial,sans-serif;color:var(--muted);letter-spacing:.02em;margin:0}
+
+/* ── Dashboard Action Card & Refresh System ──────────────────────────── */
+.dashboard-action-card{margin:24px 0 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.dashboard-btn-container{width:100%;display:flex;justify-content:center}
+
+.success-link.is-disabled{
+  opacity:0.52;
+  cursor:not-allowed;
+  pointer-events:none;
+  background:#665459!important;
+  border-color:#5a494d!important;
+  color:#f4ebeb!important;
+  box-shadow:none!important;
+  filter:grayscale(30%);
+}
+.success-link.is-disabled:hover{transform:none}
+
+.success-link:not(.is-disabled){
+  cursor:pointer;
+  pointer-events:auto;
+  box-shadow:0 6px 20px rgba(110,20,41,0.32);
+}
+
+.btn-icon{margin-right:7px;display:inline-block;font-size:16px}
+
+.refresh-action-container{display:flex;justify-content:center;margin-top:2px}
+.button-refresh{
+  min-height:38px;
+  padding:0 18px;
+  font-size:13px;
+  border-color:#cba760;
+  color:var(--wine);
+  background:#fffdf9;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.button-refresh:hover:not(:disabled){
+  background:#fcf2dc;
+  border-color:var(--wine);
+  color:var(--wine);
+  transform:translateY(-1px);
+}
+.button-refresh:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.refresh-icon{
+  font-size:16px;
+  line-height:1;
+  display:inline-block;
+  transition:transform .2s ease;
+}
+.refresh-icon.spinning{
+  animation:refresh-spin 0.75s linear infinite;
+}
+@keyframes refresh-spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+.refresh-status-msg{
+  font:13px Arial,sans-serif;
+  color:var(--muted);
+  margin:4px 0 0;
+  min-height:18px;
+  text-align:center;
+  line-height:1.45;
+}
+.refresh-status-msg.msg-pending{
+  color:#91571f;
+  font-weight:600;
+}
+.refresh-status-msg.msg-success{
+  color:#1b663c;
+  font-weight:700;
+}
+.refresh-status-msg.msg-error{
+  color:#9c2435;
+}
+
+/* ── Payment Verified Notice ────────────────────────────────────────── */
+.payment-verified-notice{
+  text-align:center;
+  margin:20px 0 10px;
+  padding:22px 20px;
+  border:1px solid #7bc69c;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f2fbf6,#e4f6ec);
+}
+.pvn-icon{
+  width:46px;
+  height:46px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  background:#245a43;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:26px;
+  font-weight:bold;
+  box-shadow:0 4px 12px rgba(36,90,67,0.25);
+}
+.pvn-title{
+  font:700 21px "Playfair Display",Georgia,serif;
+  color:#154a32;
+  margin:0 0 8px;
+}
+.pvn-body{
+  color:#224f38;
+  font-size:15px;
+  line-height:1.55;
+  margin:0;
+  max-width:440px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ── Status badges in success details ──────────────────────────────── */
+.badge-status{
+  display:inline-block;
+  padding:3px 9px;
+  border-radius:4px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.badge-status.badge-pending{
+  background:#fdf2e2;
+  color:#935017;
+  border:1px solid #ecc997;
+}
+.badge-status.badge-verified{
+  background:#e5f7ed;
+  color:#196137;
+  border:1px solid #99ddb4;
+}

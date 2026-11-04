@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#32030B">
+  <title>Royal Wedding Invitation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background-color: #140105;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+      overscroll-behavior: contain;
+      background-color: #140105;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    #app-mount {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      position: relative;
+    }
+
+    /* Fixed single-screen slide templates (e.g. template-01, template-02, template-04, template-05) */
+    html.fixed-template,
+    body.fixed-template {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden !important;
+      position: fixed;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+
+    .fixed-template #app-mount {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    #luxury-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at 50% 30%, #3a040d 0%, #120104 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+    }
+
+    .loader-ring {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-top: 2px solid #D4AF37;
+      border-bottom: 2px solid #ECC880;
+      animation: royalSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    .loader-text {
+      margin-top: 18px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: #ECC880;
+      text-transform: uppercase;
+    }
+
+    @keyframes royalSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .rsvp-launcher {
+      position: fixed;
+      right: max(16px, env(safe-area-inset-right));
+      bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 10000;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 1px solid #ecc880;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7a1426, #3f0713);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+      color: #f7e5b5;
+      font: 700 12px Georgia, serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .rsvp-dialog {
+      width: min(420px, calc(100vw - 28px));
+      max-height: min(90dvh, 720px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      border: 1px solid #d4af37;
+      border-radius: 18px;
+      padding: 24px;
+      background: #fffaf0;
+      color: #3b1a1f;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .55);
+      font: 16px Georgia, serif;
+    }
+
+    .rsvp-dialog::backdrop { background: rgba(15, 2, 5, .76); }
+    .rsvp-dialog h2 { margin: 0 0 8px; color: #7a1426; }
+    .rsvp-dialog p { line-height: 1.45; }
+    .rsvp-dialog label, .rsvp-dialog legend { display: block; margin: 14px 0 6px; font-size: 14px; font-weight: 700; }
+    .rsvp-dialog input, .rsvp-dialog select, .rsvp-dialog textarea { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid #b98a2f; border-radius: 8px; background: #fff; color: #3b1a1f; font: inherit; }
+    .rsvp-dialog textarea { min-height: 84px; resize: vertical; }
+    .rsvp-dialog fieldset { margin: 0; padding: 0; border: 0; }
+    .rsvp-dialog .rsvp-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .rsvp-dialog button { min-height: 42px; border-radius: 999px; padding: 0 16px; cursor: pointer; }
+    .rsvp-dialog [type="submit"] { flex: 1; border: 1px solid #7a1426; background: #7a1426; color: #fff5d9; font-weight: 700; }
+    .rsvp-dialog [data-rsvp-close] { border: 1px solid #b98a2f; background: #fff; color: #3b1a1f; }
+    .rsvp-dialog [role="status"] { min-height: 1.4em; color: #4d0a18; }
+    .rsvp-dialog :focus-visible { outline: 3px solid #d4af37; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+
+  <div id="luxury-loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Summoning The Royal Suite</div>
+  </div>
+
+  <main id="app-mount"></main>
+
+  <script type="module">
+    import { fetchInvitationByCode, submitRsvp } from './api.js';
+    import { localizeHtml, translateText } from './i18n.js';
+
+    function removeLoader() {
+      const loader = document.getElementById('luxury-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
+      }
+    }
+
+    function showPageError(message) {
+      const mount = document.getElementById('app-mount');
+      mount.innerHTML = `
+        <section role="alert" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;color:#ECC880;background:#140105;font-family:Georgia,serif">
+          <h1 style="font-family:Georgia,serif">Invitation unavailable</h1>
+          <p></p>
+          <button type="button" style="padding:12px 22px;border:1px solid #D4AF37;border-radius:24px;background:#3a040d;color:#ECC880;font:inherit">Try again</button>
+        </section>`;
+      mount.querySelector('p').textContent = message;
+      mount.querySelector('button').addEventListener('click', () => location.reload());
+    }
+
+    function mountRsvpWidget(mount, invitation, inviteCode, language) {
+      const { guest, wedding } = invitation;
+      const capacity = guest.persons;
+      const launcher = document.createElement('button');
+      launcher.type = 'button';
+      launcher.className = 'rsvp-launcher';
+      launcher.textContent = translateText('RSVP', language);
+      launcher.setAttribute('aria-haspopup', 'dialog');
+
+      const dialog = document.createElement('dialog');
+      dialog.className = 'rsvp-dialog';
+      const title = document.createElement('h2');
+      title.textContent = translateText('Will you join us?', language);
+      const description = document.createElement('p');
+      description.textContent = translateText('Please let the couple know whether you can attend.', language);
+      const form = document.createElement('form');
+      const guestLabel = document.createElement('p');
+      guestLabel.textContent = `${translateText('Guest name', language)}:`;
+      const guestName = document.createElement('p');
+      guestName.textContent = guest.name;
+
+      const answerGroup = document.createElement('fieldset');
+      const answerLegend = document.createElement('legend');
+      answerLegend.textContent = translateText('Your response', language);
+      const answerLabel = document.createElement('label');
+      const answerSelect = document.createElement('select');
+      answerSelect.name = 'response';
+      answerSelect.setAttribute('aria-label', translateText('Your response', language));
+      [['attending', 'Gladly accepting'], ['declined', 'Unable to attend'], ['tentative', 'Not sure yet']].forEach(([value, label]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = translateText(label, language);
+        answerSelect.append(option);
+      });
+      answerLabel.append(answerSelect);
+      answerGroup.append(answerLegend, answerLabel);
+
+      const countLabel = document.createElement('label');
+      countLabel.htmlFor = 'rsvp-attendees';
+      countLabel.textContent = translateText(`Number attending (up to ${capacity})`, language);
+      const countSelect = document.createElement('select');
+      countSelect.id = 'rsvp-attendees';
+      countSelect.name = 'attendees';
+      for (let count = 1; count <= capacity; count++) {
+        const option = document.createElement('option');
+        option.value = String(count);
+        option.textContent = String(count);
+        countSelect.append(option);
+      }
+
+      const wishesLabel = document.createElement('label');
+      wishesLabel.htmlFor = 'rsvp-wishes';
+      wishesLabel.textContent = translateText('Wishes message (optional)', language);
+      const wishesInput = document.createElement('textarea');
+      wishesInput.id = 'rsvp-wishes';
+      wishesInput.name = 'wishes_message';
+      wishesInput.maxLength = 1000;
+
+      const status = document.createElement('p');
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      const actions = document.createElement('div');
+      actions.className = 'rsvp-actions';
+      const submit = document.createElement('button');
+      submit.type = 'submit';
+      submit.textContent = translateText('Send RSVP', language);
+      let isSaved = false;
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.dataset.rsvpClose = '';
+      close.textContent = translateText('Close', language);
+      actions.append(submit, close);
+      form.append(guestLabel, guestName, answerGroup, countLabel, countSelect, wishesLabel, wishesInput, status, actions);
+      dialog.append(title, description, form);
+      mount.append(launcher, dialog);
+
+      function updateCountVisibility() {
+        const attending = answerSelect.value === 'attending';
+        countLabel.hidden = !attending;
+        countSelect.hidden = !attending;
+      }
+
+      answerSelect.addEventListener('change', updateCountVisibility);
+      launcher.addEventListener('click', () => dialog.showModal());
+      close.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => {
+        if (event.target === dialog) dialog.close();
+      });
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        status.textContent = '';
+        submit.disabled = true;
+        const submitText = submit.textContent;
+        submit.textContent = translateText('Sending...', language);
+        try {
+          const result = await submitRsvp({
+            inviteCode,
+            response: answerSelect.value,
+            attendees: Number(countSelect.value),
+            wishesMessage: wishesInput.value,
+            capacity: guest.persons
+          });
+          status.textContent = translateText(result.message || 'Your RSVP has been saved.', language);
+          isSaved = true;
+        } catch (error) {
+          status.textContent = translateText(error.message || 'Your RSVP could not be saved. Please try again.', language);
+        } finally {
+          submit.disabled = isSaved;
+          submit.textContent = isSaved ? translateText('RSVP sent', language) : submitText;
+        }
+      });
+      updateCountVisibility();
+    }
+
+    async function bootstrap() {
+      const p = new URLSearchParams(window.location.search);
+      const inviteCode = (p.get('code') || '').trim();
+      const requestedLanguage = String(p.get('lang') || 'en').toLowerCase();
+      const language = ['en', 'bn', 'hi', 'ur'].includes(requestedLanguage) ? requestedLanguage : 'en';
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === 'ur' ? 'rtl' : 'ltr';
+
+      try {
+        const weddingPayload = await fetchInvitationByCode(inviteCode);
+        const guest = weddingPayload.guest;
+        const templateId = String(weddingPayload.wedding.template_id || 'template-02').trim();
+        if (!['template-01', 'template-02', 'template-03', 'template-04', 'template-05', 'template-06', 'template-07', 'template-08', 'template-09', 'template-10'].includes(templateId)) {
+          throw new Error('This invitation is configured with an unsupported design.');
+        }
+
+        const fixedTemplates = ['template-02', 'template-04', 'template-05'];
+        const isFixed = fixedTemplates.includes(templateId);
+        document.documentElement.classList.toggle('fixed-template', isFixed);
+        document.body.classList.toggle('fixed-template', isFixed);
+
+        const module = await import(`./templates/${templateId}.js`);
+
+        const mount = document.getElementById('app-mount');
+        mount.innerHTML = localizeHtml(module.default({
+          guest,
+          wedding: weddingPayload.wedding,
+          events: weddingPayload.events || []
+        }), language);
+
+        if (typeof module.mount === 'function') {
+          module.mount(mount, {
+            guest,
+            wedding: weddingPayload.wedding,
+            events: weddingPayload.events || []
+          });
+        }
+        mountRsvpWidget(mount, weddingPayload, guest.invite_code, language);
+      } catch (err) {
+        console.error('Invitation loading error:', err);
+        showPageError(err.message || 'We could not load this invitation. Please try again.');
+      } finally {
+        removeLoader();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', bootstrap);
+  </script>
+</body>
+</html>
