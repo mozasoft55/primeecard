@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-floral" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#3c1a26"/>
+      <stop offset="60%" stop-color="#1b0910"/>
+      <stop offset="100%" stop-color="#0c0207"/>
+    </radialGradient>
+    <linearGradient id="gold-floral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e29e7c"/>
+      <stop offset="50%" stop-color="#ffcfb5"/>
+      <stop offset="100%" stop-color="#c97752"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-floral)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-floral)" stroke-width="1.2" stroke-opacity="0.6"/>
+  <!-- Botanical Floral Oval Wreath -->
+  <ellipse cx="150" cy="150" rx="75" ry="85" fill="none" stroke="url(#gold-floral)" stroke-width="1.4"/>
+  <ellipse cx="150" cy="150" rx="80" ry="90" fill="none" stroke="url(#gold-floral)" stroke-width="0.6" stroke-dasharray="3,3" stroke-opacity="0.4"/>
+  <!-- Hand-drawn leaf accents -->
+  <path d="M150 62 C145 52, 155 52, 150 62 Z" fill="url(#gold-floral)"/>
+  <path d="M142 66 C136 60, 142 56, 142 66 Z" fill="url(#gold-floral)"/>
+  <path d="M158 66 C164 60, 158 56, 158 66 Z" fill="url(#gold-floral)"/>
+  <!-- Floral Central Rose Monogram -->
+  <g transform="translate(150, 145)" stroke="url(#gold-floral)" stroke-width="1.2" fill="none">
+    <circle cx="0" cy="0" r="14" stroke-opacity="0.4"/>
+    <path d="M-6 -6 C-2 -12, 6 -12, 6 -6 C12 -2, 12 6, 6 6 C2 12, -6 12, -6 6 C-12 2, -12 -6, -6 -6 Z" fill="url(#gold-floral)" fill-opacity="0.2"/>
+    <circle cx="0" cy="0" r="3" fill="url(#gold-floral)"/>
+  </g>
+  <text x="150" y="215" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-floral)" font-weight="700" text-anchor="middle" letter-spacing="4">BOTANICAL BLUSH</text>
+  <text x="150" y="240" font-family="'Playfair Display', Georgia, serif" font-size="16" fill="#fff8fa" font-weight="700" text-anchor="middle" letter-spacing="2">JANNAT BAGH</text>
+  <text x="150" y="258" font-family="'Cormorant Garamond', Georgia, serif" font-size="11" fill="url(#gold-floral)" text-anchor="middle" letter-spacing="3">ENGLISH BLUSH &amp; ROSE</text>
+  <line x1="85" y1="270" x2="215" y2="270" stroke="url(#gold-floral)" stroke-width="0.8" stroke-opacity="0.4"/>
+  <text x="150" y="288" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#e5c5cf" text-anchor="middle">Enchanted Garden Romance</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-floral)" text-anchor="middle" letter-spacing="3">BESPOKE FLORAL</text>
+</svg>

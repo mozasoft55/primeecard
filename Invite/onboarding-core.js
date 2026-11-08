@@ -149,6 +149,8 @@ export function validateOnboarding(input) {
     venue: text('venue', 180),
     address: text('address', 500),
     map_url: mapUrl,
+    couple_photo: text('couple_photo', 500000),
+    venue_photo: text('venue_photo', 500000),
     template_style: template,
     theme_name: required('theme_name', 'Theme', 60),
     package_code: required('package_code', 'Package', 40),

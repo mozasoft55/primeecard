@@ -1,3 +1,4 @@
+import { PhotoUploadComponent } from '../utils/PhotoUploadComponent.js';
 import { ONBOARDING_CONFIG } from '../onboarding-config.js';
 import {
   AVAILABLE_TEMPLATES,
@@ -33,6 +34,109 @@ let packageConfigurationLoaded = false;
 let designConfigurationLoaded = false;
 let cashRequestMode = false;
 let busy = false;
+
+// ── Photo Upload & Compression Pipeline ──────────────────────────────
+function persistUploadedPhoto(slot, result) {
+  const dataUrl = result.dataUrl || result.previewUrl || '';
+  if (!dataUrl) return;
+  const storageKey = slot === 'couple' ? 'wedding-couple-photo' : 'wedding-venue-photo';
+  const legacyKey = slot === 'couple' ? 'wedding_couple_photo' : 'wedding_venue_photo';
+  const onboardKey = slot === 'couple' ? 'onboard-couple-photo' : 'onboard-venue-photo';
+
+  try {
+    localStorage.setItem(storageKey, dataUrl);
+    localStorage.setItem(legacyKey, dataUrl);
+    sessionStorage.setItem(storageKey, dataUrl);
+    sessionStorage.setItem(onboardKey, dataUrl);
+  } catch (err) {
+    console.warn(`[Onboard] Could not persist ${slot} photo to localStorage:`, err);
+    try {
+      sessionStorage.setItem(storageKey, dataUrl);
+    } catch (_) {}
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('wedding-photo-updated', { detail: { slot, dataUrl } }));
+  }
+}
+
+function clearUploadedPhoto(slot) {
+  const storageKey = slot === 'couple' ? 'wedding-couple-photo' : 'wedding-venue-photo';
+  const legacyKey = slot === 'couple' ? 'wedding_couple_photo' : 'wedding_venue_photo';
+  const onboardKey = slot === 'couple' ? 'onboard-couple-photo' : 'onboard-venue-photo';
+
+  try {
+    localStorage.removeItem(storageKey);
+    localStorage.removeItem(legacyKey);
+    sessionStorage.removeItem(storageKey);
+    sessionStorage.removeItem(onboardKey);
+  } catch (_) {}
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('wedding-photo-removed', { detail: { slot } }));
+  }
+}
+
+let photoUploader = null;
+const uploaderContainer = document.getElementById('onboard-photo-uploader');
+if (uploaderContainer) {
+  try {
+    photoUploader = new PhotoUploadComponent({
+      container: uploaderContainer,
+      maxWidth: 1200,
+      quality: 0.8,
+      onPhotoReady: (slot, result) => {
+        persistUploadedPhoto(slot, result);
+      },
+      onPhotoRemoved: (slot) => {
+        clearUploadedPhoto(slot);
+      }
+    });
+
+    try {
+      const savedCouple = localStorage.getItem('wedding-couple-photo') || sessionStorage.getItem('wedding-couple-photo');
+      const savedVenue = localStorage.getItem('wedding-venue-photo') || sessionStorage.getItem('wedding-venue-photo');
+      if (savedCouple) photoUploader.loadExisting('couple', savedCouple, 'Saved');
+      if (savedVenue) photoUploader.loadExisting('venue', savedVenue, 'Saved');
+    } catch (_) {}
+  } catch (err) {
+    console.warn('[Onboard] PhotoUploadComponent initialization deferred:', err);
+  }
+}
+
+async function uploadPhotoToSupabase(file, prefix = 'photo') {
+  if (!file) return '';
+  const supabaseBase = ONBOARDING_CONFIG.supabaseUrl 
+    || (ONBOARDING_CONFIG.onboardingEndpoint ? ONBOARDING_CONFIG.onboardingEndpoint.split('/functions/')[0] : 'https://skpcxbdrmsnwmggjodkz.supabase.co');
+  const bucket = 'wedding-photos';
+  const cleanName = `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
+  const uploadUrl = `${supabaseBase}/storage/v1/object/${bucket}/${cleanName}`;
+
+  try {
+    const res = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'apikey': ONBOARDING_CONFIG.publishableKey,
+        'Authorization': `Bearer ${ONBOARDING_CONFIG.publishableKey}`,
+        'Content-Type': 'image/webp'
+      },
+      body: file
+    });
+    if (res.ok) {
+      return `${supabaseBase}/storage/v1/object/public/${bucket}/${cleanName}`;
+    }
+  } catch (err) {
+    console.warn('[Onboard] Supabase direct storage upload failed, using persistent data URL:', err);
+  }
+
+  // Fallback: Convert compressed WebP blob to Base64 data URL (<250KB)
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result || '');
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+}
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -288,13 +392,35 @@ function renderDesignChoices(styles, availableThemes, warning = '') {
     .map(style => `<option value="${escapeHtml(style.template_id)}">${escapeHtml(style.template_id)} · ${escapeHtml(style.style_name)}</option>`).join('');
   form.elements.theme_name.innerHTML = '<option value="">Choose a theme</option>' + themes
     .map(theme => `<option value="${escapeHtml(theme.theme_name)}">${escapeHtml(theme.label || theme.theme_name)}</option>`).join('');
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedTemplate = (urlParams.get('template') || localStorage.getItem('selected_invitation_template') || '').trim();
+  const requestedTheme = (urlParams.get('theme') || urlParams.get('color') || localStorage.getItem('selected_invitation_theme') || '').trim();
+
+  let defaultTemplate = 'template-02';
+  if (requestedTemplate) {
+    const match = allStyles.find(s => s.template_id.toLowerCase() === requestedTemplate.toLowerCase())
+      || (requestedTemplate.includes('crimson') || requestedTemplate.includes('alta') ? allStyles.find(s => s.template_id === 'template-06') : null)
+      || (requestedTemplate.includes('noor') || requestedTemplate.includes('muslim') ? allStyles.find(s => s.template_id === 'template-04') : null)
+      || (requestedTemplate.includes('anand') || requestedTemplate.includes('sikh') ? allStyles.find(s => s.template_id === 'template-05') : null)
+      || (requestedTemplate.includes('noir') || requestedTemplate.includes('royal') ? allStyles.find(s => s.template_id === 'template-01') : null);
+    if (match) defaultTemplate = match.template_id;
+  }
+
+  let defaultTheme = 'maroon';
+  if (requestedTheme) {
+    const matchTheme = themes.find(t => t.theme_name.toLowerCase() === requestedTheme.toLowerCase());
+    if (matchTheme) defaultTheme = matchTheme.theme_name;
+  }
+
   const currentVal = form.elements.template_style.value;
   form.elements.template_style.value = (currentVal && allStyles.some(s => s.template_id === currentVal))
     ? currentVal
-    : (allStyles.some(s => s.template_id === 'template-02') ? 'template-02' : allStyles[0]?.template_id || '');
-  form.elements.theme_name.value = themes.some(theme => theme.theme_name === 'maroon')
-    ? 'maroon'
-    : themes[0]?.theme_name || '';
+    : (allStyles.some(s => s.template_id === defaultTemplate) ? defaultTemplate : allStyles[0]?.template_id || '');
+
+  const currentTheme = form.elements.theme_name.value;
+  form.elements.theme_name.value = (currentTheme && themes.some(t => t.theme_name === currentTheme))
+    ? currentTheme
+    : (themes.some(t => t.theme_name === defaultTheme) ? defaultTheme : themes[0]?.theme_name || '');
   designWarning.textContent = warning;
   designWarning.hidden = !warning;
   renderThemePreview();
@@ -352,8 +478,8 @@ function updatePaymentPanel() {
   const proof = form.elements.proof;
   utr.disabled = !upi;
   proof.disabled = !upi;
-  document.getElementById('merchant-name').textContent = paymentConfig.merchant_name || 'MD KALIM KHAN';
-  document.getElementById('upi-vpa').textContent = paymentConfig.upi_vpa || '9330981386@okbizaxis';
+  document.getElementById('merchant-name').textContent = paymentConfig.merchant_name || 'Prime eCard';
+  document.getElementById('upi-vpa').textContent = paymentConfig.upi_vpa || '9477929927@okbizaxis';
   updateQr();
   syncNavigationAvailability();
 }
@@ -384,10 +510,30 @@ function updateConfigurationWarnings() {
   if (captcha) captcha.hidden = true;
 }
 
-function collectInput() {
+function collectInput(overrideData = null) {
   readEventInputs();
+  const formData = overrideData || Object.fromEntries(new FormData(form).entries());
+  if (photoUploader) {
+    if (!formData.couple_photo) {
+      const res = photoUploader.getResult('couple');
+      const stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-couple-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-couple-photo') : null);
+      if (res?.dataUrl || res?.previewUrl || stored) formData.couple_photo = res?.dataUrl || res?.previewUrl || stored;
+    }
+    if (!formData.venue_photo) {
+      const res = photoUploader.getResult('venue');
+      const stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-venue-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-venue-photo') : null);
+      if (res?.dataUrl || res?.previewUrl || stored) formData.venue_photo = res?.dataUrl || res?.previewUrl || stored;
+    }
+  } else {
+    if (!formData.couple_photo) {
+      formData.couple_photo = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-couple-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-couple-photo') : '') || '';
+    }
+    if (!formData.venue_photo) {
+      formData.venue_photo = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-venue-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-venue-photo') : '') || '';
+    }
+  }
   return validateOnboarding({
-    ...Object.fromEntries(new FormData(form).entries()),
+    ...formData,
     events: eventRows
   });
 }
@@ -498,7 +644,7 @@ async function loadConfiguration() {
     if (response.ok) {
       const config = await response.json();
       packages = config.packages || [];
-      paymentConfig = config.payment || { upi_vpa: '9330981386@okbizaxis', merchant_name: 'Digital Wedding Cards' };
+      paymentConfig = config.payment || { upi_vpa: '9477929927@okbizaxis', merchant_name: 'Prime eCard' };
       const styles = (config.styles && config.styles.length) ? config.styles : DEFAULT_STYLES;
       themes = (config.themes && config.themes.length) ? config.themes : DEFAULT_THEMES;
       packageConfigurationLoaded = true;
@@ -531,7 +677,7 @@ async function loadConfiguration() {
       features: ['Custom Themes & Audio', 'Full 5-Day Event Timeline', 'Dedicated Support']
     }
   ];
-  paymentConfig = { upi_vpa: '9330981386@okbizaxis', merchant_name: 'Digital Wedding Cards' };
+  paymentConfig = { upi_vpa: '9477929927@okbizaxis', merchant_name: 'Prime eCard' };
   packageConfigurationLoaded = true;
   designConfigurationLoaded = true;
   renderDesignChoices(DEFAULT_STYLES, DEFAULT_THEMES, '');
@@ -639,7 +785,7 @@ form.elements.invocation?.addEventListener('input', () => {
 
 document.getElementById('copy-vpa').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText(paymentConfig.upi_vpa || '9330981386@okbizaxis');
+    await navigator.clipboard.writeText(paymentConfig.upi_vpa || '9477929927@okbizaxis');
     document.getElementById('copy-vpa').textContent = 'Copied';
   } catch {
     showError('Could not copy UPI ID.');
@@ -662,16 +808,37 @@ form.addEventListener('submit', async event => {
   event.preventDefault();
   if (busy) return;
 
-  const inputData = cashRequestMode 
-    ? validateCashRequest(Object.fromEntries(new FormData(form).entries())).value
-    : collectInput().value;
-
   busy = true;
   submitButton.disabled = true;
-  submitButton.textContent = cashRequestMode ? 'Sending request…' : 'Creating your order…';
+  submitButton.textContent = 'Optimizing & uploading photos…';
   showError('');
 
   try {
+    let couplePhoto = '';
+    let venuePhoto = '';
+
+    if (photoUploader) {
+      const coupleFile = photoUploader.getFile('couple');
+      const venueFile = photoUploader.getFile('venue');
+
+      if (coupleFile) {
+        couplePhoto = await uploadPhotoToSupabase(coupleFile, 'couple');
+      }
+      if (venueFile) {
+        venuePhoto = await uploadPhotoToSupabase(venueFile, 'venue');
+      }
+    }
+
+    const rawFormData = Object.fromEntries(new FormData(form).entries());
+    if (couplePhoto) rawFormData.couple_photo = couplePhoto;
+    if (venuePhoto) rawFormData.venue_photo = venuePhoto;
+
+    const inputData = cashRequestMode 
+      ? validateCashRequest(rawFormData).value
+      : collectInput(rawFormData).value;
+
+    submitButton.textContent = cashRequestMode ? 'Sending request…' : 'Creating your order…';
+
     const supabaseBase = ONBOARDING_CONFIG.supabaseUrl 
       || (ONBOARDING_CONFIG.onboardingEndpoint ? ONBOARDING_CONFIG.onboardingEndpoint.split('/functions/')[0] : 'https://skpcxbdrmsnwmggjodkz.supabase.co');
     const rpcUrl = `${supabaseBase}/rest/v1/rpc/submit_customer_onboarding`;
@@ -711,6 +878,26 @@ form.addEventListener('submit', async event => {
 
     sessionStorage.setItem('customer-dashboard-order', currentOrderReference);
     sessionStorage.setItem('customer-dashboard-token', currentDashboardToken);
+
+    // Persist photo URLs into storage for instant access across dashboard, studio, and guest preview
+    if (couplePhoto) {
+      try {
+        localStorage.setItem('wedding-couple-photo', couplePhoto);
+        localStorage.setItem('wedding_couple_photo', couplePhoto);
+        localStorage.setItem('wedding_couple_photo_' + currentOrderReference, couplePhoto);
+      } catch (e) {}
+      sessionStorage.setItem('wedding-couple-photo', couplePhoto);
+      sessionStorage.setItem('onboard-couple-photo', couplePhoto);
+    }
+    if (venuePhoto) {
+      try {
+        localStorage.setItem('wedding-venue-photo', venuePhoto);
+        localStorage.setItem('wedding_venue_photo', venuePhoto);
+        localStorage.setItem('wedding_venue_photo_' + currentOrderReference, venuePhoto);
+      } catch (e) {}
+      sessionStorage.setItem('wedding-venue-photo', venuePhoto);
+      sessionStorage.setItem('onboard-venue-photo', venuePhoto);
+    }
 
     applyPaymentStatusState(result.payment_status || 'Pending Verification', 0, '');
   } catch (error) {

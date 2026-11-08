@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-kunjavan" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#3d1b28"/>
+      <stop offset="60%" stop-color="#230d17"/>
+      <stop offset="100%" stop-color="#0f050a"/>
+    </radialGradient>
+    <linearGradient id="gold-brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="40%" stop-color="#fcedb6"/>
+      <stop offset="70%" stop-color="#c89b3c"/>
+      <stop offset="100%" stop-color="#8f691b"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-kunjavan)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-brass)" stroke-width="1.5" stroke-opacity="0.75"/>
+  <!-- Cascading Garland Canopy Top Motifs -->
+  <g fill="url(#gold-brass)" opacity="0.85">
+    <circle cx="20" cy="20" r="4"/>
+    <circle cx="280" cy="20" r="4"/>
+    <circle cx="20" cy="380" r="4"/>
+    <circle cx="280" cy="380" r="4"/>
+    <!-- Hanging Garland swags -->
+    <path d="M40 30 Q 95 60 150 40 Q 205 60 260 30" fill="none" stroke="url(#gold-brass)" stroke-width="1.2"/>
+    <circle cx="95" cy="50" r="2.5"/>
+    <circle cx="150" cy="40" r="3"/>
+    <circle cx="205" cy="50" r="2.5"/>
+  </g>
+  <!-- Botanical Garden Arch -->
+  <path d="M48 185 C48 115, 95 65, 150 65 C205 65, 252 115, 252 185 L252 335 L48 335 Z" fill="none" stroke="url(#gold-brass)" stroke-width="1.8"/>
+  <path d="M60 190 C60 130, 100 80, 150 80 C200 80, 240 130, 240 190 L240 325 L60 325 Z" fill="none" stroke="url(#gold-brass)" stroke-width="0.75" stroke-dasharray="3,3" stroke-opacity="0.5"/>
+  <!-- Top Invocation -->
+  <text x="150" y="118" font-family="'Cinzel', Georgia, serif" font-size="12" fill="url(#gold-brass)" font-weight="700" text-anchor="middle" letter-spacing="2">|| ওঁ প্রজাপতয়ে নমঃ ||</text>
+  <!-- Shehnai & Lotus Motif -->
+  <g transform="translate(150, 160)" stroke="url(#gold-brass)" stroke-width="1.2" fill="none">
+    <circle cx="0" cy="0" r="15" stroke-width="0.8"/>
+    <path d="M-12 8 C-6 -8, 6 -8, 12 8 Z" fill="url(#gold-brass)" fill-opacity="0.3"/>
+    <circle cx="0" cy="-4" r="3" fill="url(#gold-brass)"/>
+    <!-- Floating leaf accent -->
+    <path d="M-8 12 Q 0 16 8 12" stroke-width="1"/>
+  </g>
+  <!-- Typography -->
+  <text x="150" y="222" font-family="'Cinzel', Georgia, serif" font-size="15" fill="#FCF9F2" font-weight="700" text-anchor="middle" letter-spacing="2">KUNJAVAN TUBEROSE</text>
+  <text x="150" y="243" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-brass)" text-anchor="middle" letter-spacing="3">SHEHNAI &amp; UTSAV</text>
+  <line x1="80" y1="258" x2="220" y2="258" stroke="url(#gold-brass)" stroke-width="0.8" stroke-opacity="0.6"/>
+  <text x="150" y="278" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="12" fill="#e8cfbd" text-anchor="middle">Sandalwood Ivory &amp; Coral Rose</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8.5" fill="url(#gold-brass)" text-anchor="middle" letter-spacing="3">ROYAL INVITATION</text>
+</svg>

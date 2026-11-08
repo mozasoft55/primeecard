@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Ultra-Luxury Royal Wedding Studio & Live Token Engine</title>
+  
+  <!-- Master Design System Styles -->
+  <link rel="stylesheet" href="./base-card.css">
+  <link rel="stylesheet" href="./editorial-story-venue.css">
+  <link rel="stylesheet" href="./royal-animations.css">
+  <link rel="stylesheet" href="./template-selector.css">
+
+  <style>
+    :root {
+      --demo-bg: #090206;
+      --demo-gold: #d4af37;
+      --demo-gold-light: #fae19c;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--demo-bg);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Glow */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -20%;
+      left: 30%;
+      width: 60vw;
+      height: 60vh;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Navigation Studio Bar */
+    .demo-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(12, 3, 7, 0.92);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .demo-top-bar__brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .demo-top-bar__logo {
+      font-size: 1.35rem;
+      color: var(--demo-gold);
+      filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+    }
+
+    .demo-top-bar__title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-top-bar__badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(138, 98, 16, 0.35) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      color: var(--demo-gold-light);
+    }
+
+    .demo-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .demo-btn-mobile-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #d4af37 0%, #a67c1e 100%);
+      border: 1px solid #fae19c;
+      color: #1a0308;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .demo-btn-mobile-trigger:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+    }
+
+    .demo-metrics {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: #c9baa8;
+    }
+
+    .demo-metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 9px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .demo-metric-pill strong {
+      color: var(--demo-gold);
+    }
+
+    /* Studio Main Layout */
+    .demo-layout {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 16px 60px 16px;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 1120px) {
+      .demo-layout {
+        grid-template-columns: 580px 1fr;
+        align-items: start;
+        padding: 30px 24px 80px 24px;
+      }
+      .demo-preview-col {
+        position: sticky;
+        top: 80px;
+      }
+    }
+
+    /* Live Preview Column Header */
+    .demo-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding: 0 4px;
+    }
+
+    .demo-preview-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--demo-gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-preview-active-name {
+      font-size: 0.8rem;
+      color: #cdbeaa;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    /* Preview Card Mount Container */
+    #card-mount {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 600px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Ambient Particles Canvas (Gold Dust & Rose Petals) -->
+  <canvas id="ambient-particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Top Studio Bar -->
+  <header class="demo-top-bar">
+    <div class="demo-top-bar__brand">
+      <span class="demo-top-bar__logo">👑</span>
+      <div>
+        <h1 class="demo-top-bar__title">
+          <span>Ultra-Luxury Wedding Studio</span>
+          <span class="demo-top-bar__badge">Master Architecture</span>
+        </h1>
+      </div>
+    </div>
+
+    <div class="demo-actions">
+      <!-- Full-Screen Realistic Smartphone Frame Preview Trigger -->
+      <button type="button" class="demo-btn-mobile-trigger" id="btn-open-mobile-modal" aria-label="Open Full-Screen Mobile Smartphone Experience">
+        <span>📱</span> <span>Interactive Phone Frame</span>
+      </button>
+
+      <!-- Toggle Ambient Particle Canvas -->
+      <div id="particle-toggle-slot"></div>
+
+      <!-- Live Performance Telemetry -->
+      <div class="demo-metrics">
+        <div class="demo-metric-pill">
+          <span>Active:</span>
+          <strong id="active-template-label">hindu-vedic-crimson</strong>
+        </div>
+        <div class="demo-metric-pill">
+          <span>Swap:</span>
+          <strong id="metric-latency">&lt; 0.5 ms</strong>
+        </div>
+        <div class="demo-metric-pill">
+          <span>CLS:</span>
+          <strong style="color: #4ade80;">0.000</strong>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Split Studio Workspace -->
+  <main class="demo-layout">
+    <!-- Left Column: Template Selector UI with Theme Badges -->
+    <section class="demo-selector-col" aria-label="Template Selector Panel">
+      <div id="selector-mount"></div>
+    </section>
+
+    <!-- Right Column: Real-Time Preview with Royal Envelope Unboxing -->
+    <section class="demo-preview-col" aria-label="Live Wedding Card Preview">
+      <div class="demo-preview-header">
+        <span class="demo-preview-title">
+          <span>⚜️</span> Live Real-Time Token Preview
+        </span>
+        <span class="demo-preview-active-name" id="preview-active-theme">
+          Vedic Crimson & Antique Gold
+        </span>
+      </div>
+
+      <!-- Master Card Canvas Mount -->
+      <div id="card-mount"></div>
+    </section>
+  </main>
+
+  <!-- Client Application Logic -->
+  <script type="module">
+    import { TokenTemplateController } from './TokenTemplateController.js';
+    import { TemplateSelector } from './TemplateSelector.js';
+    import { ScrollReveal } from './ScrollReveal.js';
+    import { ParticleCanvas } from './ParticleCanvas.js';
+    import { CountdownTimer } from './CountdownTimer.js';
+    import { AudioController } from './AudioController.js';
+    import { RoyalEnvelope } from './RoyalEnvelope.js';
+    import { MobilePreviewModal } from './MobilePreviewModal.js';
+
+    // 1. Universal State (Decoupled from visual tokens)
+    const UNIVERSAL_WEDDING_STATE = {
+      id: "WED-2026-8812",
+      invocation: "|| Shree Shree Prajapataye Namah ||",
+      ceremony_title: "Shubho Bibaho & Grand Celebration",
+      couple: {
+        bride: "Sanjukta",
+        groom: "Purushottam",
+        name_order: "bride_first"
+      },
+      date: "December 05, 2026",
+      time: "7:00 PM onwards",
+      venue: {
+        name: "Grand Heritage Palace Grounds",
+        hall: "The Royal Mandap & Banquet Courtyard",
+        address: "Riverfront Promenade, Heritage Boulevard",
+        city: "Bally, West Bengal",
+        map_url: "https://maps.google.com/?q=Grand+Heritage+Palace+Bally",
+        image: "../assets/template-06-palace.jpg"
+      },
+      story: {
+        date: "October 18, 2023",
+        quote: "“One serendipitous afternoon over hot chai blossomed into shared dreams, unending laughter, and a love that feels like home.”",
+        text: "What began as a quiet conversation along the promenade soon unfolded into thousands of shared memories. Today, surrounded by our loved ones, we step together into our forever.",
+        image: "../assets/template-06-couple.webp"
+      },
+      events: [
+        { name: "Mehendi & Sangeet", date: "Dec 04, 2026", time: "5:00 PM", venue: "Courtyard Banquet" },
+        { name: "Auspicious Ceremony (Phere)", date: "Dec 05, 2026", time: "7:00 PM", venue: "Royal Mandap" },
+        { name: "Grand Reception", date: "Dec 06, 2026", time: "7:30 PM", venue: "Imperial Ballroom" }
+      ],
+      rsvp: {
+        phone: "+91 9477929927"
+      }
+    };
+
+    async function initStudio() {
+      // 1. Fetch catalog schema
+      const res = await fetch('./templates.json');
+      const catalog = await res.json();
+      
+      const cardMount = document.getElementById('card-mount');
+      const activeLabel = document.getElementById('active-template-label');
+      const activeTheme = document.getElementById('preview-active-theme');
+      const latencyLabel = document.getElementById('metric-latency');
+
+      // 2. Initialize Floating Ambient Particle Canvas (Gold Dust & Petals)
+      const particleEngine = new ParticleCanvas({
+        canvas: 'ambient-particle-canvas',
+        maxParticles: 42,
+        autoStart: true,
+        type: 'mixed'
+      });
+      const particleToggleSlot = document.getElementById('particle-toggle-slot');
+      if (particleToggleSlot) {
+        particleEngine.renderTogglePill(particleToggleSlot);
+      }
+
+      // 3. Initialize Ambient Wedding Music Controller (invitation.mp3)
+      const audioController = new AudioController({
+        audioSrc: '../invitation.mp3',
+        loop: true,
+        volume: 0.45,
+        label: 'Wedding Shehnai'
+      });
+
+      // 4. Initialize Smartphone Full-Screen Modal Preview
+      const mobileModal = new MobilePreviewModal();
+
+      // 5. Initialize Master Token Template Controller
+      const controller = new TokenTemplateController({
+        templates: catalog.templates,
+        defaultTemplateId: 'hindu-vedic-crimson'
+      });
+
+      // Render base invitation structure
+      controller.render(cardMount, UNIVERSAL_WEDDING_STATE);
+
+      // 6. Wrap Invitation inside 3D Royal Wax Seal Envelope
+      const envelope = new RoyalEnvelope({
+        targetCard: cardMount.firstElementChild,
+        sealText: 'TAP TO UNVEIL',
+        crest: '⚜️',
+        initiallyOpen: false,
+        onUnveil: () => {
+          // Unveiling gesture seamlessly starts wedding music & ambience
+          audioController.play().catch(() => {});
+        }
+      });
+
+      // 7. Initialize Non-blocking Scroll Reveals with hardware acceleration
+      const revealEngine = new ScrollReveal({
+        selector: '.reveal-up, .reveal-fade, .reveal-scale, .reveal-motif, .editorial-section',
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      // 8. Mount Responsive Template Selector UI
+      const selector = new TemplateSelector({
+        container: '#selector-mount',
+        templates: catalog.templates,
+        initialCommunity: 'Hindu', // Non-restrictive default!
+        activeTemplateId: 'hindu-vedic-crimson',
+        assetBasePath: '../assets',
+        onSelect: (template) => {
+          const t0 = performance.now();
+          
+          // Instant In-Place Token Swap! (Zero DOM recreation, zero re-renders)
+          controller.switchTemplate(cardMount, template.id);
+          
+          const dt = (performance.now() - t0).toFixed(2);
+          latencyLabel.textContent = `${dt} ms`;
+          activeLabel.textContent = template.id;
+          activeTheme.textContent = template.theme;
+        },
+        onMobilePreview: (template) => {
+          const cardContent = cardMount.querySelector('.token-card-stage') || cardMount;
+          mobileModal.open({
+            cardContent,
+            title: `${template.title} • Mobile Experience`,
+            tokens: template.tokens
+          });
+        }
+      });
+
+      // Top button opens active template in smartphone mockup
+      const topMobileBtn = document.getElementById('btn-open-mobile-modal');
+      if (topMobileBtn) {
+        topMobileBtn.addEventListener('click', () => {
+          const currentTemplate = controller.activeTemplate;
+          const cardContent = cardMount.querySelector('.token-card-stage') || cardMount;
+          mobileModal.open({
+            cardContent,
+            title: `${currentTemplate?.title || 'Royal Wedding'} • Mobile Experience`,
+            tokens: currentTemplate?.tokens || {}
+          });
+        });
+      }
+    }
+
+    initStudio().catch(console.error);
+  </script>
+</body>
+</html>

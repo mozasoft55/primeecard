@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-sikh" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#122554"/>
+      <stop offset="60%" stop-color="#081126"/>
+      <stop offset="100%" stop-color="#02050e"/>
+    </radialGradient>
+    <linearGradient id="gold-sikh" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5c24e"/>
+      <stop offset="50%" stop-color="#ffdf88"/>
+      <stop offset="100%" stop-color="#d49b28"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-sikh)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-sikh)" stroke-width="1.5" stroke-opacity="0.7"/>
+  <!-- Royal Sikh Gurdwara Dome Arch -->
+  <path d="M40 180 C40 110, 80 60, 150 60 C220 60, 260 110, 260 180 L260 340 L40 340 Z" fill="none" stroke="url(#gold-sikh)" stroke-width="1.8"/>
+  <path d="M52 185 C52 125, 90 75, 150 75 C210 75, 248 125, 248 185 L248 330 L52 330 Z" fill="none" stroke="url(#gold-sikh)" stroke-width="0.75" stroke-opacity="0.5"/>
+  <!-- Top Ik Onkar / Khanda Symbol -->
+  <text x="150" y="120" font-family="'Cinzel', Georgia, serif" font-size="15" fill="url(#gold-sikh)" font-weight="700" text-anchor="middle" letter-spacing="3">ੴ  IK ONKAR</text>
+  <!-- Khanda Royal Insignia -->
+  <g transform="translate(150, 160)" stroke="url(#gold-sikh)" stroke-width="1.4" fill="none">
+    <circle cx="0" cy="0" r="13" stroke-width="1"/>
+    <line x1="0" y1="-18" x2="0" y2="18" stroke-width="1.6"/>
+    <path d="M-11 -7 C-16 0, -11 8, -3 11" fill="none"/>
+    <path d="M11 -7 C16 0, 11 8, 3 11" fill="none"/>
+  </g>
+  <text x="150" y="225" font-family="'Cinzel', Georgia, serif" font-size="16" fill="#f5f8ff" font-weight="700" text-anchor="middle" letter-spacing="2">ANAND KARAJ</text>
+  <text x="150" y="246" font-family="'Playfair Display', Georgia, serif" font-size="11" fill="url(#gold-sikh)" text-anchor="middle" letter-spacing="3">SAPPHIRE &amp; SAFFRON</text>
+  <line x1="85" y1="262" x2="215" y2="262" stroke="url(#gold-sikh)" stroke-width="0.8" stroke-opacity="0.5"/>
+  <text x="150" y="280" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#cbd9f8" text-anchor="middle">Sacred Four Lavan Ceremony</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-sikh)" text-anchor="middle" letter-spacing="3">ROYAL SIKH SUITE</text>
+</svg>

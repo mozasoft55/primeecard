@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 90" fill="none" aria-label="Traditional Shehnai and Dholak Wedding Musicians" role="img">
+  <defs>
+    <linearGradient id="goldSheenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b8860b"/>
+      <stop offset="30%" stop-color="#fae19c"/>
+      <stop offset="60%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ground ornamental lotus vine line -->
+  <path d="M10 82 Q100 78 200 82 Q300 86 390 82" stroke="url(#goldSheenGrad)" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="200" cy="82" r="3" fill="url(#goldSheenGrad)"/>
+  <circle cx="100" cy="80" r="2" fill="url(#goldSheenGrad)"/>
+  <circle cx="300" cy="84" r="2" fill="url(#goldSheenGrad)"/>
+
+  <!-- Left: Shehnai Player Silhouette / Gold Line -->
+  <g transform="translate(45, 10)" stroke="url(#goldSheenGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Turban (Pagri) -->
+    <path d="M28 22 C26 12, 38 10, 44 14 C48 10, 56 12, 54 22 C52 26, 30 26, 28 22 Z" fill="rgba(212, 175, 55, 0.25)"/>
+    <path d="M42 10 Q45 2 46 0 Q48 5 44 10" fill="url(#goldSheenGrad)"/>
+    <!-- Head profile -->
+    <path d="M36 24 C34 28, 36 34, 40 35 C42 35, 45 33, 46 30"/>
+    <!-- Shehnai Instrument -->
+    <path d="M42 33 L80 18 L84 14 L86 24 L82 20 L44 35" fill="rgba(250, 225, 156, 0.4)"/>
+    <ellipse cx="84" cy="19" rx="3" ry="5" fill="url(#goldSheenGrad)"/>
+    <!-- Arms playing shehnai -->
+    <path d="M34 38 C42 42, 52 38, 62 26"/>
+    <path d="M36 44 C46 48, 58 42, 68 24"/>
+    <!-- Body & Kurta seated -->
+    <path d="M34 38 C28 44, 24 56, 20 68 L60 68 C58 58, 52 46, 46 38"/>
+    <!-- Music notes floating -->
+    <path d="M92 14 C96 10, 100 14, 102 12" stroke-dasharray="1 2"/>
+    <circle cx="94" cy="12" r="1.5" fill="url(#goldSheenGrad)"/>
+    <circle cx="102" cy="10" r="1.5" fill="url(#goldSheenGrad)"/>
+  </g>
+
+  <!-- Center: Auspicious Kalash & Swirl Flourish -->
+  <g transform="translate(170, 14)" stroke="url(#goldSheenGrad)" stroke-width="1.4" fill="none">
+    <!-- Sacred Kalash Pot -->
+    <path d="M22 42 C16 54, 44 54, 38 42 L36 36 L24 36 Z" fill="rgba(212, 175, 55, 0.3)"/>
+    <circle cx="30" cy="30" r="6" fill="rgba(250, 225, 156, 0.4)"/>
+    <path d="M25 30 C22 22, 28 16, 30 12 C32 16, 38 22, 35 30 Z" fill="url(#goldSheenGrad)"/>
+    <circle cx="30" cy="10" r="2" fill="#8B0000"/>
+    <line x1="20" y1="36" x2="40" y2="36" stroke-width="1.8"/>
+    <!-- Alpona Paisley wings -->
+    <path d="M16 45 C6 42, 0 34, 4 26 C8 18, 18 24, 18 28" stroke-linecap="round"/>
+    <circle cx="6" cy="24" r="1.5" fill="url(#goldSheenGrad)"/>
+    <path d="M44 45 C54 42, 60 34, 56 26 C52 18, 42 24, 42 28" stroke-linecap="round"/>
+    <circle cx="54" cy="24" r="1.5" fill="url(#goldSheenGrad)"/>
+  </g>
+
+  <!-- Right: Dholak (Drum) Player Silhouette / Gold Line -->
+  <g transform="translate(265, 10)" stroke="url(#goldSheenGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Turban (Pagri) -->
+    <path d="M44 22 C42 12, 54 10, 60 14 C64 10, 72 12, 70 22 C68 26, 46 26, 44 22 Z" fill="rgba(212, 175, 55, 0.25)"/>
+    <path d="M58 10 Q61 2 62 0 Q64 5 60 10" fill="url(#goldSheenGrad)"/>
+    <!-- Head profile -->
+    <path d="M52 24 C50 28, 52 34, 54 35 C56 35, 58 33, 58 30"/>
+    <!-- Seated Body -->
+    <path d="M50 36 C44 42, 38 52, 34 68 L78 68 C74 56, 68 44, 60 36"/>
+    <!-- Dholak Barrel Drum horizontal -->
+    <ellipse cx="28" cy="50" rx="6" ry="12" fill="url(#goldSheenGrad)"/>
+    <path d="M28 38 Q52 34 68 40 L68 62 Q52 66 28 62 Z" fill="rgba(212, 175, 55, 0.2)"/>
+    <ellipse cx="68" cy="51" rx="5" ry="11" fill="url(#goldSheenGrad)"/>
+    <!-- Drum ropes V-pattern -->
+    <path d="M30 42 L66 48 L32 54 L66 58 L32 61" stroke-width="1.2" stroke-dasharray="1 1.5"/>
+    <!-- Hands drumming on dholak -->
+    <path d="M52 38 C42 42, 34 44, 26 48"/>
+    <path d="M56 40 C62 44, 66 46, 70 50"/>
+  </g>
+</svg>

@@ -1,0 +1,565 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.2.0",
+  "templates": [
+    {
+      "id": "hindu-vedic-crimson",
+      "legacyId": "template-06",
+      "title": "Shubho Bibaho Rajbari Heritage",
+      "community": "Hindu",
+      "category": [
+        "Hindu",
+        "Royal"
+      ],
+      "theme": "Rajbari Crimson & 24K Antique Gold",
+      "themeBadge": "Ultra Royal",
+      "tags": [
+        "Hindu",
+        "Bengali",
+        "Rajbari",
+        "Shubho Bibaho",
+        "Toran Arch"
+      ],
+      "thumbnail": "./assets/cover-hindu-vedic.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Great+Vibes&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "linear-gradient(180deg, #FDF8F0 0%, #FAF6EE 50%, #F5EFEB 100%)",
+        "--card-surface": "rgba(255, 253, 248, 0.94)",
+        "--card-surface-hover": "rgba(255, 255, 255, 0.98)",
+        "--card-border": "2px solid #8B0000",
+        "--text-primary": "#5A0514",
+        "--text-secondary": "#7D1326",
+        "--text-muted": "rgba(90, 5, 20, 0.72)",
+        "--accent-gold": "#D4AF37",
+        "--accent-gold-light": "#F5E1A4",
+        "--accent-foil": "linear-gradient(110deg, #8B0000 0%, #D4AF37 30%, #FFE082 50%, #D4AF37 70%, #8B0000 100%)",
+        "--accent-jewel": "#8B0000",
+        "--card-font-display": "'Cinzel Decorative', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(10, 1, 4, 0.85), inset 0 1px 0 rgba(255, 230, 180, 0.2)"
+      }
+    },
+    {
+      "id": "hindu-bengali-alta",
+      "legacyId": "template-03",
+      "title": "Shubho Bibaho Alta & Folk Alpona",
+      "community": "Hindu",
+      "category": [
+        "Hindu",
+        "Floral"
+      ],
+      "theme": "Bengali Alta Red & Rice-Alpona Conch",
+      "themeBadge": "Heritage",
+      "tags": [
+        "Hindu",
+        "Bengali",
+        "Alta",
+        "Alpona",
+        "Paan Pata",
+        "Topor Mukut"
+      ],
+      "thumbnail": "./assets/cover-hindu-alta.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Great+Vibes&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "linear-gradient(180deg, #FDF8F0 0%, #FAF5EE 50%, #F5EDE6 100%)",
+        "--card-surface": "rgba(255, 253, 248, 0.94)",
+        "--card-surface-hover": "rgba(255, 255, 255, 0.98)",
+        "--card-border": "2px solid #9E381A",
+        "--text-primary": "#5C1D0C",
+        "--text-secondary": "#8C2A12",
+        "--text-muted": "rgba(92, 29, 12, 0.72)",
+        "--accent-gold": "#E6A117",
+        "--accent-gold-light": "#FBD160",
+        "--accent-foil": "linear-gradient(110deg, #9E381A 0%, #E6A117 30%, #FFE082 50%, #E6A117 70%, #9E381A 100%)",
+        "--accent-jewel": "#9E381A",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Playfair Display', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23e6a117' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(230, 161, 23, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(18, 5, 2, 0.85), inset 0 1px 0 rgba(255, 230, 180, 0.2)"
+      }
+    },
+    {
+      "id": "hindu-bengali-banarasi",
+      "legacyId": "template-01",
+      "title": "Banarasi Zari & Jharokha Darbar",
+      "community": "Hindu",
+      "category": [
+        "Hindu",
+        "Royal"
+      ],
+      "theme": "Royal Jamdani Indigo & Gold Zari Foil",
+      "themeBadge": "Aristocrat Luxe",
+      "tags": [
+        "Hindu",
+        "Bengali",
+        "Banarasi Zari",
+        "Jharokha",
+        "Mandap",
+        "Royal"
+      ],
+      "thumbnail": "./assets/cover-hindu-banarasi.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Great+Vibes&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #0d1e3d 0%, #081329 60%, #030712 100%)",
+        "--card-surface": "rgba(11, 25, 48, 0.92)",
+        "--card-surface-hover": "rgba(16, 36, 68, 0.96)",
+        "--card-border": "2px solid #E5C158",
+        "--text-primary": "#FAF4E8",
+        "--text-secondary": "#E5C158",
+        "--text-muted": "rgba(250, 244, 232, 0.72)",
+        "--accent-gold": "#E5C158",
+        "--accent-gold-light": "#FFF0B3",
+        "--accent-foil": "linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #E5C158 50%, #fff3cf 75%, #b8860b 100%)",
+        "--accent-jewel": "#0B1930",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23e5c158' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(229, 193, 88, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "28px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(2, 6, 16, 0.92), inset 0 1px 0 rgba(255, 230, 180, 0.25)"
+      }
+    },
+    {
+      "id": "hindu-bengali-kunjavan",
+      "legacyId": "template-05",
+      "title": "Kunjavan Tuberose & Shehnai Utsav",
+      "community": "Hindu",
+      "category": [
+        "Hindu",
+        "Floral"
+      ],
+      "theme": "Sandalwood Ivory & Blush Coral Tuberose",
+      "themeBadge": "Botanical Grace",
+      "tags": [
+        "Hindu",
+        "Bengali",
+        "Tuberose",
+        "Shehnai",
+        "Gaye Holud",
+        "Floral"
+      ],
+      "thumbnail": "./assets/cover-hindu-kunjavan.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Great+Vibes&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "linear-gradient(180deg, #FCF9F2 0%, #F8F3E8 50%, #F2EBE0 100%)",
+        "--card-surface": "rgba(252, 249, 242, 0.95)",
+        "--card-surface-hover": "rgba(255, 255, 255, 0.98)",
+        "--card-border": "2px solid #C24B5A",
+        "--text-primary": "#4A1A24",
+        "--text-secondary": "#7D2D3B",
+        "--text-muted": "rgba(74, 26, 36, 0.72)",
+        "--accent-gold": "#C89B3C",
+        "--accent-gold-light": "#F5E1A4",
+        "--accent-foil": "linear-gradient(110deg, #C24B5A 0%, #C89B3C 35%, #FFE082 50%, #C89B3C 65%, #C24B5A 100%)",
+        "--accent-jewel": "#C24B5A",
+        "--card-font-display": "'Playfair Display', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23c89b3c' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(200, 155, 60, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(45, 12, 18, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8)"
+      }
+    },
+    {
+      "id": "hindu-bengali-swarna",
+      "legacyId": "template-07",
+      "title": "Swarna Mukut & Topor Noir",
+      "community": "Hindu",
+      "category": [
+        "Hindu",
+        "Royal"
+      ],
+      "theme": "Regal Obsidian Noir & 24K Sholapith Gold",
+      "themeBadge": "Haute Couture",
+      "tags": [
+        "Hindu",
+        "Bengali",
+        "Swarna Mukut",
+        "Topor",
+        "Boubhat",
+        "Gold Foil",
+        "Royal"
+      ],
+      "thumbnail": "./assets/cover-hindu-swarna.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Great+Vibes&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(circle at 50% 0%, #1f101a 0%, #0f070c 60%, #050204 100%)",
+        "--card-surface": "rgba(22, 11, 18, 0.9)",
+        "--card-surface-hover": "rgba(34, 18, 28, 0.95)",
+        "--card-border": "2px solid #D4AF37",
+        "--text-primary": "#FFF7ED",
+        "--text-secondary": "#E5C158",
+        "--text-muted": "rgba(255, 247, 237, 0.72)",
+        "--accent-gold": "#D4AF37",
+        "--accent-gold-light": "#FFE680",
+        "--accent-foil": "linear-gradient(110deg, #a00e1e 0%, #d4af37 30%, #fff8d6 50%, #d4af37 70%, #a00e1e 100%)",
+        "--accent-jewel": "#A00E1E",
+        "--card-font-display": "'Cinzel Decorative', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "28px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 230, 180, 0.3)"
+      }
+    },
+    {
+      "id": "muslim-emerald-noor",
+      "legacyId": "template-04",
+      "title": "Noor-e-Jannat Emerald Velvet",
+      "community": "Muslim",
+      "category": [
+        "Muslim",
+        "Royal"
+      ],
+      "theme": "Mughal Emerald & Champagne Gold",
+      "themeBadge": "Foil Shimmer",
+      "tags": [
+        "Muslim",
+        "Royal",
+        "Traditional",
+        "Velvet"
+      ],
+      "thumbnail": "./assets/cover-muslim-noor.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Amiri:ital,wght@0,700;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #062C22 0%, #0B1B3D 60%, #020C09 100%)",
+        "--card-surface": "rgba(6, 44, 34, 0.88)",
+        "--card-surface-hover": "rgba(9, 60, 46, 0.92)",
+        "--card-border": "1px solid rgba(230, 202, 101, 0.45)",
+        "--text-primary": "#FAF3E4",
+        "--text-secondary": "#E6CA65",
+        "--text-muted": "rgba(240, 246, 242, 0.7)",
+        "--accent-gold": "#E6CA65",
+        "--accent-gold-light": "#fae19c",
+        "--accent-foil": "linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #E6CA65 50%, #fff3cf 75%, #b8860b 100%)",
+        "--accent-jewel": "#062C22",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Playfair Display', Georgia, serif",
+        "--card-font-accent": "'Amiri', serif",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23e5c158' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(229, 193, 88, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(2, 12, 8, 0.9), inset 0 1px 0 rgba(250, 225, 156, 0.2)"
+      }
+    },
+    {
+      "id": "muslim-royal-ivory",
+      "legacyId": "template-02",
+      "title": "Mughal Jaali & Linen Ivory",
+      "community": "Muslim",
+      "category": [
+        "Muslim"
+      ],
+      "theme": "Linen Ivory & Antique Gold Jaali",
+      "themeBadge": "Foil Shimmer",
+      "tags": [
+        "Muslim",
+        "Royal",
+        "Floral"
+      ],
+      "thumbnail": "./assets/cover-muslim-ivory.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Amiri:wght@700&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(circle at 50% 0%, #2e2621 0%, #16120f 70%, #0c0a08 100%)",
+        "--card-surface": "rgba(35, 29, 25, 0.8)",
+        "--card-surface-hover": "rgba(48, 40, 34, 0.9)",
+        "--card-border": "1px solid rgba(212, 175, 55, 0.45)",
+        "--text-primary": "#F8FCF9",
+        "--text-secondary": "#dfd2be",
+        "--text-muted": "rgba(223, 210, 190, 0.7)",
+        "--accent-gold": "#D4AF37",
+        "--accent-gold-light": "#fae19c",
+        "--accent-foil": "linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #d4af37 50%, #fff3cf 75%, #b8860b 100%)",
+        "--accent-jewel": "#0B3C2D",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Amiri', serif",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(12, 10, 8, 0.88), inset 0 1px 0 rgba(255, 230, 180, 0.2)"
+      }
+    },
+    {
+      "id": "sikh-anand-karaj",
+      "legacyId": "template-05",
+      "title": "Anand Karaj Sapphire Midnight",
+      "community": "Sikh",
+      "category": [
+        "Sikh",
+        "Royal"
+      ],
+      "theme": "Sapphire Night & Warm Saffron Gold",
+      "themeBadge": "Ultra Royal",
+      "tags": [
+        "Sikh",
+        "Royal",
+        "Traditional"
+      ],
+      "thumbnail": "./assets/cover-sikh-anand.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #0e1e44 0%, #060e22 60%, #020610 100%)",
+        "--card-surface": "rgba(14, 28, 60, 0.82)",
+        "--card-surface-hover": "rgba(22, 42, 88, 0.9)",
+        "--card-border": "1px solid rgba(243, 186, 66, 0.45)",
+        "--text-primary": "#f5f8ff",
+        "--text-secondary": "#cbd9f8",
+        "--text-muted": "rgba(203, 217, 248, 0.7)",
+        "--accent-gold": "#f3ba42",
+        "--accent-gold-light": "#ffdf88",
+        "--accent-foil": "linear-gradient(110deg, #d49b28 0%, #ffdf88 50%, #d49b28 100%)",
+        "--accent-jewel": "#b8781c",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Playfair Display', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23f3ba42' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(243, 186, 66, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(2, 6, 16, 0.9), inset 0 1px 0 rgba(255, 223, 136, 0.2)"
+      }
+    },
+    {
+      "id": "royal-darbar-noir",
+      "legacyId": "template-01",
+      "title": "Midnight Darbar Imperial Noir",
+      "community": "Royal Modern",
+      "category": [
+        "Royal"
+      ],
+      "theme": "Midnight Stage & Polished Gold Foil",
+      "themeBadge": "Ultra Royal",
+      "tags": [
+        "Royal",
+        "Velvet",
+        "Traditional"
+      ],
+      "thumbnail": "./assets/cover-royal-darbar.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(circle at 50% 0%, #221820 0%, #120910 70%, #050204 100%)",
+        "--card-surface": "rgba(28, 18, 26, 0.85)",
+        "--card-surface-hover": "rgba(42, 28, 40, 0.9)",
+        "--card-border": "1px solid rgba(212, 175, 55, 0.4)",
+        "--text-primary": "#fff9fb",
+        "--text-secondary": "#e5d0db",
+        "--text-muted": "rgba(229, 208, 219, 0.7)",
+        "--accent-gold": "#d4af37",
+        "--accent-gold-light": "#fae19c",
+        "--accent-foil": "linear-gradient(110deg, #d4af37 0%, #fae19c 50%, #d4af37 100%)",
+        "--accent-jewel": "#9c27b0",
+        "--card-font-display": "'Cinzel', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(5, 2, 4, 0.9), inset 0 1px 0 rgba(255, 230, 180, 0.2)"
+      }
+    },
+    {
+      "id": "floral-envelope-arch",
+      "legacyId": "template-07",
+      "title": "Blush Editorial & Wax Seal",
+      "community": "Floral",
+      "category": [
+        "Floral",
+        "Royal"
+      ],
+      "theme": "Ivory Stationery & Rose Gold",
+      "themeBadge": "Heritage",
+      "tags": [
+        "Floral",
+        "Royal",
+        "Stationery",
+        "Wax Seal"
+      ],
+      "thumbnail": "./assets/cover-blush-envelope.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #3d1d29 0%, #1f0b14 60%, #0e0308 100%)",
+        "--card-surface": "rgba(42, 18, 28, 0.82)",
+        "--card-surface-hover": "rgba(62, 28, 42, 0.9)",
+        "--card-border": "1px solid rgba(232, 168, 130, 0.45)",
+        "--text-primary": "#fff9fb",
+        "--text-secondary": "#e5d0db",
+        "--text-muted": "rgba(229, 208, 219, 0.7)",
+        "--accent-gold": "#e8a882",
+        "--accent-gold-light": "#ffd5be",
+        "--accent-foil": "linear-gradient(110deg, #c27b58 0%, #ffd6c0 50%, #c27b58 100%)",
+        "--accent-jewel": "#8f2d56",
+        "--card-font-display": "'Playfair Display', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23e8a882' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(232, 168, 130, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(14, 3, 8, 0.85), inset 0 1px 0 rgba(255, 213, 190, 0.2)"
+      }
+    },
+    {
+      "id": "royal-modern-minimal",
+      "legacyId": "template-08",
+      "title": "Amethyst Plum & Rose Champagne",
+      "community": "Royal Modern",
+      "category": [
+        "Royal"
+      ],
+      "theme": "Amethyst Plum & Rose Gold Luxe",
+      "themeBadge": "Heritage",
+      "tags": [
+        "Royal",
+        "Modern",
+        "Minimal"
+      ],
+      "thumbnail": "./assets/cover-royal-minimal.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #2b1122 0%, #150610 60%, #090106 100%)",
+        "--card-surface": "rgba(35, 14, 28, 0.82)",
+        "--card-surface-hover": "rgba(52, 22, 42, 0.9)",
+        "--card-border": "1px solid rgba(226, 169, 123, 0.4)",
+        "--text-primary": "#fcf5f9",
+        "--text-secondary": "#e4c6d9",
+        "--text-muted": "rgba(228, 198, 217, 0.7)",
+        "--accent-gold": "#e2a97b",
+        "--accent-gold-light": "#ffd6c0",
+        "--accent-foil": "linear-gradient(110deg, #c27b58 0%, #ffd6c0 50%, #c27b58 100%)",
+        "--accent-jewel": "#5d1049",
+        "--card-font-display": "'Playfair Display', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23e2a97b' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(226, 169, 123, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(9, 1, 6, 0.85), inset 0 1px 0 rgba(255, 214, 192, 0.2)"
+      }
+    },
+    {
+      "id": "royal-celestial-palace",
+      "legacyId": "template-09",
+      "title": "Celestial Palace Royal 3D",
+      "community": "Royal Modern",
+      "category": [
+        "Royal"
+      ],
+      "theme": "Midnight Plum & Burgundy Wine",
+      "themeBadge": "Ultra Royal",
+      "tags": [
+        "Royal",
+        "3D Doors",
+        "Palace",
+        "Plum"
+      ],
+      "thumbnail": "./assets/cover-celestial-palace.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Cinzel:wght@600;700&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(ellipse 90% 50% at 50% 0%, #3b1126 0%, #1c0612 60%, #0a0106 100%)",
+        "--card-surface": "rgba(42, 14, 28, 0.82)",
+        "--card-surface-hover": "rgba(62, 22, 42, 0.9)",
+        "--card-border": "1px solid rgba(212, 175, 55, 0.45)",
+        "--text-primary": "#fcf5f9",
+        "--text-secondary": "#e4c6d9",
+        "--text-muted": "rgba(228, 198, 217, 0.7)",
+        "--accent-gold": "#d4af37",
+        "--accent-gold-light": "#fae19c",
+        "--accent-foil": "linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #d4af37 50%, #fff3cf 75%, #b8860b 100%)",
+        "--accent-jewel": "#800020",
+        "--card-font-display": "'Marcellus', 'Cinzel', Georgia, serif",
+        "--card-font-body": "'Cormorant Garamond', Georgia, serif",
+        "--card-font-accent": "'Pinyon Script', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(10, 1, 6, 0.85), inset 0 1px 0 rgba(255, 230, 180, 0.2)"
+      }
+    },
+    {
+      "id": "floral-blush-botanical",
+      "legacyId": "template-10",
+      "title": "Jannat Bagh Botanical Garden",
+      "community": "Floral",
+      "category": [
+        "Floral"
+      ],
+      "theme": "English Blush & Rose Foliage",
+      "themeBadge": "Bespoke Floral",
+      "tags": [
+        "Floral",
+        "Modern",
+        "Botanical"
+      ],
+      "thumbnail": "./assets/cover-floral-blush.svg",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+      ],
+      "tokens": {
+        "--card-bg": "radial-gradient(circle at 50% 10%, #301920 0%, #18090f 70%, #0c0307 100%)",
+        "--card-surface": "rgba(38, 20, 26, 0.8)",
+        "--card-surface-hover": "rgba(55, 30, 38, 0.9)",
+        "--card-border": "1px solid rgba(223, 159, 125, 0.4)",
+        "--text-primary": "#fff8fa",
+        "--text-secondary": "#e5c5cf",
+        "--text-muted": "rgba(229, 197, 207, 0.7)",
+        "--accent-gold": "#df9f7d",
+        "--accent-gold-light": "#ffcfb5",
+        "--accent-foil": "linear-gradient(110deg, #d48c66 0%, #ffcfb5 50%, #d48c66 100%)",
+        "--accent-jewel": "#a33b5c",
+        "--card-font-display": "'Playfair Display', Georgia, serif",
+        "--card-font-body": "'Playfair Display', Georgia, serif",
+        "--card-font-accent": "'Great Vibes', cursive",
+        "--frame-motif": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23df9f7d' stroke-width='1.5'%3E%3Cpath d='M50 0 C20 30 20 70 50 100 C80 70 80 30 50 0 Z' stroke-opacity='0.35'/%3E%3Ccircle cx='50' cy='50' r='14' stroke-opacity='0.4'/%3E%3C/svg%3E\")",
+        "--corner-motif": "radial-gradient(circle at 0 0, rgba(223, 159, 125, 0.45) 0%, transparent 70%)",
+        "--border-radius-card": "26px",
+        "--border-radius-btn": "40px",
+        "--card-shadow": "0 24px 60px rgba(12, 3, 7, 0.85), inset 0 1px 0 rgba(255, 207, 181, 0.2)"
+      }
+    }
+  ]
+}

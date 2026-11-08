@@ -21,7 +21,30 @@ const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
 const clean = v => String(v ?? '').trim();
 const safeUrl = u => (/^https?:\/\//i.test(clean(u)) ? esc(clean(u)) : '');
-const safeImg = u => (/^(?:https?:\/\/[^\s'"()<>\\]+|\.\/assets\/[^\s'"()<>\\]+|assets\/[^\s'"()<>\\]+)$/i.test(clean(u)) ? clean(u) : '');
+const safeImg = u => {
+  const s = clean(u);
+  if (!s) return '';
+  if (/^https?:\/\/[^\s'"<>]+$/i.test(s)) return s;
+  if (/^blob:[^\s'"<>]+$/i.test(s)) return s;
+  if (/^\.?\/?assets\/[^\s'"<>]+$/i.test(s)) return s;
+  if (s.startsWith('data:image/') && s.includes(';base64,')) {
+    if (!/[\s'"<>]/.test(s.slice(0, 50))) return s;
+  }
+  return '';
+};
+const getStoredPhoto = k => {
+  try {
+    if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+      const v = localStorage.getItem(k);
+      if (v) return v;
+    }
+    if (typeof sessionStorage !== 'undefined' && typeof sessionStorage.getItem === 'function') {
+      const v = sessionStorage.getItem(k);
+      if (v) return v;
+    }
+  } catch { return ''; }
+  return '';
+};
 const lines = s => String(s ?? '').split(/[;\n]/).map(x => x.trim()).filter(Boolean);
 const pad = n => String(n).padStart(2, '0');
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -131,7 +154,7 @@ const TXT = {
   dateEy: ['Mark your calendar', 'দিনটি মনে রাখুন'],
   dateH: ['Save the Date', 'শুভদিন ও শুভলগ্ন'],
   days: ['Days', 'দিন'], hrs: ['Hours', 'ঘণ্টা'], min: ['Min', 'মিনিট'], sec: ['Sec', 'সেকেন্ড'],
-  addCal: ['Add to calendar', 'ক্যালেন্ডারে যোগ করুন'],
+  addCal: ['Save to Google Calendar', 'গুগল ক্যালেন্ডারে সেভ করুন'],
   began: ['The celebration has begun ✦', 'উৎসব শুরু হয়েছে ✦'],
   evEy: ['The festivities', 'উৎসবের আয়োজন'],
   evH: ['Rituals & Celebrations', 'অনুষ্ঠানসূচি ও মাঙ্গলিক পর্ব'],
@@ -341,6 +364,63 @@ const ALPONA = `<svg class="t9-alp" viewBox="0 0 340 40" preserveAspectRatio="xM
   <path class="t9-draw-path" pathLength="1" d="M112 16C110 9 116 5 122 7M228 16C230 9 224 5 218 7"/>
 </g></svg>`;
 
+/* Sacred Lotus Flourish Divider */
+const LOTUS_CARD_SVG = `<svg class="t9-card-lotus" viewBox="0 0 160 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M80 3C78 13 72 23 65 27C73 26 78 19 80 13C82 19 87 26 95 27C88 23 82 13 80 3Z" fill="#a81c24" stroke="#c9a24a" stroke-width="1.2"/>
+  <path d="M80 7C75 15 68 23 58 26C67 24 74 19 77 14C78 19 82 24 80 7Z" fill="#881219" stroke="#c9a24a" stroke-width="1"/>
+  <path d="M80 7C85 15 92 23 102 26C93 24 86 19 83 14C82 19 78 24 80 7Z" fill="#881219" stroke="#c9a24a" stroke-width="1"/>
+  <path d="M58 25C47 23 34 26 18 32C32 29 45 29 57 27M102 25C113 23 126 26 142 32C128 29 115 29 103 27" stroke="#c9a24a" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="80" cy="29" r="2.5" fill="#c9a24a"/>
+  <circle cx="68" cy="29" r="1.5" fill="#c9a24a"/>
+  <circle cx="92" cy="29" r="1.5" fill="#c9a24a"/>
+</svg>`;
+
+/* Ornate Royal Wax Seal with 16 Gold Filigree Scallops & Beveled Ring */
+const SEAL_PETALS = [0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map(deg => `
+  <g transform="rotate(${deg} 60 60)">
+    <circle cx="60" cy="12.5" r="5.6" fill="url(#t9-seal-gold)" stroke="#784c12" stroke-width="0.8"/>
+    <circle cx="60" cy="6.6" r="2.2" fill="#fff2aa" stroke="#8a5a14" stroke-width="0.6"/>
+  </g>`).join('');
+
+const SEAL_SVG = `<svg class="t9-seal-svg" viewBox="0 0 120 120" width="100%" height="100%" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="t9-seal-wax" cx="36%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#e52d38"/>
+      <stop offset="50%" stop-color="#b0141e"/>
+      <stop offset="85%" stop-color="#7a0a12"/>
+      <stop offset="100%" stop-color="#4d040a"/>
+    </radialGradient>
+    <linearGradient id="t9-seal-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff2aa"/>
+      <stop offset="28%" stop-color="#d4a342"/>
+      <stop offset="65%" stop-color="#fae292"/>
+      <stop offset="100%" stop-color="#8a5a18"/>
+    </linearGradient>
+    <filter id="t9-seal-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#45080c" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g filter="url(#t9-seal-shadow)">
+    ${SEAL_PETALS}
+    <circle cx="60" cy="60" r="48" fill="none" stroke="url(#t9-seal-gold)" stroke-width="3.2"/>
+    <circle cx="60" cy="60" r="45" fill="none" stroke="#684210" stroke-width="1.2"/>
+    <circle cx="60" cy="60" r="42" fill="url(#t9-seal-wax)"/>
+    <circle cx="60" cy="60" r="41" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+    <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(70,5,10,0.5)" stroke-width="1"/>
+  </g>
+</svg>`;
+const LOTUS_DIVIDER_SVG = `<svg class="t9-lotus-flourish" viewBox="0 0 240 44" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M120 4c-5 12-14 20-22 22 10 1 17-6 22-18 5 12 12 19 22 18-8-2-17-10-22-22z" fill="var(--gold)" stroke="none"/>
+  <path d="M120 16c-3 8-9 13-15 14 7 1 11-4 15-11 4 7 8 12 15 11-6-1-12-6-15-14z" fill="var(--p)" stroke="none"/>
+  <circle cx="120" cy="33" r="3" fill="var(--gold)"/>
+  <circle cx="120" cy="40" r="1.5" fill="var(--gold)"/>
+  <path d="M96 26C80 26 65 14 50 20c-12 5-18 16-32 16M144 26c16 0 31-12 46-6 12 5 18 16 32 16" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round"/>
+  <circle cx="18" cy="36" r="2.5" fill="var(--gold)"/>
+  <circle cx="222" cy="36" r="2.5" fill="var(--gold)"/>
+  <circle cx="6" cy="36" r="1.5" fill="var(--gold)"/>
+  <circle cx="234" cy="36" r="1.5" fill="var(--gold)"/>
+</svg>`;
+
 /* Footprints Cue */
 const FOOT = '<path d="M8 2C4 2 2 7 3 12C4 17 5 22 6 28C7 33 13 33 14 28C15 22 16 17 16 12C16 7 13 2 8 2Z"/><circle cx="3" cy="-2" r="1.6"/><circle cx="8" cy="-4" r="1.8"/><circle cx="13" cy="-2" r="1.6"/><circle cx="16" cy="2" r="1.4"/>';
 const FOOTPRINTS = `<svg class="t9-foot" viewBox="0 0 44 70" aria-hidden="true" focusable="false"><g class="t9-fp1" fill="#b5121b" transform="translate(4 28)">${FOOT}</g><g class="t9-fp2" fill="#b5121b" transform="translate(24 10)">${FOOT}</g></svg>`;
@@ -371,11 +451,11 @@ const STYLE = `
 .t9,.t9 *,.t9 *:before,.t9 *:after{box-sizing:border-box}
 .t9{--p:#8e1a34;--p-dark:#621023;--p-soft:#f9ebe9;--p-mid:#c7a6ae;--p-rgb:142,26,52;--a:#b5121b;--paper:#fbf5eb;--cream:#f7eed8;--gold:#c99738;--mg:#f19a1a;--ink:#320c16;--ink-rgb:50,12,22;--muted:rgba(var(--ink-rgb),.72);
   --f-title:Galada,"Tiro Bangla",cursive;--f-head:"Cormorant Garamond","Tiro Bangla",Georgia,serif;--f-body:"Hind Siliguri","Cormorant Garamond",system-ui,sans-serif;--ease:cubic-bezier(.22,1,.36,1);
-  position:relative;width:100%;min-height:100vh;overflow-x:clip;overflow-anchor:none;color:var(--ink);font:500 17px/1.7 var(--f-body);-webkit-font-smoothing:antialiased;
+  position:relative;width:100%;min-height:100vh;overflow:visible;color:var(--ink);font:500 17px/1.7 var(--f-body);-webkit-font-smoothing:antialiased;
   background:radial-gradient(ellipse 70% 30% at 90% 0,rgba(241,154,26,.08),transparent 70%),radial-gradient(ellipse 60% 28% at 0 45%,rgba(142,26,52,.05),transparent 70%),var(--paper)}
 .t9[data-lang="bn"]{--f-title:Galada,"Tiro Bangla",cursive;--f-head:"Tiro Bangla","Hind Siliguri",serif;--f-body:"Hind Siliguri",system-ui,sans-serif;font:400 16px/1.8 var(--f-body)}
 .t9[data-lang="bn"] [data-l="en"],.t9:not([data-lang="bn"]) [data-l="bn"]{display:none!important}
-.t9.t9-locked{height:100vh!important;height:100svh!important;max-height:100vh!important;max-height:100svh!important;overflow:hidden!important}
+.t9.t9-locked{min-height:100vh;overflow:visible}
 .t9 h1,.t9 h2,.t9 h3,.t9 p,.t9 figure{margin-top:0}
 .t9 img{display:block;max-width:100%}
 .t9 button{font:inherit;color:inherit;cursor:pointer}
@@ -427,238 +507,169 @@ const STYLE = `
 .t9-petal{position:absolute;top:-24px;left:var(--l,50%);width:var(--s,10px);height:calc(var(--s,10px)*1.5);border-radius:100% 0 100% 0;background:linear-gradient(135deg,#f9b233,#e8700f);opacity:0;animation:t9-fall var(--d,14s) linear infinite;animation-delay:var(--dl,0s);will-change:transform}
 @keyframes t9-fall{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}8%{opacity:.85}92%{opacity:.7}100%{transform:translate3d(var(--x,40px),108vh,0) rotate(560deg);opacity:0}}
 
-/* Curtains / Entry Gate */
-.t9-entry{position:fixed;inset:0;width:100%;z-index:900;overflow:hidden;background:#fcf8f0}
-.t9-cur{position:absolute;top:0;bottom:0;width:50.3%;background:repeating-linear-gradient(90deg,rgba(180,140,90,.03) 0 1px,transparent 1px 4px),repeating-linear-gradient(0deg,rgba(180,140,90,.025) 0 1px,transparent 1px 4px),linear-gradient(180deg,#fffdf8,#fbf2e1);transition:transform 1.8s cubic-bezier(.7,0,.2,1);will-change:transform;box-shadow:0 0 50px rgba(60,20,20,.12)}
-.t9-cur.t9-cl{left:0;border-right:2.5px solid var(--gold)}
-.t9-cur.t9-cr{right:0;border-left:2.5px solid var(--gold)}
-.t9-cur:before{content:"";position:absolute;top:0;bottom:0;width:4px;background:linear-gradient(var(--gold),#fae6aa,var(--gold))}
-.t9-cl:before{right:-1px}.t9-cr:before{left:-1px}
-.t9-cur:after{display:none!important}
-.t9-open .t9-cl{transform:translateX(-102%) skewX(-3deg)}
-.t9-open .t9-cr{transform:translateX(102%) skewX(3deg)}
-.t9-gate-in{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:clamp(20px,4vh,48px) 20px clamp(16px,2vh,24px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;transition:opacity .6s ease,transform .6s var(--ease)}
+/* Curtains / Double Doors Entry Gate (First Page matching User Image 1 & Sample Image 2) */
+.t9-entry{position:fixed;inset:0;width:100%;height:100vh;height:100svh;z-index:900;overflow:hidden;background:radial-gradient(ellipse at 50% 50%,#fffcf5 0%,#faecd6 70%,#f4dcba 100%);transition:background .6s ease}
+.t9-entry.t9-open{background:transparent!important;pointer-events:none!important}
+.t9-cur{position:absolute;top:0;bottom:0;width:50.1%;height:100%;overflow:hidden;transition:transform 1.6s cubic-bezier(.7,0,.2,1);will-change:transform;z-index:2}
+.t9-cur.t9-cl{left:0;border-right:1.5px solid rgba(201,162,74,.85);box-shadow:2px 0 16px rgba(40,10,15,.18)}
+.t9-cur.t9-cr{right:0;border-left:1.5px solid rgba(201,162,74,.85);box-shadow:-2px 0 16px rgba(40,10,15,.18)}
+.t9-door-panel{position:absolute;top:0;height:100%;width:200%;display:flex;align-items:center;justify-content:center}
+.t9-door-left{left:0}
+.t9-door-right{left:-100%}
+.t9-door-bg{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+@media (max-width:768px),(orientation:portrait){.t9-door-bg{object-fit:cover}}
+.t9-open .t9-cl{transform:translateX(-102%) skewX(-2deg)}
+.t9-open .t9-cr{transform:translateX(102%) skewX(2deg)}
+
+.t9-gate-in{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(8px,1.8vh,20px) 16px;overflow-y:auto;touch-action:pan-y;transition:opacity .4s ease,transform .4s var(--ease);pointer-events:auto}
 .t9-gate-in>*{margin:0}
-.t9-gate-card{position:relative;z-index:10;background:rgba(255,252,246,.96);border-radius:26px;border:1.5px solid rgba(201,162,74,.6);box-shadow:0 24px 60px rgba(var(--ink-rgb),.2),0 0 0 5px rgba(255,252,246,.85),0 0 0 7px rgba(201,162,74,.35);padding:clamp(20px,3.2vh,34px) clamp(18px,4vw,32px);display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.2vh,12px);max-width:440px;width:100%;text-align:center}
-.t9-gate-motif{display:block;width:min(260px,70%);margin:0 auto 2px;color:var(--a);opacity:.85}
-.t9-gate-invoc{font:italic 600 clamp(12px,1.6vh,14px) var(--f-head);color:var(--a);margin:0 0 2px;letter-spacing:.02em}
 .t9-boot .t9-gate-in{opacity:1;transform:none}
-.t9-open .t9-gate-in{opacity:0;transform:scale(1.05);pointer-events:none}
-.t9-kicker{font:600 clamp(10px,1.4vh,11.5px) var(--f-body);letter-spacing:.32em;color:var(--p);text-transform:uppercase}
-.t9[data-lang="bn"] .t9-kicker{letter-spacing:.08em;font-size:13px}
-.t9-gate-title{font:400 clamp(38px,7.5vh,64px)/1.05 var(--f-title);color:var(--a);margin:0;text-shadow:0 1px 0 rgba(255,255,255,.9)}
-.t9-gate-names{font:700 clamp(22px,3.8vh,30px)/1.2 var(--f-head);color:var(--p);margin:0}
-.t9-guest-box{width:100%;padding:10px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(255,245,230,.92),rgba(253,235,220,.88));border:1.2px solid rgba(201,162,74,.6);box-shadow:0 4px 14px rgba(var(--ink-rgb),.05);margin:2px 0}
-.t9-guest-kicker{display:block;font:700 11px var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--a);margin-bottom:2px}
-.t9[data-lang="bn"] .t9-guest-kicker{letter-spacing:.05em;font-size:13px}
-.t9-guest-name{font:700 clamp(17px,3.8vw,23px)/1.2 var(--f-head);color:var(--p);margin:0}
-.t9-guest-pill{display:inline-block;margin-top:5px;padding:2px 12px;border-radius:16px;background:rgba(201,162,74,.2);border:1px solid rgba(201,162,74,.4);font:600 12px var(--f-body);color:var(--ink)}
-.t9-bindi{position:relative;width:clamp(88px,13vh,110px);aspect-ratio:1;border-radius:50%;border:0;display:grid;place-content:center;gap:0;color:#fff4ea;margin-top:4px;background:radial-gradient(circle at 34% 28%,#e5343a,#b5121b 60%,#7f0b12);box-shadow:inset 0 3px 3px rgba(255,255,255,.35),inset 0 -8px 12px rgba(60,0,0,.4),0 12px 24px rgba(120,10,20,.4),0 0 0 5px rgba(201,162,74,.5);animation:t9-pulse 3s ease-in-out infinite;will-change:transform;cursor:pointer}
-.t9-bindi:before{content:"";position:absolute;inset:7px;border-radius:50%;border:1px dashed rgba(255,230,200,.6)}
-.t9-bindi:after{content:"";position:absolute;inset:-6px;border-radius:50%;box-shadow:0 0 36px rgba(229,52,58,.6);opacity:0;animation:t9-glow 3s ease-in-out infinite;pointer-events:none}
-.t9-bindi b{font:700 clamp(18px,3vh,24px) var(--f-head)}
+.t9-open .t9-gate-in{opacity:0;transform:scale(1.04);pointer-events:none}
+
+/* First Page Card: Transparent container inside Image 1's ornate gold frame matching Image 2 */
+.t9-gate-card{position:relative;z-index:10;background:transparent;border:0;box-shadow:none;max-width:440px;width:min(92vw,440px);display:flex;flex-direction:column;align-items:center;text-align:center;padding:2px 8px;gap:clamp(3px,.8vh,6px);box-sizing:border-box}
+.t9-gate-lotus-top{display:block;width:min(72px,20vw);height:auto;margin:0 auto}
+.t9-card-lotus{display:block;width:100%;height:auto}
+.t9-gate-invoc{font:italic 600 clamp(11.5px,1.5vh,14px) var(--f-head);color:#8b1523;margin:0;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.t9-gate-invoc span{font-size:9px;color:var(--gold)}
+.t9-gate-title{font:400 clamp(36px,6vh,52px)/1.05 "Galada",var(--f-title);color:#8b1523;margin:0;text-shadow:0 1px 0 rgba(255,255,255,.85)}
+.t9-gate-flourish{margin:-3px auto 1px;width:min(140px,34vw);opacity:.95;line-height:0}
+.t9-kicker{font:700 clamp(9.5px,1.2vh,11px) var(--f-body);letter-spacing:.24em;color:#7a5929;text-transform:uppercase;margin:0}
+.t9[data-lang="bn"] .t9-kicker{letter-spacing:.05em;font-size:12px}
+.t9-gate-names{font:700 clamp(19px,3vh,26px)/1.15 var(--f-head);color:#2c0b10;margin:1px 0 3px}
+
+/* Guest Box matching Image 2 */
+.t9-guest-box{width:100%;max-width:350px;padding:clamp(5px,1vh,9px) 14px;border-radius:16px;background:linear-gradient(180deg,#fff9ee 0%,#faecd3 100%);border:1.4px solid rgba(201,162,74,.7);box-shadow:0 4px 14px rgba(180,130,60,.12),inset 0 1px 0 rgba(255,255,255,.9);margin:2px 0;text-align:center}
+.t9-guest-kicker{display:block;font:700 10.5px var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:#a81c24;margin-bottom:2px}
+.t9[data-lang="bn"] .t9-guest-kicker{letter-spacing:.05em;font-size:12px}
+.t9-guest-name{font:700 clamp(17px,3.2vw,22px)/1.2 var(--f-head);color:#2c0b10;margin:0 0 3px}
+.t9-guest-pill{display:inline-block;padding:2px 14px;border-radius:14px;background:rgba(201,162,74,.22);border:1px solid rgba(201,162,74,.5);font:600 11px var(--f-body);color:#6a4c18}
+
+/* Seal Button: Ornate Gold Filigree Ring with Ruby Wax Center matching Image 2 - 100% Vector Circle */
+.t9-bindi{position:relative;width:clamp(84px,11.5vh,98px);height:clamp(84px,11.5vh,98px);aspect-ratio:1/1;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;cursor:pointer;margin:3px auto 1px;padding:0;animation:t9-pulse 3s ease-in-out infinite;will-change:transform}
+.t9-seal-svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.t9-bindi-txt{position:relative;z-index:2;font:700 clamp(16px,2.2vh,19px) var(--f-head);color:#fffaf0;letter-spacing:.06em;text-shadow:0 1px 2px rgba(0,0,0,.65);pointer-events:none;display:block;margin-top:-1px}
+.t9-bindi:hover{transform:scale(1.05)}
 .t9-bindi.t9-burst{animation:t9-burst .5s ease-in forwards}
 @keyframes t9-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-@keyframes t9-glow{0%,100%{opacity:0}50%{opacity:1}}
 @keyframes t9-burst{45%{transform:scale(1.2)}100%{transform:scale(0);opacity:0}}
-.t9-gate-note{font:600 clamp(10.5px,1.4vh,12px) var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.t9-gate-note{font:700 clamp(9.5px,1.2vh,11px) var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:#7a5929;cursor:pointer;margin-top:2px}
 .t9[data-lang="bn"] .t9-gate-note{letter-spacing:.04em;text-transform:none}
 
-/* HERO SECTION: ROYAL ARCH & SPOTLIGHT */
-.t9-hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;overflow:hidden;padding:48px 24px calc(clamp(76px,12svh,120px) + 32px)}
-.t9-garland{position:absolute;top:0;width:clamp(32px,6.5vw,66px);pointer-events:none;z-index:2;transform-origin:50% 0;animation:t9-sway 7s ease-in-out infinite alternate}
-.t9-garland svg{display:block;width:100%;height:auto;max-height:80svh}
-.t9-gl{left:clamp(2px,1.5vw,16px)}.t9-gr{right:clamp(2px,1.5vw,16px);animation-delay:-3.5s}
-@keyframes t9-sway{from{transform:rotate(-.9deg)}to{transform:rotate(.9deg)}}
-.t9-bell{transform-box:fill-box;transform-origin:50% 0;animation:t9-swing 3.4s ease-in-out infinite alternate}
-.t9-tas{transform-box:fill-box;transform-origin:50% 0;animation:t9-swing 4.2s ease-in-out infinite alternate-reverse}
-@keyframes t9-swing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+/* Phuljhadi (Golden Sparklers / Festive Sparks Fireworks) Animation on Door Opening */
+.t9-phuljhadi{position:fixed;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:9999}
+.t9-spark{position:absolute;left:0;top:0;width:var(--sz,6px);height:var(--sz,6px);border-radius:50%;background:radial-gradient(circle,#fff,var(--col,#ffd700) 60%,transparent);box-shadow:0 0 8px #ffd700,0 0 16px #ff9900,0 0 24px #ff5500;opacity:0;transform:translate(-50%,-50%);animation:t9-spark-shoot var(--dur,1.3s) cubic-bezier(0.12,0.8,0.32,1) forwards;animation-delay:var(--del,0s);will-change:transform,opacity}
+.t9-spark-star{position:absolute;left:0;top:0;font-size:var(--sz,14px);color:var(--col,#ffe066);text-shadow:0 0 8px #ffd700,0 0 16px #ff8800;opacity:0;animation:t9-star-twinkle var(--dur,1.3s) ease-out forwards;animation-delay:var(--del,0s);will-change:transform,opacity}
+@keyframes t9-spark-shoot{0%{transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(0) scale(1.5);opacity:1}60%{opacity:1;transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(calc(var(--dist,160px)*-0.85)) scale(1)}100%{transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(calc(var(--dist,160px)*-1)) scale(0.2);opacity:0}}
+@keyframes t9-star-twinkle{0%{transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(0) scale(0) rotate(0);opacity:1}50%{transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(calc(var(--dist,140px)*-0.7)) scale(1.3) rotate(180deg);opacity:1}100%{transform:translate(-50%,-50%) rotate(var(--angle,0deg)) translateY(calc(var(--dist,140px)*-1)) scale(0) rotate(360deg);opacity:0}}
 
-.t9-leaf{position:absolute;bottom:calc(clamp(76px,12svh,120px) + 2%);width:clamp(110px,24vw,220px);pointer-events:none;z-index:2;transform-origin:50% 100%;animation:t9-leaf 6s ease-in-out infinite alternate}
-.t9-leaf svg{display:block;width:100%;height:auto}
-.t9-ll{left:-2vw}.t9-lr{right:-2vw;animation-delay:-3s}
-@keyframes t9-leaf{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
+/* HERO SECTION (PAGE 2): FULL WINDOW SIZE, 100VH VIEWPORT FIT */
+.t9-hero{position:relative;width:100%;height:100vh;height:100svh;max-height:100vh;max-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:clamp(10px,2vh,24px) 16px clamp(12px,2.5vh,28px);box-sizing:border-box}
 
-.t9-frieze{position:absolute;left:0;right:0;bottom:0;height:clamp(74px,11svh,118px);overflow:hidden;z-index:3}
+/* Banana Tree Pillars & Animated Jhumkas: Full Screen Height Top-to-Bottom */
+.t9-hero-pillars{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:hidden;box-sizing:border-box}
+.t9-pillar{position:absolute;top:0;bottom:0;height:100%;aspect-ratio:318/960;width:auto;max-width:min(28vw,360px);pointer-events:none}
+.t9-pillar-left{left:0}
+.t9-pillar-right{right:0}
+.t9-pillar picture{display:block;width:100%;height:100%}
+.t9-pillar-img{display:block;width:100%;height:100%;object-fit:contain}
+.t9-pillar-left .t9-pillar-img{object-position:left top}
+.t9-pillar-right .t9-pillar-img{object-position:right top}
+
+/* Animated Hanging Jhumkas (Desktop default: hooks into 960h canopy) */
+.t9-jhumka-sway{position:absolute;top:11.46%;width:17%;transform-origin:50% 0;pointer-events:none;will-change:transform}
+.t9-jhumka-left{left:36.16%;animation:t9-jhumka-swing-left 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate}
+.t9-jhumka-right{left:63.52%;width:17.6%;animation:t9-jhumka-swing-right 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate}
+.t9-jhumka-sway img{display:block;width:100%;height:auto;transform:translateX(-50%)}
+@keyframes t9-jhumka-swing-left{0%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}100%{transform:rotate(-9deg)}}
+@keyframes t9-jhumka-swing-right{0%{transform:rotate(9deg)}50%{transform:rotate(-9deg)}100%{transform:rotate(9deg)}}
+
+/* Mobile Viewport: 100% Full Screen Height Top-to-Bottom Banana Tree */
+@media(max-width:768px){
+  .t9-pillar{width:clamp(68px,20vw,88px);max-width:none;aspect-ratio:auto}
+  .t9-pillar-img{object-fit:fill}
+  .t9-jhumka-sway{top:3.9%;width:44%}
+  .t9-jhumka-right{width:44%}
+}
+
+.t9-frieze{position:absolute;left:0;right:0;bottom:0;height:clamp(50px,7vh,80px);overflow:hidden;z-index:3}
 .t9-fz-track{display:flex;height:100%;width:max-content;animation:t9-march 70s linear infinite}
 .t9-fz-track svg{flex:0 0 auto;height:100%;width:auto;aspect-ratio:1200/190}
 @keyframes t9-march{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
 
-.t9-hero-in{position:relative;z-index:4;width:100%;max-width:680px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
-.t9-spotlight-frame{position:relative;width:min(74vw,260px);aspect-ratio:1;border-radius:50%;padding:8px;background:conic-gradient(from 0deg,var(--gold),#fae6aa,var(--gold),#fae6aa,var(--gold));box-shadow:0 18px 46px rgba(var(--ink-rgb),.24),0 0 0 4px rgba(201,162,74,.25);margin:0 auto 16px;transition:transform .4s var(--ease)}
-.t9-spotlight-frame>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fffaf2;background:#f8eedc}
+/* Hero Inner Content: Grand, spacious, majestic sizing */
+.t9-hero-in{position:relative;z-index:4;width:100%;max-width:680px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(3px,0.7vh,7px)}
+.t9-auspicious-head{display:flex;flex-direction:column;align-items:center;text-align:center;margin:0 auto;position:relative;z-index:5}
+.t9-lotus-wrap{display:block;width:min(160px,36vw);margin:0 auto 2px;color:var(--gold);opacity:.95}
+.t9-lotus-wrap svg{display:block;width:100%;height:auto}
+.t9-invoc{font:italic 600 clamp(13px,1.9vh,16.5px) var(--f-head);color:var(--p);margin-bottom:2px;letter-spacing:.03em}
+.t9-title{font:400 clamp(44px,7vh,66px)/1.06 var(--f-title);color:var(--a);margin:0;text-shadow:0 1.5px 0 rgba(255,255,255,.75)}
+
+/* Spotlight Couple Portrait Frame */
+/* Spotlight Couple Portrait Frame: Royal Golden Circle */
+.t9-spotlight-frame{position:relative;width:clamp(150px,min(46vw,26vh),200px);height:clamp(150px,min(46vw,26vh),200px);aspect-ratio:1/1;border-radius:50%;padding:7px;background:conic-gradient(from 0deg,var(--gold),#fff0aa,var(--gold),#fae6aa,var(--gold));box-shadow:0 14px 38px rgba(var(--ink-rgb),.26),0 0 0 4px rgba(201,162,74,.42),0 0 18px rgba(201,162,74,.25);margin:clamp(3px,0.7vh,8px) auto;transition:transform .4s var(--ease)}
+.t9-spotlight-frame:hover{transform:scale(1.03)}
+.t9-spotlight-frame>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;border:3.5px solid #fffaf2;background:#f8eedc;box-shadow:inset 0 0 10px rgba(70,20,25,.18)}
 .t9-spotlight-frame img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
-.t9-invoc{font:italic 600 clamp(16px,2.2svh,20px) var(--f-head);color:var(--p);margin-bottom:4px}
-.t9-title{font:400 clamp(50px,13vw,86px)/1.08 var(--f-title);color:var(--a);margin:0 0 4px;text-shadow:0 2px 0 rgba(255,255,255,.6)}
-.t9-sub{margin:0 0 6px;font:700 13px var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--p)}
-.t9[data-lang="bn"] .t9-sub{letter-spacing:.06em;text-transform:none;font-size:16px}
-.t9-names{font:700 clamp(28px,7.5vw,50px)/1.15 var(--f-head);color:var(--p);margin:4px 0 10px}
-.t9-names i{display:inline-block;font:italic 500 .58em var(--f-head);color:var(--a);margin:0 4px}
-.t9-hero-copy{max-width:440px;margin:0 auto;font:italic 500 clamp(16px,2.1svh,19px)/1.55 var(--f-head);color:var(--muted)}
-.t9-datebox{display:inline-block;margin:18px 0 6px;padding:12px 28px 10px;border-radius:16px;border:1.5px solid var(--gold);background:rgba(255,250,244,.85);box-shadow:0 0 0 5px rgba(201,162,74,.14),0 12px 26px rgba(var(--ink-rgb),.1)}
-.t9-datebox b{display:block;font:700 clamp(24px,4.5svh,34px)/1.15 var(--f-head);color:var(--a)}
-.t9-datebox em{font:italic 500 17px var(--f-head);color:var(--p)}
-.t9-where{margin:8px 0 0;font:600 17px var(--f-head);color:var(--ink)}
-.t9-togo{margin:6px 0 0;font:italic 600 18px var(--f-head);color:var(--a)}
-.t9-pill{display:inline-block;margin-top:10px;padding:5px 18px;border-radius:30px;border:1px solid rgba(var(--p-rgb),.4);background:rgba(255,250,244,.85);font:700 13px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--p)}
-.t9[data-lang="bn"] .t9-pill{letter-spacing:.03em;text-transform:none;font-size:15px}
-.t9-hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px}
-.t9-cue{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:3px;font:700 12px var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--a)}
-.t9[data-lang="bn"] .t9-cue{letter-spacing:.03em;text-transform:none;font-size:14px}
-.t9-foot{width:26px;height:42px}
-.t9-fp1{animation:t9-step 1.8s ease-in-out infinite}.t9-fp2{animation:t9-step 1.8s ease-in-out infinite .9s}
-@keyframes t9-step{0%,100%{opacity:.15}45%{opacity:1}}
 
-/* CENTERPIECE: ROYAL BENGALI HINDU INVITATION CARD ART */
-.t9-sec-card{background:linear-gradient(180deg,var(--paper),var(--cream) 30%,var(--cream) 70%,var(--paper));padding:80px 0 96px}
-.t9-card-outer{display:flex;flex-direction:column;align-items:center;gap:26px}
-.t9-invcard{
-  position:relative;
-  width:100%;
-  max-width:540px;
-  margin:0 auto;
-  aspect-ratio:682/1024;
-  border-radius:24px;
-  overflow:hidden;
-  background:#fcf7ed;
-  box-shadow:0 30px 80px rgba(var(--ink-rgb),.24),0 0 0 1px rgba(201,162,74,.4),0 0 0 8px #fcf7ed,0 0 0 10px rgba(201,162,74,.5);
-}
-.t9-card-bg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:1;
-}
-.t9-card-bg img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.t9-card-in{
-  position:absolute;
-  top:19.5%;
-  left:8%;
-  right:8%;
-  height:44.5%;
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  pointer-events:auto;
-  overflow:hidden;
-  padding:4px;
-}
-.t9-card-invoc{
-  font:italic 600 clamp(11px,2.4vw,14px) var(--f-head);
-  color:var(--p);
-  margin:0 0 2px;
-  letter-spacing:.02em;
-}
-.t9-card-title{
-  font:400 clamp(28px,7.5vw,46px)/1.05 var(--f-title);
-  color:var(--a);
-  margin:0 0 4px;
-  text-shadow:0 1px 0 rgba(255,255,255,.9);
-}
-.t9-card-bless{
-  font:500 clamp(10px,2.5vw,13px)/1.35 var(--f-head);
-  color:var(--muted);
-  margin:0 0 8px;
-}
-.t9-card-names{
-  font:700 clamp(20px,5.8vw,34px)/1.15 var(--f-head);
-  color:var(--p);
-  margin:0;
-  letter-spacing:.01em;
-}
-.t9-card-names i{
-  display:inline-block;
-  font:italic 500 .62em var(--f-head);
-  color:var(--a);
-  margin:0 4px;
-}
-.t9-card-guest{
-  display:inline-block;
-  margin:4px 0 2px;
-  padding:2px 14px;
-  border-radius:14px;
-  background:rgba(255,255,255,.6);
-  border:1px solid rgba(201,162,74,.35);
-  font:italic 600 clamp(10px,2.4vw,13px) var(--f-head);
-  color:var(--p);
-}
-.t9-card-date{
-  font:700 clamp(12px,3vw,16px)/1.2 var(--f-head);
-  color:var(--ink);
-  margin:4px 0 0;
-}
-.t9-card-lagna{
-  font:600 clamp(11px,2.6vw,14px) var(--f-head);
-  color:var(--a);
-  margin:1px 0 0;
-}
-.t9-card-venue{
-  font:700 clamp(11px,2.8vw,15px)/1.2 var(--f-head);
-  color:var(--p);
-  margin:4px 0 0;
-}
-.t9-card-addr{
-  font:500 clamp(9.5px,2.2vw,12px)/1.2 var(--f-head);
-  color:var(--muted);
-  margin:1px 0 0;
-}
-.t9-card-fine{
-  font:italic 500 clamp(9px,2.1vw,11.5px) var(--f-head);
-  color:var(--muted);
-  margin:4px 0 0;
-}
-.t9-card-contact{
-  font:600 clamp(9px,2.1vw,11.5px) var(--f-body);
-  color:var(--p);
-  margin:2px 0 0;
-}
-.t9-card-actions{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:12px;
-  width:100%;
-}
+/* Subtitle, Names, Invite Message */
+.t9-sub{margin:0;font:700 clamp(11px,1.5vh,13.5px) var(--f-body);letter-spacing:.3em;text-transform:uppercase;color:var(--p)}
+.t9[data-lang="bn"] .t9-sub{letter-spacing:.06em;text-transform:none;font-size:15px}
+.t9-names{font:700 clamp(28px,4.8vh,44px)/1.15 var(--f-head);color:var(--p);margin:0}
+.t9-names i{display:inline-block;font:italic 500 .62em var(--f-head);color:var(--a);margin:0 5px}
+.t9-hero-copy{max-width:520px;margin:0 auto;font:italic 500 clamp(13px,1.9vh,16.5px)/1.45 var(--f-head);color:var(--muted)}
 
-/* Story Section */
-.t9-chap{display:grid;gap:18px;justify-items:center;text-align:center;max-width:560px;margin:0 auto 52px}
+/* Hero Royal Person & Family Invited Box (matching Template 2) */
+.t9-hero-guest-box{width:100%;max-width:390px;margin:clamp(2px,0.6vh,6px) auto 0;padding:clamp(8px,1.4vh,12px) 20px;border-radius:18px;background:linear-gradient(180deg,rgba(255,250,242,.94),rgba(252,240,222,.94));border:1.4px solid rgba(201,162,74,.75);box-shadow:0 6px 18px rgba(180,130,60,.14),inset 0 1px 0 rgba(255,255,255,.95);text-align:center}
+.t9-hero-guest-sal{display:block;font:700 11px var(--f-body);letter-spacing:.24em;text-transform:uppercase;color:#a81c24;margin-bottom:2px}
+.t9[data-lang="bn"] .t9-hero-guest-sal{letter-spacing:.05em;font-size:13px}
+.t9-hero-guest-name{font:700 clamp(18px,3.2vw,24px)/1.2 var(--f-head);color:#3b1016;margin:0 0 3px}
+.t9-hero-guest-pill{display:inline-block;padding:2px 14px;border-radius:14px;background:rgba(201,162,74,.24);border:1px solid rgba(201,162,74,.55);font:600 12px var(--f-body);color:#6a4c18}
+
+/* Sacred Story & Journey Section */
+section[data-sec="story"]{background:radial-gradient(ellipse 70% 30% at 50% 0%,rgba(255,255,255,.7),transparent 70%),linear-gradient(180deg,var(--paper),var(--cream) 50%,var(--paper));position:relative;overflow:hidden;padding:clamp(44px,7.5vh,84px) 0}
+
+/* Auspicious Poem Box */
+.t9-poem{max-width:640px;margin:0 auto clamp(24px,4vh,44px);padding:clamp(20px,3.5vw,32px) clamp(18px,3vw,28px);text-align:center;border-radius:24px;background:linear-gradient(180deg,rgba(255,250,244,.95),rgba(253,243,230,.92));border:1.4px solid rgba(201,162,74,.55);box-shadow:0 16px 36px rgba(var(--ink-rgb),.08),0 0 0 4px rgba(255,250,244,.7)}
+.t9-poem p{margin:0;font:italic 600 clamp(17px,3.5vw,22px)/1.65 var(--f-head);color:var(--p)}
+.t9-poem small{display:block;margin-top:10px;font:700 clamp(11px,1.8vw,13px) var(--f-body);letter-spacing:.24em;color:var(--a);text-transform:uppercase}
+.t9[data-lang="bn"] .t9-poem small{letter-spacing:.05em;text-transform:none}
+
+/* Alternating Zigzag Chapters: Left -> Down Right -> Down Left */
+.t9-chap{display:grid;grid-template-columns:clamp(100px,28vw,165px) 1fr;gap:clamp(16px,4vw,36px);align-items:center;text-align:left;max-width:680px;margin:0 auto clamp(28px,5vh,48px)}
 .t9-chap:last-child{margin-bottom:0}
-.t9-medal{position:relative;width:min(66vw,220px);aspect-ratio:1;border-radius:50%;padding:10px;background:conic-gradient(from 0deg,var(--gold),#f6e2a0,var(--gold),#f6e2a0,var(--gold));box-shadow:0 18px 40px rgba(var(--ink-rgb),.18)}
-.t9-medal>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(160deg,#fff5e6,#f6dcc6);display:grid;place-items:center;border:4px solid var(--paper)}
-.t9-medal img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block}
-.t9-num{font:700 clamp(50px,12vw,68px)/1 var(--f-head);color:transparent;-webkit-text-stroke:1.2px var(--a);margin-top:4px}
-.t9-chap h3{font:700 clamp(24px,6vw,32px)/1.2 var(--f-head);color:var(--p);margin:-6px 0 6px}
-.t9-chap p{margin:0;color:var(--muted);font-size:17px;max-width:440px}
-.t9-poem{max-width:640px;margin:0 auto 56px;padding:32px 26px;text-align:center;border-radius:22px;background:rgba(255,250,244,.75);border:1px solid rgba(201,162,74,.5);box-shadow:0 18px 40px rgba(var(--ink-rgb),.08)}
-.t9-poem p{margin:0;font:italic 600 clamp(19px,4.4vw,25px)/1.65 var(--f-head);color:var(--p)}
-.t9-poem small{display:block;margin-top:12px;font:700 13px var(--f-body);letter-spacing:.24em;color:var(--a);text-transform:uppercase}
+.t9-chap.t9-chap-rev,
+.t9-chap:nth-of-type(even){grid-template-columns:1fr clamp(100px,28vw,165px);text-align:right}
+.t9-chap.t9-chap-rev .t9-medal,
+.t9-chap:nth-of-type(even) .t9-medal{order:2;justify-self:end}
+.t9-chap.t9-chap-rev .t9-chap-txt,
+.t9-chap:nth-of-type(even) .t9-chap-txt{order:1;text-align:right;align-items:flex-end;justify-self:end}
 
-/* Save the Date */
-.t9-sec-date{background:linear-gradient(180deg,var(--paper),#fef6ef 50%,var(--paper))}
-.t9-datecard{max-width:520px;margin:0 auto;padding:34px 22px 30px;text-align:center;border-radius:28px;background:linear-gradient(180deg,#fffaf6,#fff5ec);border:1px solid #ecd7bf;box-shadow:0 24px 56px rgba(120,50,50,.14);position:relative}
-.t9-datecard:before{content:"";position:absolute;inset:7px;border:1px solid rgba(201,162,74,.4);border-radius:22px;pointer-events:none}
-.t9-cal-m{font:700 clamp(28px,6.8vw,38px)/1.1 var(--f-head);color:var(--p)}
-.t9-cal-y{font:600 15px var(--f-body);letter-spacing:.3em;color:var(--muted);margin:2px 0 14px}
-.t9-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px 0;justify-items:center;margin:0 auto;max-width:360px}
-.t9-cal-h{font:700 13px var(--f-body);color:var(--a);padding-bottom:4px}
-.t9-cal-d{position:relative;width:38px;height:38px;display:grid;place-items:center;font:600 18px var(--f-head);font-variant-numeric:tabular-nums}
-.t9-cal-dot:after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--mg)}
-.t9-cal-on{color:#fff}
-.t9-cal-on b{position:relative;z-index:1}
-.t9-cal-on:before{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--a);box-shadow:0 4px 10px rgba(181,18,27,.4)}
-.t9-cal-on:after{content:"";position:absolute;inset:-3px;border:1.5px solid var(--a);border-radius:50%;opacity:.75}
-.t9-cal-time{margin:32px 0 0;font:italic 600 20px var(--f-head);color:var(--p)}
-.t9-cd{display:none;justify-content:center;gap:8px;margin:22px 0 0}
+/* Royal Golden Circle Medallion Frame */
+.t9-medal{position:relative;width:100%;max-width:165px;aspect-ratio:1/1;border-radius:50%;padding:clamp(5px,1.2vw,7px);background:conic-gradient(from 0deg,var(--gold),#fff0aa,var(--gold),#fae6aa,var(--gold));box-shadow:0 12px 30px rgba(var(--ink-rgb),.2),0 0 0 3.5px rgba(201,162,74,.4),0 0 16px rgba(201,162,74,.22);transition:transform .4s var(--ease);flex-shrink:0;box-sizing:border-box}
+.t9-medal:hover{transform:scale(1.04)}
+.t9-medal>div{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fffaf2;background:#f8eedc;box-shadow:inset 0 0 10px rgba(70,20,25,.18)}
+.t9-medal img{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;border-radius:50%}
+
+/* Chapter Text & Numeral */
+.t9-chap-txt{display:flex;flex-direction:column;justify-content:center}
+.t9-num{font:700 clamp(32px,7vw,52px)/1 var(--f-head);color:transparent;-webkit-text-stroke:1.3px var(--a);letter-spacing:.02em;margin-bottom:2px;display:inline-block}
+.t9-chap h3{font:700 clamp(18px,3.8vw,26px)/1.2 var(--f-head);color:var(--p);margin:0 0 6px}
+.t9-chap p{margin:0;color:var(--muted);font:500 clamp(13px,2.2vw,15.5px)/1.5 var(--f-head);max-width:440px}
+
+/* Save the Date Section */
+.t9-sec-date{background:radial-gradient(ellipse 70% 30% at 50% 0%,rgba(255,255,255,.7),transparent 70%),linear-gradient(180deg,var(--paper),var(--cream) 50%,var(--paper));position:relative;overflow:hidden;padding:70px 0 90px}
+.t9-datecard{position:relative;max-width:540px;margin:0 auto;padding:40px 24px 34px;border-radius:28px;background:linear-gradient(180deg,#fffaf3,#fff4e6);border:1.5px solid rgba(201,162,74,.6);box-shadow:0 22px 50px rgba(var(--ink-rgb),.14),0 0 0 6px rgba(255,250,244,.8);text-align:center}
+.t9-cal-m{font:700 clamp(24px,5.5vw,34px) var(--f-head);color:var(--p);letter-spacing:.06em;text-transform:uppercase}
+.t9-cal-y{font:italic 600 22px var(--f-head);color:var(--a);margin-top:-2px}
+.t9-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:340px;margin:22px auto 0;font:600 15px var(--f-head)}
+.t9-cal-h{font:700 12px var(--f-body);color:var(--muted);padding:4px 0}
+.t9-cal-d{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;color:var(--ink);transition:background .2s}
+.t9-cal-on{background:var(--p)!important;color:#fff!important;box-shadow:0 4px 12px rgba(var(--p-rgb),.35)}
+.t9-cal-dot{position:relative}
+.t9-cal-dot:after{content:"";position:absolute;bottom:3px;left:50%;width:4px;height:4px;border-radius:50%;background:var(--a);transform:translateX(-50%)}
+.t9-cal-time{margin:28px 0 0;font:italic 600 19px var(--f-head);color:var(--p)}
+.t9-cd{display:none;justify-content:center;gap:8px;margin:20px 0 0}
 .t9-cd.t9-live{display:flex}
 .t9-cd div{min-width:66px;padding:10px 6px 8px;border:1.8px solid var(--p);border-radius:18px;background:var(--p-soft);overflow:hidden}
 .t9-cd b{display:block;font:700 28px/1.1 var(--f-head);color:var(--p);font-variant-numeric:tabular-nums}
@@ -666,7 +677,10 @@ const STYLE = `
 @keyframes t9-tick{from{transform:translateY(-35%);opacity:0}to{transform:none;opacity:1}}
 .t9-cd small{font:700 11px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .t9-cd-done{font:italic 700 20px var(--f-head);color:var(--a)}
-.t9-datecard .t9-btn{margin-top:22px}
+.t9-date-actions{display:flex;justify-content:center;margin-top:22px;position:relative;z-index:3}
+.t9-btn-gcal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 28px;font-size:clamp(14px,2.5vw,16px);font-weight:700;border-radius:999px;background:linear-gradient(135deg,var(--p),#6b0c16);color:#fff9f0!important;box-shadow:0 8px 24px rgba(110,10,20,.35),0 0 0 2px rgba(201,162,74,.4);transition:transform .25s ease,box-shadow .25s ease;text-decoration:none}
+.t9-btn-gcal:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(110,10,20,.45),0 0 0 3px rgba(201,162,74,.7)}
+.t9-gcal-svg{color:#f7d282;flex-shrink:0}
 
 /* Celebrations Section */
 .t9-sec-ev{background:radial-gradient(ellipse 60% 20% at 70% 10%,rgba(255,255,255,.7),transparent 70%),linear-gradient(180deg,var(--cream),#f6ead0 60%,var(--cream));overflow:hidden}
@@ -801,14 +815,16 @@ textarea.t9-input{height:110px;padding:12px 16px;resize:none;line-height:1.5}
 
 @media(min-width:820px){
   .t9 section{padding:110px 0}
-  .t9-chap{grid-template-columns:auto 1fr;gap:44px;text-align:left;justify-items:start;max-width:760px;align-items:center}
-  .t9-chap:nth-child(even){grid-template-columns:1fr auto}
-  .t9-chap:nth-child(even) .t9-medal{order:2}
-  .t9-chap:nth-child(even) .t9-chap-txt{text-align:right;justify-self:end}
+  .t9-chap{grid-template-columns:190px 1fr;gap:44px;max-width:760px}
+  .t9-chap.t9-chap-rev,.t9-chap:nth-of-type(even){grid-template-columns:1fr 190px}
+  .t9-medal{max-width:190px}
   .t9-venue-grid{grid-template-columns:1fr 1fr;align-items:center;max-width:960px}
 }
 @media(max-width:380px){
   .t9-wrap{padding:0 16px}
+  .t9-chap{grid-template-columns:92px 1fr;gap:12px}
+  .t9-chap.t9-chap-rev,.t9-chap:nth-of-type(even){grid-template-columns:1fr 92px}
+  .t9-medal{max-width:92px;padding:4px}
   .t9-cd div{min-width:56px}
   .t9-cd{gap:5px}
   .t9-cal-d{width:32px;height:32px}
@@ -829,10 +845,30 @@ textarea.t9-input{height:110px;padding:12px 16px;resize:none;line-height:1.5}
 /* ---------- Render Function ---------- */
 export default function render({ guest, wedding, events = [] } = {}) {
   const w = wedding || {};
-  const evs = Array.isArray(events) ? events : [];
+  const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
+  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
+  const assetBase = clean(w.asset_base) || './assets/';
+
+  const defaultBengaliEvents = [
+    { event_name: 'Gaye Holud & Mehendi', event_name_bn: 'গায়ে হলুদ ও মেহেন্দি', event_date: clean(w.date) || '2026-12-04', event_time: '17:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Traditional turmeric ceremony, vibrant alpana, music and blessings.', description_bn: 'ঐতিহ্যবাহী গায়ে হলুদ, আলপনা, সঙ্গীত ও আশীর্বাদ।' },
+    { event_name: 'Shubho Bibaho & Phere', event_name_bn: 'শুভ বিবাহ ও সাতপাক', event_date: clean(w.date) || '2026-12-05', event_time: clean(w.time) || '19:00', venue: clean(w.venue) || 'Royal Mandap Grounds', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'রয়্যাল মণ্ডপ প্রাঙ্গণ', description: 'Sacred Vedic wedding vows, Shubho Drishti, Mala Badal and Saat Paak.', description_bn: 'শুভদৃষ্টি, মালাবদল, সম্প্রদান এবং পবিত্র সাতপাক।' },
+    { event_name: 'Preeti Bhoj & Reception', event_name_bn: 'প্রীতিভোজ ও সংবর্ধনা', event_date: clean(w.date) || '2026-12-06', event_time: '19:30', venue: clean(w.venue) || 'Grand Imperial Palace', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'গ্র্যান্ড ইম্পেরিয়াল প্যালেস', description: 'Grand dinner, royal feast, musical evening and heartfelt celebration.', description_bn: 'রাজকীয় প্রীতিভোজ, সঙ্গীত সন্ধ্যা ও প্রাণবন্ত আনন্দ সম্মিলন।' }
+  ];
+
+  const rawList = (Array.isArray(events) && events.length) ? events : defaultBengaliEvents;
+  const evs = rawList.map((e, idx) => ({
+    ...e,
+    event_name: clean(e.event_name) || clean(e.name) || clean(e.title) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_name,
+    event_name_bn: clean(e.event_name_bn) || clean(e.name_bn) || clean(e.title_bn) || clean(e.event_name) || clean(e.name) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_name_bn,
+    event_date: clean(e.event_date) || clean(e.date) || clean(w.date) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_date,
+    event_time: clean(e.event_time) || clean(e.time) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_time,
+    venue: clean(e.venue) || clean(e.address) || clean(w.venue) || defaultBengaliEvents[idx % defaultBengaliEvents.length].venue,
+    venue_bn: clean(e.venue_bn) || clean(e.address_bn) || clean(e.venue) || clean(w.venue_bn) || clean(w.venue) || defaultBengaliEvents[idx % defaultBengaliEvents.length].venue_bn,
+    description: clean(e.description) || defaultBengaliEvents[idx % defaultBengaliEvents.length].description,
+    description_bn: clean(e.description_bn) || clean(e.description) || defaultBengaliEvents[idx % defaultBengaliEvents.length].description_bn
+  }));
   const offset = clean(w.timezone_offset) || '+05:30';
   const lang0 = clean(w.lang || w.language).toLowerCase() || 'en';
-  const assetBase = clean(w.asset_base) || './assets/';
 
   /* Names */
   const rb = clean(w.bride_name) || 'Bride', rg = clean(w.groom_name) || 'Groom';
@@ -912,16 +948,35 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const mapUrl = safeUrl(w.map_url) || (clean(w.venue) || clean(w.address)
     ? esc(`https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query: [w.venue, w.address].filter(Boolean).join(', ') })}`) : '');
   const iso = x => new Date(x).toISOString().replace(/[-:]|\.\d{3}/g, '');
-  const calUrl = (whenTs && clean(w.time))
-    ? esc(`https://calendar.google.com/calendar/render?${new URLSearchParams({ action: 'TEMPLATE', text: `Wedding of ${fEn} & ${sEn}`, dates: `${iso(whenTs)}/${iso(whenTs + 4 * 3600e3)}`, location: [w.venue, w.address, w.city].map(clean).filter(Boolean).join(', ') })}`) : '';
+  let calDates = '';
+  if (whenTs) {
+    calDates = `${iso(whenTs)}/${iso(whenTs + 4 * 3600e3)}`;
+  } else if (day) {
+    const yStr = String(day.y);
+    const mStr = String(day.mo).padStart(2, '0');
+    const dStr = String(day.d).padStart(2, '0');
+    calDates = `${yStr}${mStr}${dStr}T133000Z/${yStr}${mStr}${dStr}T173000Z`;
+  } else {
+    calDates = '20261128T133000Z/20261128T173000Z';
+  }
+  const calLoc = [w.venue, w.address, w.city].map(clean).filter(Boolean).join(', ') || 'Kolkata, West Bengal';
+  const calText = `Wedding of ${fEn || 'Groom'} & ${sEn || 'Bride'}`;
+  const calDetails = `Shubho Bibaho ceremony of ${fEn || 'Groom'} & ${sEn || 'Bride'}. Venue: ${calLoc}`;
+  const calUrl = esc(`https://calendar.google.com/calendar/render?${new URLSearchParams({
+    action: 'TEMPLATE',
+    text: calText,
+    dates: calDates,
+    details: calDetails,
+    location: calLoc
+  })}`);
 
   const contacts = lines(w.rsvp_contacts);
-  const phoneRaw = clean(w.rsvp_number) || contacts[0] || '';
-  const digits = phoneRaw.replace(/\D/g, '');
+  const phoneRaw = clean(w.rsvp_number) || clean(w.rsvp_phone) || clean(w.phone) || clean(w.whatsapp) || contacts[0] || '9477929927';
+  const digits = phoneRaw.replace(/\D/g, '') || '9477929927';
   const wa = digits.length === 10 ? `91${digits}` : digits;
-  const canRsvp = wa.length >= 10;
-  const heroImg = safeImg(w.hero_image) || `${assetBase}template-06-couple.webp`;
-  const venueImg = safeImg(w.venue_image) || `${assetBase}template-06-palace.jpg`;
+  const canRsvp = true;
+  const heroImg = safeImg(w.couple_photo) || safeImg(w.hero_image) || safeImg(w.couple_image) || safeImg(storedCouple) || `${assetBase}template-06-couple.webp`;
+  const venueImg = safeImg(w.venue_photo) || safeImg(w.venue_image) || safeImg(w.banquet_image) || safeImg(storedVenue) || `${assetBase}template-06-palace.jpg`;
   const cardArtImg = safeImg(w.card_image) || `${assetBase}template-06-card-clean.webp`;
   const story = readStory(w.story);
   const gallery = readGallery(w.gallery);
@@ -1000,15 +1055,14 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const frieze = `<div class="t9-frieze" aria-hidden="true"><div class="t9-fz-track">${FRIEZE_USE(8)}</div></div>`;
 
   const storyVignettes = [
-    `${assetBase}template-06-couple.webp`,
+    heroImg,
     `${assetBase}template-06-jaimala.jpg`,
     `${assetBase}template-06-phere.jpg`
   ];
 
   const defaultMoments = [
-    `${assetBase}template-06-card-art.jpg`,
-    `${assetBase}template-06-couple.webp`,
-    `${assetBase}template-06-phere.jpg`,
+    heroImg,
+    venueImg,
     `${assetBase}template-06-jaimala.jpg`,
     `${assetBase}template-06-reception.jpg`
   ];
@@ -1031,107 +1085,124 @@ export default function render({ guest, wedding, events = [] } = {}) {
 
   <div class="t9-lang t9-lang-float" role="group" aria-label="Language" hidden><button type="button" data-setlang="en" aria-pressed="false">EN</button><button type="button" data-setlang="bn" aria-pressed="false">বাং</button></div>
 
-  <!-- Royal Gate Entrance -->
+  <!-- Royal Gate Entrance (First Page matching User Image 1 & Sample Image 2) -->
   <div class="t9-entry" role="dialog" aria-label="Wedding invitation">
-    <div class="t9-cur t9-cl"></div><div class="t9-cur t9-cr"></div>
+    <!-- Royal Double Doors (Left and Right) that slide open to sides -->
+    <div class="t9-cur t9-cl" aria-hidden="true">
+      <div class="t9-door-panel t9-door-left">
+        <picture>
+          <source srcset="${assetBase}bengali-entry-complete-bg.webp" type="image/webp">
+          <source srcset="${assetBase}bengali-entry-frame.webp" type="image/webp">
+          <img class="t9-door-bg" src="${assetBase}bengali-entry-complete-bg.png" alt="" loading="eager" decoding="async">
+        </picture>
+      </div>
+    </div>
+    <div class="t9-cur t9-cr" aria-hidden="true">
+      <div class="t9-door-panel t9-door-right">
+        <picture>
+          <source srcset="${assetBase}bengali-entry-complete-bg.webp" type="image/webp">
+          <source srcset="${assetBase}bengali-entry-frame.webp" type="image/webp">
+          <img class="t9-door-bg" src="${assetBase}bengali-entry-complete-bg.png" alt="" loading="eager" decoding="async">
+        </picture>
+      </div>
+    </div>
+
     <div class="t9-lang" role="group" aria-label="Language"><button type="button" data-setlang="en" aria-pressed="false">EN</button><button type="button" data-setlang="bn" aria-pressed="false">বাং</button></div>
+
+    <!-- First Page Card Content (Inside the Golden Frame matching Image 2) -->
     <div class="t9-gate-in">
       <div class="t9-gate-card">
-        <div class="t9-gate-motif" aria-hidden="true">${ALPONA}</div>
-        <p class="t9-gate-invoc">${invocation}</p>
+        <div class="t9-gate-lotus-top" aria-hidden="true">${LOTUS_CARD_SVG}</div>
+        <p class="t9-gate-invoc"><span>✦</span> ${invocation} <span>✦</span></p>
         <h1 class="t9-gate-title">${ceremonyTitle}</h1>
+        <div class="t9-gate-flourish" aria-hidden="true">
+          <svg viewBox="0 0 200 16" width="160" height="13" fill="none"><path d="M10 8 Q60 1 90 8 T170 8" stroke="#c9a24a" stroke-width="1.4"/><path d="M100 3 C98 1 95 3 95 5 C95 8 100 11 100 11 C100 11 105 8 105 5 C105 3 102 1 100 3 Z" fill="#b5121b" stroke="#c9a24a" stroke-width="0.8"/><circle cx="20" cy="8" r="2" fill="#c9a24a"/><circle cx="180" cy="8" r="2" fill="#c9a24a"/></svg>
+        </div>
         <p class="t9-kicker">${t('kicker')}</p>
         <p class="t9-gate-names">${namesPlain}</p>
         
-        <!-- Person, family invitation box -->
+        <!-- Person, family invitation box matching Image 2 -->
         <div class="t9-guest-box">
           <span class="t9-guest-kicker">${t('guestSal')}</span>
           <h2 class="t9-guest-name">${guestLine}</h2>
           ${guestBadgeText ? `<span class="t9-guest-pill">${guestBadgeText}</span>` : ''}
         </div>
 
-        <button class="t9-bindi" type="button" data-open aria-label="Open the invitation"><b>${t('open')}</b></button>
+        <!-- Ornate Wax Seal Button with Gold Filigree Ring (100% Vector SVG Circle - Non-Distorted) -->
+        <button class="t9-bindi" type="button" data-open aria-label="${t('open')}">
+          ${SEAL_SVG}
+          <b class="t9-bindi-txt">${t('open')}</b>
+        </button>
         <div class="t9-gate-note">✦ ${t('tapOpen')} ✦</div>
       </div>
     </div>
   </div>
 
   <main>
-    <!-- Hero Header -->
+    <!-- Hero Header (Page 2: Full Window Size, Left & Right Attached, Not Cutting Any Portion) -->
     <header class="t9-hero" data-hero>
-      <div class="t9-garland t9-gl" aria-hidden="true">${garland(620)}</div>
-      <div class="t9-garland t9-gr" aria-hidden="true">${garland(620)}</div>
-      <div class="t9-leaf t9-ll" aria-hidden="true">${banana(false)}</div><div class="t9-leaf t9-lr" aria-hidden="true">${banana(true)}</div>
-      ${frieze}
-      <div class="t9-hero-in">
-        <div class="t9-spotlight-frame t9-rv" data-feet>
-          <div class="t9-ph"><img class="t9-fi" src="${esc(heroImg)}" alt="${esc(`${fEn} & ${sEn}`)}" decoding="async"></div>
-        </div>
-        <div class="t9-invoc">${invocation}</div>
-        <h1 class="t9-title">${ceremonyTitle}</h1>
-        <p class="t9-sub">${t('weddingOf')}</p>
-        <h2 class="t9-names">${namesLine}</h2>
-        <p class="t9-hero-copy">${inviteText}</p>
-        <div class="t9-datebox"><b>${dateLong}</b><em>${[dayName, timeL].filter(Boolean).map((x, i) => i ? ' · ' + x : x).join('')}</em></div>
-        <p class="t9-togo" data-togo hidden></p>
-        <div class="t9-pill">${t('invited')}: ${guestLine}</div>
-        <div class="t9-hero-actions">
-          <a href="#" data-goto="card" class="t9-btn">${t('viewCard')} <span aria-hidden="true">↓</span></a>
-          ${calUrl ? `<a href="${calUrl}" target="_blank" rel="noopener noreferrer" class="t9-btn t9-ghost">✦ &nbsp;${t('addCal')}</a>` : ''}
-        </div>
-        <div class="t9-cue" aria-hidden="true">${FOOTPRINTS}<span>${t('scrollDown')}</span></div>
-      </div>
-    </header>
-
-    <!-- Centerpiece Royal Bengali Wedding Card (Exact Match to User Reference Plate) -->
-    <section class="t9-sec-card" data-sec="card">
-      <div class="t9-wrap">
-        <div class="t9-head t9-rv">
-          <div class="t9-eyebrow">${t('weddingOf')}</div>
-          <h2>${namesPlain}</h2>
-          <p>${t('inviteDef')}</p>
-          ${ALPONA}
-        </div>
-        <div class="t9-card-outer t9-rv">
-          <article class="t9-invcard">
-            <picture class="t9-card-bg">
-              <source srcset="${assetBase}template-06-card-clean.webp" type="image/webp">
-              <img src="${esc(cardArtImg)}" alt="${esc(`${fEn} & ${sEn}`)}" loading="eager" decoding="async">
+      <!-- Royal Bengali Banana Tree Pillars with Swinging Brass Bells -->
+      <div class="t9-hero-pillars" aria-hidden="true">
+        <div class="t9-pillar t9-pillar-left">
+          <picture>
+            <source media="(max-width: 768px)" srcset="${assetBase}bengali-border-mobile-left.webp" type="image/webp">
+            <source media="(max-width: 768px)" srcset="${assetBase}bengali-border-mobile-left.png" type="image/png">
+            <source srcset="${assetBase}bengali-border-extended-left.webp" type="image/webp">
+            <img class="t9-pillar-img" src="${assetBase}bengali-border-extended-left.png" alt="" loading="eager" decoding="async">
+          </picture>
+          <div class="t9-jhumka-sway t9-jhumka-left t9-bell-left">
+            <picture>
+              <source srcset="${assetBase}bengali-jhumka-left.webp" type="image/webp">
+              <img src="${assetBase}bengali-jhumka-left.png" alt="" decoding="async">
             </picture>
-            <div class="t9-card-in">
-              <p class="t9-card-invoc">${invocation}</p>
-              <h2 class="t9-card-title">${ceremonyTitle}</h2>
-              <p class="t9-card-bless">${t('bless1')}<br>${t('bless2')}</p>
-              <div class="t9-card-couple">
-                <h3 class="t9-card-names">${namesLine}</h3>
-              </div>
-              <div class="t9-card-guest">
-                <span>${t('dear')} ${guestLine}</span>
-              </div>
-              <div class="t9-card-datetime">
-                <p class="t9-card-date">${dateLong}</p>
-                ${timeL ? `<p class="t9-card-lagna">${t('lagna')}: ${timeL}</p>` : ''}
-              </div>
-              <p class="t9-card-venue">${venue}</p>
-              ${(hasAddr || hasCity) ? `<p class="t9-card-addr">${hasAddr ? address : ''}${hasAddr && hasCity ? ', ' : ''}${hasCity ? city : ''}</p>` : ''}
-              <p class="t9-card-fine">${t('presence')}</p>
-              ${phoneRaw ? `<p class="t9-card-contact">${t('contact')}: ${esc(phoneRaw)}</p>` : ''}
-            </div>
-          </article>
-          <div class="t9-card-actions">
-            ${mapUrl ? `<a class="t9-btn" href="${mapUrl}" target="_blank" rel="noopener noreferrer">⌖ &nbsp;${t('directions')}</a>` : ''}
-            ${calUrl ? `<a class="t9-btn t9-ghost" href="${calUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;${t('addCal')}</a>` : ''}
+          </div>
+        </div>
+
+        <div class="t9-pillar t9-pillar-right">
+          <picture>
+            <source media="(max-width: 768px)" srcset="${assetBase}bengali-border-mobile-right.webp" type="image/webp">
+            <source media="(max-width: 768px)" srcset="${assetBase}bengali-border-mobile-right.png" type="image/png">
+            <source srcset="${assetBase}bengali-border-extended-right.webp" type="image/webp">
+            <img class="t9-pillar-img" src="${assetBase}bengali-border-extended-right.png" alt="" loading="eager" decoding="async">
+          </picture>
+          <div class="t9-jhumka-sway t9-jhumka-right t9-bell-right">
+            <picture>
+              <source srcset="${assetBase}bengali-jhumka-right.webp" type="image/webp">
+              <img src="${assetBase}bengali-jhumka-right.png" alt="" decoding="async">
+            </picture>
           </div>
         </div>
       </div>
-    </section>
+
+      ${frieze}
+        <div class="t9-hero-in">
+        <div class="t9-auspicious-head t9-rv">
+          <div class="t9-lotus-wrap" aria-hidden="true">${LOTUS_DIVIDER_SVG}</div>
+          <div class="t9-invoc">${invocation}</div>
+          <h1 class="t9-title">${ceremonyTitle}</h1>
+        </div>
+        <div class="t9-spotlight-frame t9-rv" data-feet>
+          <div class="t9-ph"><img class="t9-fi" src="${esc(heroImg)}" alt="${esc(`${fEn} & ${sEn}`)}" decoding="async"></div>
+        </div>
+        <p class="t9-sub">${t('weddingOf')}</p>
+        <h2 class="t9-names">${namesLine}</h2>
+        <p class="t9-hero-copy">${inviteText}</p>
+        
+        <!-- Person & Family Invited Box (matching Template 2) -->
+        <div class="t9-hero-guest-box t9-rv">
+          <span class="t9-hero-guest-sal">${t('guestSal')}</span>
+          <h3 class="t9-hero-guest-name">${guestLine}</h3>
+          ${guestBadgeText ? `<span class="t9-hero-guest-pill">${guestBadgeText}</span>` : ''}
+        </div>
+      </div>
+    </header>
 
     <!-- Sacred Story & Journey -->
     <section data-sec="story">
       <div class="t9-wrap">
         <div class="t9-poem t9-rv"><p>${poem}</p>${hasFam ? `<small>${families}</small>` : ''}</div>
         <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('storyEy')}</div><h2>${t('storyH')}</h2><p>${t('storySub')}</p>${ALPONA}</div>
-        ${story.map((s, i) => `<article class="t9-chap t9-rv"><div class="t9-medal"><div class="t9-ph"><img class="t9-fi" src="${esc(s.image || storyVignettes[i] || storyVignettes[0])}" alt="${esc(s.altTitle)}" loading="lazy" decoding="async"></div></div>
+        ${story.map((s, i) => `<article class="t9-chap ${i % 2 === 1 ? 't9-chap-rev' : ''} t9-rv"><div class="t9-medal"><div class="t9-ph"><img class="t9-fi" src="${esc(s.image || storyVignettes[i] || storyVignettes[0])}" alt="${esc(s.altTitle)}" loading="lazy" decoding="async"></div></div>
           <div class="t9-chap-txt"><span class="t9-num" aria-hidden="true">${LH(pad(i + 1), toBn(pad(i + 1)))}</span><h3>${s.title}</h3><p>${s.text}</p></div></article>`).join('')}
       </div>
     </section>
@@ -1144,7 +1215,14 @@ export default function render({ guest, wedding, events = [] } = {}) {
           ${day ? `<div class="t9-cal-m">${LH(esc(MONTHS[day.mo - 1]), esc(MONTHS_BN[day.mo - 1]))}</div><div class="t9-cal-y">${LH(String(day.y), toBn(day.y))}</div>${calHtml}` : `<div class="t9-cal-m">${L('To be announced', 'শীঘ্রই জানানো হবে')}</div>`}
           <p class="t9-cal-time">${[dayName, timeL].filter(Boolean).map((x, i) => i ? ' · ' + x : x).join('')}</p>
           <div class="t9-cd" role="timer"><div><b data-u="d">--</b><small>${t('days')}</small></div><div><b data-u="h">--</b><small>${t('hrs')}</small></div><div><b data-u="m">--</b><small>${t('min')}</small></div><div><b data-u="s">--</b><small>${t('sec')}</small></div></div>
-          ${calUrl ? `<a class="t9-btn" href="${calUrl}" target="_blank" rel="noopener noreferrer">✦ &nbsp;${t('addCal')}</a>` : ''}
+          <div class="t9-date-actions">
+            <a class="t9-btn t9-btn-gcal" href="${calUrl}" target="_blank" rel="noopener noreferrer" aria-label="Save to Google Calendar">
+              <svg class="t9-gcal-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7v-5z"/>
+              </svg>
+              <span>${t('addCal')}</span>
+            </a>
+          </div>
         </div></div>
       </div>
     </section>
@@ -1282,25 +1360,17 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
   let dead = false;
 
-  /* Hard scroll lock while curtains are closed */
+  /* Smooth curtains entrance gate: unhindered fluid scrolling */
   const html = doc.documentElement, body = doc.body;
-  let locked = false, saved = null;
+  let locked = false;
   const lock = () => {
     if (locked) return; locked = true;
-    if (typeof win.scrollTo === 'function') win.scrollTo(0, 0);
-    const sbw = Math.max(0, (win.innerWidth || 0) - (html.clientWidth || 0));
-    const b = body.style;
-    saved = { ho: html.style.overflow, p: b.position, t: b.top, l: b.left, r: b.right, w: b.width, pr: b.paddingRight, bs: b.boxSizing };
-    html.style.overflow = 'hidden';
-    b.position = 'fixed'; b.top = '0'; b.left = '0'; b.right = '0'; b.width = '100%'; b.boxSizing = 'border-box';
-    if (sbw) b.paddingRight = sbw + 'px';
   };
   const unlock = () => {
     if (!locked) return; locked = false;
-    const b = body.style;
-    html.style.overflow = saved.ho;
-    b.position = saved.p; b.top = saved.t; b.left = saved.l; b.right = saved.r; b.width = saved.w; b.paddingRight = saved.pr; b.boxSizing = saved.bs;
-    if (typeof win.scrollTo === 'function') win.scrollTo(0, 0);
+    host.classList.remove('t9-locked');
+    if (html?.style) html.style.overflow = '';
+    if (body?.style) body.style.overflow = '';
   };
   host.classList.add('t9-js');
   lock();
@@ -1356,23 +1426,81 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
     }
   };
 
-  /* Entry Gate Open */
+    /* Phuljhadi (Festive Golden Sparklers) Burst Animation */
+  const firePhuljhadi = () => {
+    const bRect = bindi ? bindi.getBoundingClientRect() : { left: win.innerWidth / 2, top: win.innerHeight / 2, width: 0, height: 0 };
+    const cx = bRect.left + bRect.width / 2;
+    const cy = bRect.top + bRect.height / 2;
+    const box = doc.createElement('div');
+    box.className = 't9-phuljhadi';
+    box.style.left = `${cx}px`;
+    box.style.top = `${cy}px`;
+    const colors = ['#fff', '#fff2a8', '#ffd700', '#ffaa00', '#ff6622', '#ffdd55'];
+    const starGlyphs = ['✦', '✧', '★', '✸', '✹'];
+    for (let i = 0; i < 40; i++) {
+      const sp = doc.createElement('div');
+      sp.className = 't9-spark';
+      const angle = (i * 9) + (Math.random() * 8 - 4);
+      const dist = 70 + Math.random() * 220;
+      const sz = 4 + Math.random() * 6;
+      const col = colors[Math.floor(Math.random() * colors.length)];
+      const dur = 0.9 + Math.random() * 0.7;
+      const del = Math.random() * 0.16;
+      sp.style.cssText = `--angle:${angle}deg;--dist:${dist}px;--sz:${sz}px;--col:${col};--dur:${dur}s;--del:${del}s`;
+      box.appendChild(sp);
+    }
+    for (let i = 0; i < 16; i++) {
+      const st = doc.createElement('div');
+      st.className = 't9-spark-star';
+      st.textContent = starGlyphs[i % starGlyphs.length];
+      const angle = (i * 22.5) + (Math.random() * 12 - 6);
+      const dist = 80 + Math.random() * 180;
+      const sz = 11 + Math.random() * 10;
+      const col = colors[Math.floor(Math.random() * colors.length)];
+      const dur = 1.0 + Math.random() * 0.6;
+      const del = Math.random() * 0.14;
+      st.style.cssText = `--angle:${angle}deg;--dist:${dist}px;--sz:${sz}px;--col:${col};--dur:${dur}s;--del:${del}s`;
+      box.appendChild(st);
+    }
+    doc.body.appendChild(box);
+    later(() => box.remove(), 2000);
+  };
+
+  /* Entry Gate Open: Instant smooth unlock on tap */
   const entry = $('.t9-entry'), bindi = $('[data-open]'), note = $('.t9-gate-note');
   let opened = false;
   const open = () => {
     if (opened) return; opened = true;
     if (bindi) bindi.classList.add('t9-burst');
-    if (entry) entry.classList.add('t9-open');
+    firePhuljhadi();
+    if (entry) {
+      entry.classList.add('t9-open');
+      entry.style.pointerEvents = 'none';
+    }
     burstPetals();
+    unlock();
+    host.classList.remove('t9-locked');
+    const fl = $('.t9-lang-float'); if (fl) fl.hidden = false;
+    onScroll(true);
     later(() => {
-      if (entry) entry.remove();
-      host.classList.remove('t9-locked');
-      const fl = $('.t9-lang-float'); if (fl) fl.hidden = false;
-      unlock(); onScroll(true);
-    }, 1800);
+      if (entry) {
+        entry.style.display = 'none';
+        entry.remove();
+      }
+    }, 1600);
   };
-  on(bindi, 'click', open);
-  on(note, 'click', open);
+  on(bindi, 'click', e => { e.stopPropagation(); open(); });
+  on(note, 'click', e => { e.stopPropagation(); open(); });
+  on(entry, 'click', e => { if (e.target.closest('.t9-lang')) return; open(); });
+  on(entry, 'wheel', () => { if (!opened) open(); }, { passive: true });
+  on(entry, 'touchmove', () => { if (!opened) open(); }, { passive: true });
+  on(win, 'wheel', () => { if (!opened) open(); }, { passive: true });
+  on(win, 'touchmove', () => { if (!opened) open(); }, { passive: true });
+  on(doc, 'keydown', e => {
+    if (!opened && ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Enter'].includes(e.key)) {
+      open();
+    }
+  });
 
   $$('[data-goto]').forEach(a => on(a, 'click', e => {
     e.preventDefault();
@@ -1604,7 +1732,7 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
 
   /* RSVP Handling */
   const form = $('[data-rsvp]');
-  const waNum = host.dataset.wa;
+  const waNum = host.dataset.wa || '919477929927';
   let count = 1;
   const outEl = form && $('[data-count]', form);
   function updateCount() {

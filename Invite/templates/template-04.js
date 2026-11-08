@@ -8,6 +8,30 @@
 const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = v => String(v ?? '').replace(/[&<>"']/g, ch => ESC_MAP[ch]);
 const clean = v => String(v ?? '').trim();
+const safeImg = u => {
+  const s = clean(u);
+  if (!s) return '';
+  if (/^https?:\/\/[^\s'"<>]+$/i.test(s)) return s;
+  if (/^blob:[^\s'"<>]+$/i.test(s)) return s;
+  if (/^\.?\/?assets\/[^\s'"<>]+$/i.test(s)) return s;
+  if (s.startsWith('data:image/') && s.includes(';base64,')) {
+    if (!/[\s'"<>]/.test(s.slice(0, 50))) return s;
+  }
+  return '';
+};
+const getStoredPhoto = k => {
+  try {
+    if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+      const v = localStorage.getItem(k);
+      if (v) return v;
+    }
+    if (typeof sessionStorage !== 'undefined' && typeof sessionStorage.getItem === 'function') {
+      const v = sessionStorage.getItem(k);
+      if (v) return v;
+    }
+  } catch { return ''; }
+  return '';
+};
 const safeUrl = v => (/^https?:\/\//i.test(clean(v)) ? esc(clean(v)) : '');
 
 const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -900,6 +924,8 @@ const STYLE = `
    ========================================================================== */
 export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   const w = wedding || {};
+  const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
+  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
   const g = guest || {};
   const evs = Array.isArray(events) ? events : [];
   const bride = clean(w.bride_name) || 'Bride';
@@ -955,7 +981,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   const copyFamily = 'Together with our families, we request the honour of your and your family\'s gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
 
   // Portrait helpers
-  const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image);
+  const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image || w.couple_photo || storedCouple);
   const groomPhoto = safeUrl(w.groom_photo || w.groom_photo_url || w.groom_image);
 
   const screens = [

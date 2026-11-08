@@ -16,11 +16,12 @@
       padding: 0;
       width: 100%;
       min-height: 100%;
-      overflow-x: hidden;
+      overflow-x: clip;
       overflow-y: auto;
-      overscroll-behavior: contain;
       background-color: #140105;
       font-family: 'Cormorant Garamond', Georgia, serif;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -28,11 +29,18 @@
       padding: 0;
       width: 100%;
       min-height: 100%;
-      overflow-x: hidden;
-      overflow-y: visible;
-      overscroll-behavior: contain;
+      overflow-x: clip;
+      overflow-y: auto;
       background-color: #140105;
       font-family: 'Cormorant Garamond', Georgia, serif;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #ambient-particle-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 1;
     }
 
     [hidden] {
@@ -148,6 +156,9 @@
     .rsvp-dialog [role="status"] { min-height: 1.4em; color: #4d0a18; }
     .rsvp-dialog :focus-visible { outline: 3px solid #d4af37; outline-offset: 2px; }
   </style>
+  <link rel="stylesheet" href="./token-engine/base-card.css">
+  <link rel="stylesheet" href="./token-engine/editorial-story-venue.css">
+  <link rel="stylesheet" href="./token-engine/royal-animations.css">
 </head>
 <body>
 
@@ -156,11 +167,17 @@
     <div class="loader-text">Summoning The Royal Suite</div>
   </div>
 
+  <canvas id="ambient-particle-canvas" aria-hidden="true"></canvas>
   <main id="app-mount"></main>
 
   <script type="module">
     import { fetchInvitationByCode, submitRsvp } from './api.js';
     import { localizeHtml, translateText } from './i18n.js';
+    import { TokenTemplateController } from './token-engine/TokenTemplateController.js';
+    import { ScrollReveal } from './token-engine/ScrollReveal.js';
+    import { RoyalEnvelope } from './token-engine/RoyalEnvelope.js';
+    import { ParticleCanvas } from './token-engine/ParticleCanvas.js';
+    import { AudioController } from './token-engine/AudioController.js';
 
     function removeLoader() {
       const loader = document.getElementById('luxury-loader');
@@ -305,35 +322,211 @@
       document.documentElement.dir = language === 'ur' ? 'rtl' : 'ltr';
 
       try {
-        const weddingPayload = await fetchInvitationByCode(inviteCode);
-        const guest = weddingPayload.guest;
-        const templateId = String(weddingPayload.wedding.template_id || 'template-02').trim();
-        if (!['template-01', 'template-02', 'template-03', 'template-04', 'template-05', 'template-06', 'template-07', 'template-08', 'template-09', 'template-10'].includes(templateId)) {
-          throw new Error('This invitation is configured with an unsupported design.');
+        let weddingPayload;
+        try {
+          weddingPayload = await fetchInvitationByCode(inviteCode);
+        } catch (fetchErr) {
+          if (!inviteCode) {
+            weddingPayload = {
+              guest: { name: 'Respected Guest', persons: 2, invite_code: 'preview' },
+              wedding: {
+                bride_name: 'Sanjukta',
+                groom_name: 'Purushottam',
+                couple_name: 'Sanjukta & Purushottam',
+                event_date: '2026-12-05',
+                ceremony_time: '7:00 PM',
+                ceremony_title: 'Shubho Bibaho · Sacred Royal Heritage',
+                invocation: '॥ শ্রী শ্রী প্রজাপতয়ে নমঃ ॥',
+                venue: 'Grand Heritage Palace Grounds',
+                venue_title: 'The Royal Mandap & Banquet Courtyard',
+                address: 'Riverfront Promenade, Heritage Boulevard',
+                city: 'Kolkata, West Bengal',
+                rsvp_phone: '9477929927',
+                phone: '9477929927',
+                template_id: p.get('template') || 'hindu-vedic-crimson'
+              },
+              events: [
+                { name: 'Mehendi & Sangeet', date: '2026-12-04', time: '5:00 PM', venue: 'Royal Palace Banquet' },
+                { name: 'Wedding Ceremony (Phere)', date: '2026-12-05', time: '7:00 PM', venue: 'Royal Palace Mandap' },
+                { name: 'Grand Reception', date: '2026-12-06', time: '7:30 PM', venue: 'Imperial Ballroom' }
+              ]
+            };
+          } else {
+            throw fetchErr;
+          }
         }
 
-        const fixedTemplates = ['template-02', 'template-04', 'template-05'];
-        const isFixed = fixedTemplates.includes(templateId);
-        document.documentElement.classList.toggle('fixed-template', isFixed);
-        document.body.classList.toggle('fixed-template', isFixed);
+        const guest = weddingPayload.guest;
+        const wedding = weddingPayload.wedding || {};
+        const templateId = String(p.get('template') || wedding.template_id || 'hindu-vedic-crimson').trim();
 
-        const module = await import(`./templates/${templateId}.js`);
+        // 1. Fetch Token Catalog to verify if template is a token-driven design
+        let tokenCatalog = null;
+        try {
+          const tokenRes = await fetch('./token-engine/templates.json');
+          tokenCatalog = await tokenRes.json();
+        } catch (e) {
+          console.warn('Token catalog load error:', e);
+        }
 
-        const mount = document.getElementById('app-mount');
-        mount.innerHTML = localizeHtml(module.default({
-          guest,
-          wedding: weddingPayload.wedding,
-          events: weddingPayload.events || []
-        }), language);
+        const getStored = (k) => {
+          try {
+            return (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function' && localStorage.getItem(k))
+              || (typeof sessionStorage !== 'undefined' && typeof sessionStorage.getItem === 'function' && sessionStorage.getItem(k))
+              || '';
+          } catch { return ''; }
+        };
 
-        if (typeof module.mount === 'function') {
-          module.mount(mount, {
+        const couplePhoto = wedding.couple_photo
+          || wedding.hero_image
+          || getStored('wedding_couple_photo_' + (wedding.order_reference || ''))
+          || getStored('wedding-couple-photo')
+          || getStored('wedding_couple_photo')
+          || getStored('onboard-couple-photo')
+          || '';
+
+        const venuePhoto = wedding.venue_photo
+          || wedding.venue_image
+          || getStored('wedding_venue_photo_' + (wedding.order_reference || ''))
+          || getStored('wedding-venue-photo')
+          || getStored('wedding_venue_photo')
+          || getStored('onboard-venue-photo')
+          || '';
+
+        wedding.couple_photo = couplePhoto;
+        wedding.venue_photo = venuePhoto;
+        wedding.hero_image = couplePhoto || wedding.hero_image;
+        wedding.venue_image = venuePhoto || wedding.venue_image;
+
+        const isTokenTemplate = tokenCatalog && Array.isArray(tokenCatalog.templates) && tokenCatalog.templates.some(t => t.id === templateId);
+
+        if (isTokenTemplate) {
+          // --- Unified Token-Driven & Editorial Guest Engine ---
+          document.documentElement.classList.remove('fixed-template');
+          document.body.classList.remove('fixed-template');
+
+          const mount = document.getElementById('app-mount');
+          const controller = new TokenTemplateController({
+            templates: tokenCatalog.templates,
+            defaultTemplateId: templateId
+          });
+
+          const couple = {
+            bride: wedding.bride_name || wedding.bride || 'Sanjukta',
+            groom: wedding.groom_name || wedding.groom || 'Purushottam',
+            name_order: wedding.name_order || 'bride_first'
+          };
+
+          const story = {
+            date: wedding.story_date || 'October 18, 2023',
+            quote: wedding.story_quote || '“One serendipitous afternoon over hot chai blossomed into shared dreams, unending laughter, and a love that feels like home.”',
+            text: wedding.story_text || 'What began as a quiet conversation along the promenade soon unfolded into thousands of shared memories. Today, surrounded by our loved ones, we step together into our forever.',
+            image: couplePhoto
+          };
+
+          const venue = {
+            name: wedding.venue_name || wedding.venue || 'Grand Heritage Palace Grounds',
+            hall: wedding.venue_title || 'The Royal Mandap & Banquet Courtyard',
+            address: wedding.address || 'Riverfront Promenade, Heritage Boulevard',
+            city: wedding.city || 'Kolkata, West Bengal',
+            map_url: wedding.map_url || '',
+            image: venuePhoto
+          };
+
+          controller.render(mount, {
+            id: wedding.id || inviteCode,
+            invocation: wedding.invocation || '|| Shree Shree Prajapataye Namah ||',
+            ceremony_title: wedding.ceremony_title || 'Wedding Celebration',
+            couple,
+            date: wedding.event_date ? new Date(wedding.event_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'December 05, 2026',
+            time: wedding.ceremony_time || '7:00 PM',
+            venue,
+            show_venue_showcase: true,
+            story,
+            events: (weddingPayload.events || []).map(ev => ({
+              name: ev.name || ev.event_name,
+              date: ev.date || ev.event_date,
+              time: ev.time || ev.event_time,
+              venue: ev.venue || venue.name
+            })),
+            rsvp: {
+              phone: wedding.rsvp_phone || wedding.phone || '9477929927'
+            }
+          });
+
+          // 1. Ambient Floating Sparkles & Petals Canvas
+          try {
+            new ParticleCanvas({
+              canvas: 'ambient-particle-canvas',
+              maxParticles: 35,
+              autoStart: true,
+              type: 'mixed'
+            });
+          } catch (e) {
+            console.warn('Particle canvas init:', e);
+          }
+
+          // 2. Ambient Wedding Music Controller (invitation.mp3)
+          let audio = null;
+          try {
+            audio = new AudioController({
+              audioSrc: './invitation.mp3',
+              loop: true,
+              volume: 0.45,
+              label: 'Wedding Music'
+            });
+          } catch (e) {
+            console.warn('Audio controller init:', e);
+          }
+
+          // 3. Interactive Virtual Wax-Seal / Envelope Unveil
+          if (mount.firstElementChild) {
+            new RoyalEnvelope({
+              targetCard: mount.firstElementChild,
+              sealText: 'TAP TO UNVEIL',
+              crest: '⚜️',
+              initiallyOpen: false,
+              onUnveil: () => {
+                if (audio) audio.play().catch(() => {});
+              }
+            });
+          }
+
+          mountRsvpWidget(mount, weddingPayload, guest.invite_code, language);
+
+          new ScrollReveal({
+            selector: '.reveal-up, .reveal-fade, .reveal-scale, .reveal-motif, .editorial-section',
+            rootMargin: '0px 0px -40px 0px'
+          });
+        } else {
+          // --- Legacy Template Fallback (template-01..template-10) ---
+          if (!['template-01', 'template-02', 'template-03', 'template-04', 'template-05', 'template-06', 'template-07', 'template-08', 'template-09', 'template-10'].includes(templateId)) {
+            throw new Error('This invitation is configured with an unsupported design.');
+          }
+
+          const fixedTemplates = ['template-02', 'template-04'];
+          const isFixed = fixedTemplates.includes(templateId);
+          document.documentElement.classList.toggle('fixed-template', isFixed);
+          document.body.classList.toggle('fixed-template', isFixed);
+
+          const module = await import(`./templates/${templateId}.js`);
+
+          const mount = document.getElementById('app-mount');
+          mount.innerHTML = localizeHtml(module.default({
             guest,
             wedding: weddingPayload.wedding,
             events: weddingPayload.events || []
-          });
+          }), language);
+
+          if (typeof module.mount === 'function') {
+            module.mount(mount, {
+              guest,
+              wedding: weddingPayload.wedding,
+              events: weddingPayload.events || []
+            });
+          }
+          mountRsvpWidget(mount, weddingPayload, guest.invite_code, language);
         }
-        mountRsvpWidget(mount, weddingPayload, guest.invite_code, language);
       } catch (err) {
         console.error('Invitation loading error:', err);
         showPageError(err.message || 'We could not load this invitation. Please try again.');

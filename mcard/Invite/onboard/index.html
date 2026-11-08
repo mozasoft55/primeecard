@@ -10,13 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="../utils/photo-upload.css">
   <script src="../vendor/qrcode-generator.js" defer></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="../"><span class="brand-mark" aria-hidden="true">✦</span><span>Royal Wedding Cards<small>YOUR STORY, BEAUTIFULLY INVITED</small></span></a>
-    <span class="secure-note"><span aria-hidden="true">◆</span> Private and secure order setup</span>
+    <a class="brand" href="../"><span class="brand-mark" aria-hidden="true">✦</span><span>Prime eCard<small>INVITES &amp; EVENTS MANAGEMENT SMARTLY</small></span></a>
+    <span class="secure-note"><span aria-hidden="true">◆</span> Need Help? WhatsApp / Call: <a href="https://wa.me/919477929927" target="_blank" style="color:#f8e3b0;text-decoration:none;font-weight:600;">+91 94779 29927</a> | <a href="mailto:primeecard@gmail.com" style="color:#f8e3b0;text-decoration:none;">primeecard@gmail.com</a></span>
   </header>
 
   <main class="layout">
@@ -145,6 +146,15 @@
               <label class="field field-wide">Venue address<textarea name="address" rows="2" maxlength="500"></textarea></label>
               <label class="field field-wide">Google Maps URL<input name="map_url" type="url" placeholder="https://maps.google.com/…"></label>
             </div>
+            
+            <div class="subsection-head">
+              <div>
+                <h4>Couple &amp; Venue Photographs</h4>
+                <p>Client-side optimized to 1200px WebP (&lt;250KB) before saving.</p>
+              </div>
+            </div>
+            <div id="onboard-photo-uploader"></div>
+
             <div class="subsection-head"><div><h4>Programme timeline</h4><p>Add, remove or reorder events.</p></div><button class="button button-outline button-small" id="add-event" type="button">＋ Add event</button></div>
             <div id="event-list" class="event-list"></div>
             <div class="field-grid design-grid">

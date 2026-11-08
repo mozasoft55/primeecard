@@ -14,7 +14,30 @@ const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC[c]);
 const clean = v => String(v ?? '').trim();
 const safeUrl = u => (/^https?:\/\//i.test(clean(u)) ? esc(clean(u)) : '');
-const safeImg = u => (/^https:\/\/[^\s'"()<>\\]+$/i.test(clean(u)) ? clean(u) : '');
+const safeImg = u => {
+  const s = clean(u);
+  if (!s) return '';
+  if (/^https?:\/\/[^\s'"<>]+$/i.test(s)) return s;
+  if (/^blob:[^\s'"<>]+$/i.test(s)) return s;
+  if (/^\.?\/?assets\/[^\s'"<>]+$/i.test(s)) return s;
+  if (s.startsWith('data:image/') && s.includes(';base64,')) {
+    if (!/[\s'"<>]/.test(s.slice(0, 50))) return s;
+  }
+  return '';
+};
+const getStoredPhoto = k => {
+  try {
+    if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+      const v = localStorage.getItem(k);
+      if (v) return v;
+    }
+    if (typeof sessionStorage !== 'undefined' && typeof sessionStorage.getItem === 'function') {
+      const v = sessionStorage.getItem(k);
+      if (v) return v;
+    }
+  } catch { return ''; }
+  return '';
+};
 const lines = s => String(s ?? '').split(/[;\n]/).map(x => x.trim()).filter(Boolean);
 const pad = n => String(n).padStart(2, '0');
 
@@ -371,6 +394,8 @@ body{overflow:visible!important;margin:0;padding:0;overscroll-behavior:contain}
 /* ---------- render ---------- */
 export default function render({ guest, wedding, events = [] } = {}) {
   const w = wedding || {};
+  const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
+  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
   const evs = Array.isArray(events) ? events : [];
   const offset = clean(w.timezone_offset) || '+05:30';
 

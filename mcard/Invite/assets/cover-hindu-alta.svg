@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-alta" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#520a1a"/>
+      <stop offset="60%" stop-color="#28040d"/>
+      <stop offset="100%" stop-color="#100105"/>
+    </radialGradient>
+    <linearGradient id="gold-alta" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#fae19c"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-alta)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-alta)" stroke-width="1.5" stroke-opacity="0.7"/>
+  <!-- Bengali Alpana Border Elements -->
+  <path d="M30 30 L45 30 L30 45 Z" fill="url(#gold-alta)"/>
+  <path d="M270 30 L255 30 L270 45 Z" fill="url(#gold-alta)"/>
+  <path d="M30 370 L45 370 L30 355 Z" fill="url(#gold-alta)"/>
+  <path d="M270 370 L255 370 L270 355 Z" fill="url(#gold-alta)"/>
+  <!-- Scalloped Jharokha Arch -->
+  <path d="M45 190 C45 130, 95 65, 150 65 C205 65, 255 130, 255 190 L255 340 L45 340 Z" fill="none" stroke="url(#gold-alta)" stroke-width="1.8"/>
+  <path d="M60 195 C60 145, 100 85, 150 85 C200 85, 240 145, 240 195 L240 330 L60 330 Z" fill="none" stroke="url(#gold-alta)" stroke-width="0.7" stroke-dasharray="3,3"/>
+  <!-- Top Shankha & Topor Motif -->
+  <text x="150" y="125" font-family="'Cinzel', Georgia, serif" font-size="12" fill="url(#gold-alta)" font-weight="700" text-anchor="middle" letter-spacing="2">|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||</text>
+  <!-- Shankha Crest -->
+  <g transform="translate(150, 165)" stroke="url(#gold-alta)" stroke-width="1.2" fill="none">
+    <ellipse cx="0" cy="0" rx="14" ry="12"/>
+    <path d="M-8 -6 C-3 6, 8 4, 10 -4" stroke-width="1"/>
+    <circle cx="0" cy="0" r="3" fill="url(#gold-alta)"/>
+  </g>
+  <text x="150" y="225" font-family="'Cinzel', Georgia, serif" font-size="16" fill="#fffbf2" font-weight="700" text-anchor="middle" letter-spacing="2">SHUBHO BIBAHO</text>
+  <text x="150" y="246" font-family="'Playfair Display', Georgia, serif" font-size="11" fill="url(#gold-alta)" text-anchor="middle" letter-spacing="3">ALTA MANDAP EDITION</text>
+  <line x1="85" y1="262" x2="215" y2="262" stroke="url(#gold-alta)" stroke-width="0.8" stroke-opacity="0.5"/>
+  <text x="150" y="280" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#eeddbb" text-anchor="middle">Cinematic Heritage Bengali Suite</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-alta)" text-anchor="middle" letter-spacing="3">ROYAL INVITATION</text>
+</svg>

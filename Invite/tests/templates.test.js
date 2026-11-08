@@ -222,13 +222,11 @@ test('template-04 gracefully handles missing dates and venue links', async () =>
   assert.doesNotMatch(html, /&amp; Family/);
 });
 
-test('template-05 renders five invitation screens with working navigation controls', async () => {
+test('template-05 renders the royal sealed invitation with interactive sections', async () => {
   const module = await import('../templates/template-05.js');
   const html = module.default({ guest, wedding, events });
 
-  assert.equal((html.match(/class="t05-screen[^"]*" data-screen=/g) || []).length, 5);
-  assert.match(html, /data-next>Begin Invitation/);
-  assert.match(html, /data-prev/);
-  assert.match(html, /data-step="4"/);
-  assert.match(html, /data-restart/);
+  assert.ok(html.includes('t7-wrap'), 'Must render luxury content wrapper');
+  assert.ok(html.includes('data-rsvp'), 'Must include RSVP section');
+  assert.ok(html.includes('t7-env') || html.includes('t7-seal'), 'Must include envelope or wax seal entrance');
 });

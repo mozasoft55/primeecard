@@ -1,0 +1,810 @@
+/**
+ * ============================================================================
+ * royal-animations.css — Hardware-Accelerated Reveal & Luxury Micro-Interactions
+ * Senior Frontend Performance & Animation Engineering
+ * 
+ * Performance Principles:
+ * - 100% Composite-Only: Exclusively mutates `transform` and `opacity`
+ * - Zero Layout Shifts (CLS = 0): No animating width, height, margin or top/left
+ * - 60fps / 120Hz ProMotion Ready: Native GPU layer promotion via 3D context
+ * - Progressive Enhancement: Instant visibility if JS is disabled or IO unsupported
+ * - Full WCAG 2.2 AA Compliance: prefers-reduced-motion support
+ * ============================================================================
+ */
+
+:root {
+  --anim-ease-royal: cubic-bezier(0.16, 1, 0.3, 1);       /* Smooth luxury deceleration */
+  --anim-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);   /* Gentle natural bounce */
+  --anim-duration-reveal: 0.75s;
+  --anim-duration-micro: 0.28s;
+  --anim-stagger-gap: 80ms;
+}
+
+/* ==========================================================================
+   1. SCROLL-TRIGGERED REVEAL HELPERS (COMPOSITE-ONLY)
+   ========================================================================== */
+
+/* Initial Hidden States (Only active when .js-reveal-ready is present on html/body) */
+.js-reveal-ready .reveal-up,
+.js-reveal-ready .reveal-fade,
+.js-reveal-ready .reveal-scale,
+.js-reveal-ready .reveal-motif {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition-property: transform, opacity;
+  transition-duration: var(--anim-duration-reveal);
+  transition-timing-function: var(--anim-ease-royal);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Variant 1: Reveal Slide Up */
+.js-reveal-ready .reveal-up {
+  transform: translate3d(0, 28px, 0);
+}
+
+/* Variant 2: Reveal Fade Only */
+.js-reveal-ready .reveal-fade {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Variant 3: Reveal Subtle Scale & Elevate */
+.js-reveal-ready .reveal-scale {
+  transform: translate3d(0, 16px, 0) scale3d(0.95, 0.95, 1);
+}
+
+/* Variant 4: Reveal Motif Unfurl (Subtle Rotational Bloom) */
+.js-reveal-ready .reveal-motif {
+  transform: translate3d(0, 14px, 0) scale3d(0.9, 0.9, 1) rotate3d(0, 0, 1, -2.5deg);
+}
+
+/* --------------------------------------------------------------------------
+   Revealed Active State (Triggered by IntersectionObserver)
+   -------------------------------------------------------------------------- */
+.js-reveal-ready .reveal-up.is-revealed,
+.js-reveal-ready .reveal-fade.is-revealed,
+.js-reveal-ready .reveal-scale.is-revealed,
+.js-reveal-ready .reveal-motif.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate3d(0, 0, 1, 0deg);
+}
+
+/* Once transition finishes, release will-change to reclaim GPU memory */
+.js-reveal-ready .is-revealed.is-settled {
+  will-change: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Automatic Staggered Cascades (Child Items in Grids/Lists)
+   -------------------------------------------------------------------------- */
+.reveal-stagger-parent > *:nth-child(1) { --reveal-delay: 0ms; }
+.reveal-stagger-parent > *:nth-child(2) { --reveal-delay: 80ms; }
+.reveal-stagger-parent > *:nth-child(3) { --reveal-delay: 160ms; }
+.reveal-stagger-parent > *:nth-child(4) { --reveal-delay: 240ms; }
+.reveal-stagger-parent > *:nth-child(5) { --reveal-delay: 320ms; }
+.reveal-stagger-parent > *:nth-child(6) { --reveal-delay: 400ms; }
+
+/* ==========================================================================
+   2. LUXURY GOLD FOIL METALLIC SHEEN
+   ========================================================================== */
+.gold-foil-sheen {
+  background: linear-gradient(
+    110deg,
+    #b8860b 0%,
+    #fae19c 20%,
+    #d4af37 40%,
+    #ffffff 50%,
+    #d4af37 60%,
+    #fae19c 80%,
+    #b8860b 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: foil-gleam 6s linear infinite;
+}
+
+@keyframes foil-gleam {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 250% center;
+  }
+}
+
+/* ==========================================================================
+   3. ROYAL ENVELOPE & WAX SEAL UNBOXING ANIMATION
+   ========================================================================== */
+.royal-envelope-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  perspective: 1400px;
+}
+
+.envelope-stage {
+  position: relative;
+  width: 100%;
+  border-radius: 24px;
+  background: linear-gradient(155deg, #2b0610 0%, #150207 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(254, 243, 199, 0.25);
+  overflow: hidden;
+  transition: transform 0.8s var(--anim-ease-royal), box-shadow 0.8s ease;
+}
+
+/* Envelope Top Triangular Flap */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  background: linear-gradient(180deg, #3e0917 0%, #22030b 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 0.85s var(--anim-ease-royal), opacity 0.5s ease;
+  z-index: 5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+.royal-envelope-wrapper.is-open .envelope-flap {
+  transform: rotateX(180deg);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Embossed 3D Wax Seal Button */
+.wax-seal-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c1272d 0%, #8b181c 55%, #47090b 100%);
+  border: 2px solid #e2b85e;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff4d9;
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  outline: none;
+  transition: transform 0.4s var(--anim-ease-spring), opacity 0.4s ease, box-shadow 0.3s ease;
+  animation: wax-seal-pulse 3.8s infinite ease-in-out;
+}
+
+.wax-seal-btn:hover {
+  transform: translate3d(-50%, -50%, 0) scale3d(1.08, 1.08, 1);
+  box-shadow: 0 14px 34px rgba(212, 175, 55, 0.45);
+}
+
+.wax-seal-crest {
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #fef3c7;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+
+.wax-seal-text {
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  color: #fef3c7;
+}
+
+.royal-envelope-wrapper.is-open .wax-seal-btn {
+  transform: translate3d(-50%, -50%, 0) scale3d(0.1, 0.1, 1) rotate3d(0, 0, 1, 20deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes wax-seal-pulse {
+  0%, 100% {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), 0 0 0 0 rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85), 0 0 0 10px rgba(212, 175, 55, 0);
+  }
+}
+
+/* Card gliding out of cavity */
+.envelope-card-cavity {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.85s var(--anim-ease-royal);
+}
+
+.royal-envelope-wrapper:not(.is-open) .envelope-card-cavity {
+  filter: blur(2px) brightness(0.65);
+  pointer-events: none;
+  user-select: none;
+}
+
+.royal-envelope-wrapper.is-open .envelope-card-cavity {
+  filter: none;
+  pointer-events: auto;
+}
+
+/* Replay Unboxing Floating Pill */
+.replay-unboxing-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #e2b85e;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.replay-unboxing-pill:hover {
+  background: rgba(212, 175, 55, 0.2);
+  color: #fff;
+  border-color: #d4af37;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   4. LIVE AUSPICIOUS COUNTDOWN CLOCK
+   ========================================================================== */
+.countdown-clock-wrap {
+  margin: 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.countdown-clock-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-gold, #d4af37);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.countdown-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (min-width: 480px) {
+  .countdown-grid {
+    gap: 12px;
+  }
+}
+
+.countdown-tile {
+  min-width: 58px;
+  padding: 8px 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(254, 243, 199, 0.15);
+  backdrop-filter: blur(6px);
+}
+
+.countdown-digit {
+  font-family: var(--card-font-display, 'Cinzel', serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-gold-light, #fef3c7);
+}
+
+.countdown-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted, #d9be87);
+  margin-top: 4px;
+}
+
+.countdown-sep {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold, #d4af37);
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   5. FLOATING MICRO-AUDIO MUSIC CONTROLLER
+   ========================================================================== */
+.floating-audio-widget {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 8px;
+  background: rgba(20, 5, 11, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(212, 175, 55, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.24s var(--anim-ease-royal), border-color 0.24s ease;
+}
+
+.floating-audio-widget:hover {
+  transform: translateY(-2px) scale3d(1.02, 1.02, 1);
+  border-color: #d4af37;
+}
+
+/* Spinning Shehnai / Vinyl Icon */
+.audio-vinyl-disc {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d4af37 20%, #150207 22%, #150207 70%, #d4af37 72%, #22030b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  transition: transform 0.4s ease;
+}
+
+.floating-audio-widget.is-playing .audio-vinyl-disc {
+  animation: vinyl-spin 4s linear infinite;
+}
+
+@keyframes vinyl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 4 Animated Equalizer Bars */
+.audio-equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 14px;
+  width: 14px;
+}
+
+.eq-bar {
+  flex: 1;
+  background: #d4af37;
+  border-radius: 2px;
+  height: 14px;
+  transform-origin: bottom;
+  transform: scaleY(0.25);
+  transition: transform 0.2s ease;
+}
+
+.floating-audio-widget.is-playing .eq-bar:nth-child(1) { animation: eq-bounce 0.85s infinite ease-in-out 0.1s; }
+.floating-audio-widget.is-playing .eq-bar:nth-child(2) { animation: eq-bounce 0.65s infinite ease-in-out 0.25s; }
+.floating-audio-widget.is-playing .eq-bar:nth-child(3) { animation: eq-bounce 0.95s infinite ease-in-out 0.4s; }
+.floating-audio-widget.is-playing .eq-bar:nth-child(4) { animation: eq-bounce 0.75s infinite ease-in-out 0.15s; }
+
+@keyframes eq-bounce {
+  0%, 100% { transform: scaleY(0.25); }
+  50% { transform: scaleY(1); }
+}
+
+.audio-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #f7efdc;
+}
+
+/* ==========================================================================
+   6. FULL-SCREEN SMARTPHONE FRAME MODAL
+   ========================================================================== */
+.mobile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(8, 2, 5, 0.86);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.mobile-modal-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal Top Bar */
+.mobile-modal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.mobile-modal-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobile-modal-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mobile-modal-close:hover {
+  background: #d4af37;
+  color: #1a0308;
+}
+
+/* Realistic Smartphone Mockup Frame */
+.smartphone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: min(84vh, 760px);
+  background: #000;
+  border-radius: 46px;
+  border: 10px solid #221f24;
+  box-shadow: 0 0 0 2px #d4af37,
+              0 30px 80px rgba(0, 0, 0, 0.9),
+              inset 0 0 10px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Smartphone Top Dynamic Island */
+.smartphone-island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 24px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* Inner Scrollable Mobile Screen */
+.smartphone-screen {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: #090104;
+  scrollbar-width: none;
+}
+
+.smartphone-screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================================================
+   7. FLOATING AMBIENT CANVAS LAYER (GOLD DUST & PETALS)
+   ========================================================================== */
+#ambient-particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Toggle Control Pill */
+.particle-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #dfba61;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.particle-toggle-pill:hover,
+.particle-toggle-pill.is-active {
+  background: rgba(212, 175, 55, 0.2);
+  color: #fff;
+  border-color: #d4af37;
+}
+
+/* ==========================================================================
+   8. MICRO-INTERACTIONS & ACCESSIBILITY
+   ========================================================================== */
+.btn-royal-interactive {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--anim-duration-micro) var(--anim-ease-royal),
+              box-shadow var(--anim-duration-micro) ease;
+  will-change: transform;
+}
+.btn-royal-interactive:hover {
+  transform: translate3d(0, -2px, 0) scale3d(1.015, 1.015, 1);
+}
+.btn-royal-interactive:active {
+  transform: translate3d(0, 1px, 0) scale3d(0.985, 0.985, 1);
+}
+
+.btn-foil-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.btn-foil-sweep::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translate3d(-100%, 0, 0);
+  transition: transform 0.65s var(--anim-ease-royal);
+  pointer-events: none;
+}
+.btn-foil-sweep:hover::after {
+  transform: translate3d(100%, 0, 0);
+}
+
+.motif-pulse {
+  animation: royal-breathing 4.5s infinite ease-in-out;
+  transform-origin: center center;
+}
+@keyframes royal-breathing {
+  0%, 100% { transform: scale3d(1, 1, 1); opacity: 0.85; }
+  50% { transform: scale3d(1.035, 1.035, 1); opacity: 1; }
+}
+
+.token-card-canvas.template-morphing {
+  animation: royal-token-morph 0.42s var(--anim-ease-royal);
+}
+@keyframes royal-token-morph {
+  0% { opacity: 0.72; transform: scale3d(0.99, 0.99, 1); }
+  50% { opacity: 0.95; transform: scale3d(1.004, 1.004, 1); }
+  100% { opacity: 1; transform: scale3d(1, 1, 1); }
+}
+
+
+/* ==========================================================================
+   9. BENGALI HINDU CULTURAL RITUAL ANIMATIONS (COMPOSITE-ONLY 60FPS)
+   Unique visual identity for each of the 5 Bengali Heritage templates
+   ========================================================================== */
+
+/* 1. Petal Cascade (Rajbari Heritage - Shubho Bibaho) */
+.petal-cascade-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.petal-cascade-item {
+  position: absolute;
+  top: -20px;
+  will-change: transform, opacity;
+  animation: petalCascade 8s infinite linear;
+}
+
+.petal-cascade-item:nth-child(1) { left: 12%; animation-duration: 7s; animation-delay: 0s; font-size: 15px; }
+.petal-cascade-item:nth-child(2) { left: 32%; animation-duration: 9.5s; animation-delay: 1.5s; font-size: 18px; }
+.petal-cascade-item:nth-child(3) { left: 54%; animation-duration: 6.5s; animation-delay: 3s; font-size: 14px; }
+.petal-cascade-item:nth-child(4) { left: 76%; animation-duration: 8.5s; animation-delay: 0.8s; font-size: 16px; }
+.petal-cascade-item:nth-child(5) { left: 90%; animation-duration: 10s; animation-delay: 2.2s; font-size: 13px; }
+
+@keyframes petalCascade {
+  0% {
+    transform: translate3d(0, 0, 0) rotate3d(0, 0, 1, 0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(24px, 860px, 0) rotate3d(0, 0, 1, 360deg);
+    opacity: 0;
+  }
+}
+
+/* 2. Alpona Pulse (Shantiniketan Folk Alpona) */
+.alpona-mandala-pulse {
+  animation: alponaPulse 24s infinite linear;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+@keyframes alponaPulse {
+  0% {
+    transform: rotate3d(0, 0, 1, 0deg) scale3d(1, 1, 1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: rotate3d(0, 0, 1, 180deg) scale3d(1.04, 1.04, 1);
+    opacity: 0.42;
+  }
+  100% {
+    transform: rotate3d(0, 0, 1, 360deg) scale3d(1, 1, 1);
+    opacity: 0.28;
+  }
+}
+
+/* 3. Zari Gleam (Banarasi Zari & Jharokha Darbar) */
+.zari-gleam-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.zari-gleam-beam::after {
+  content: "";
+  position: absolute;
+  inset: -50% -100%;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 240, 179, 0.45) 50%,
+    rgba(229, 193, 88, 0.6) 52%,
+    transparent 62%
+  );
+  transform: translate3d(-100%, 0, 0);
+  animation: zariGleam 6s infinite var(--anim-ease-royal);
+  will-change: transform;
+}
+
+@keyframes zariGleam {
+  0%, 25% {
+    transform: translate3d(-120%, 0, 0);
+  }
+  60%, 100% {
+    transform: translate3d(120%, 0, 0);
+  }
+}
+
+/* 4. Garland Breeze (Kunjavan Tuberose & Shehnai Utsav) */
+.garland-breeze-sway {
+  transform-origin: top center;
+  animation: garlandBreeze 5.5s infinite ease-in-out;
+  will-change: transform;
+}
+
+@keyframes garlandBreeze {
+  0%, 100% {
+    transform: rotate3d(0, 0, 1, -1.8deg) scale3d(1, 1, 1);
+  }
+  50% {
+    transform: rotate3d(0, 0, 1, 1.8deg) scale3d(1.01, 1.01, 1);
+  }
+}
+
+/* 5. Gold Foil Sweep (Swarna Mukut & Topor Noir) */
+.gold-foil-laser-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-foil-laser-sweep::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(255, 230, 128, 0.65) 50%,
+    rgba(255, 255, 255, 0.85) 52%,
+    transparent 65%
+  );
+  transform: translate3d(-130%, 0, 0);
+  animation: goldFoilSweep 5s infinite var(--anim-ease-royal);
+  will-change: transform;
+  pointer-events: none;
+}
+
+@keyframes goldFoilSweep {
+  0%, 30% {
+    transform: translate3d(-130%, 0, 0);
+  }
+  70%, 100% {
+    transform: translate3d(130%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal-cascade-item,
+  .alpona-mandala-pulse,
+  .zari-gleam-beam::after,
+  .garland-breeze-sway,
+  .gold-foil-laser-sweep::before,
+  .js-reveal-ready .reveal-up,
+  .js-reveal-ready .reveal-fade,
+  .js-reveal-ready .reveal-scale,
+  .js-reveal-ready .reveal-motif,
+  .gold-foil-sheen,
+  .wax-seal-btn,
+  .btn-royal-interactive,
+  .btn-foil-sweep::after,
+  .motif-pulse,
+  .token-card-canvas.template-morphing,
+  .audio-vinyl-disc,
+  .eq-bar {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

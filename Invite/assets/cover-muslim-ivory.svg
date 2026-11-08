@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-ivory" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#332a24"/>
+      <stop offset="60%" stop-color="#1c1612"/>
+      <stop offset="100%" stop-color="#0c0907"/>
+    </radialGradient>
+    <linearGradient id="gold-ivory" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#fae19c"/>
+      <stop offset="100%" stop-color="#99751a"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-ivory)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-ivory)" stroke-width="1.5" stroke-opacity="0.7"/>
+  <!-- Mughal Jaali Geometric Pattern Overlay -->
+  <g stroke="url(#gold-ivory)" stroke-width="0.6" stroke-opacity="0.25" fill="none">
+    <path d="M40 70 L260 70 M40 100 L260 100 M40 130 L260 130 M40 160 L260 160 M40 190 L260 190 M40 220 L260 220 M40 250 L260 250 M40 280 L260 280 M40 310 L260 310 M40 340 L260 340"/>
+    <path d="M70 40 L70 360 M100 40 L100 360 M130 40 L130 360 M160 40 L160 360 M190 40 L190 360 M220 40 L220 360 M250 40 L250 360"/>
+  </g>
+  <!-- Central Medallion Arch -->
+  <rect x="45" y="65" width="210" height="270" rx="20" fill="#1c1612" fill-opacity="0.9" stroke="url(#gold-ivory)" stroke-width="1.5"/>
+  <text x="150" y="115" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-ivory)" font-weight="700" text-anchor="middle" letter-spacing="3">بِسْمِ اللَّهِ</text>
+  <!-- Intricate Mughal Star -->
+  <g transform="translate(150, 155)" stroke="url(#gold-ivory)" stroke-width="1.2" fill="none">
+    <rect x="-10" y="-10" width="20" height="20" transform="rotate(45)" stroke-width="1"/>
+    <rect x="-10" y="-10" width="20" height="20" stroke-width="1"/>
+    <circle cx="0" cy="0" r="4" fill="url(#gold-ivory)"/>
+  </g>
+  <text x="150" y="215" font-family="'Cinzel', Georgia, serif" font-size="15" fill="#fdfaf5" font-weight="700" text-anchor="middle" letter-spacing="2">MUGHAL JAALI</text>
+  <text x="150" y="235" font-family="'Cormorant Garamond', Georgia, serif" font-size="11" fill="url(#gold-ivory)" text-anchor="middle" letter-spacing="3">LINEN &amp; ANTIQUE GOLD</text>
+  <line x1="85" y1="250" x2="215" y2="250" stroke="url(#gold-ivory)" stroke-width="0.8" stroke-opacity="0.5"/>
+  <text x="150" y="270" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#dfd2be" text-anchor="middle">Timeless Aristocratic Grace</text>
+  <text x="150" y="305" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-ivory)" text-anchor="middle" letter-spacing="3">ROYAL ARCH</text>
+</svg>

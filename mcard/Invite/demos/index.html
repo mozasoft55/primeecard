@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engineering Demos &amp; Prototype Showcase | Royal Wedding Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(ellipse at 15% 20%, #401826 0%, #200810 50%, #0d0206 100%);
+      color: #fff9f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .hub-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hub-header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      padding-bottom: 24px;
+    }
+    .hub-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #d4af37;
+      margin: 0 0 8px;
+    }
+    .hub-title {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 2.4rem;
+      margin: 0 0 10px;
+      color: #fff;
+    }
+    .hub-sub {
+      color: #cdbeaa;
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .demo-card {
+      background: rgba(30, 12, 20, 0.75);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(12px);
+    }
+    .demo-card:hover {
+      transform: translateY(-4px);
+      border-color: #d4af37;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+    .demo-card__icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .demo-card__title {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 1.25rem;
+      color: #fae19c;
+      margin: 0 0 8px;
+    }
+    .demo-card__desc {
+      color: #cdbeaa;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      margin: 0 0 20px;
+      flex: 1;
+    }
+    .demo-card__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.15) 100%);
+      border: 1px solid #d4af37;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .demo-card__link:hover {
+      background: #d4af37;
+      color: #1a0309;
+    }
+    .back-nav {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .back-nav a {
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="hub-container">
+    <header class="hub-header">
+      <p class="hub-eyebrow">Standalone Reference Hub</p>
+      <h1 class="hub-title">Engineering Demos</h1>
+      <p class="hub-sub">
+        Explore isolated interactive prototypes for client-side photo compression, token-driven template engines, and editorial showcases.
+      </p>
+    </header>
+
+    <div class="demo-grid">
+      <article class="demo-card">
+        <div>
+          <span class="demo-card__icon">🌟</span>
+          <h2 class="demo-card__title">Token Studio &amp; Selector</h2>
+          <p class="demo-card__desc">
+            Responsive Template Selector UI with instant non-restrictive filtering ('All', 'Hindu', 'Muslim', 'Sikh', 'Royal', 'Floral') and sub-millisecond in-place token morphing.
+          </p>
+        </div>
+        <a class="demo-card__link" href="./token-studio-demo.html">Open Token Studio ↗</a>
+      </article>
+
+      <article class="demo-card">
+        <div>
+          <span class="demo-card__icon">👑</span>
+          <h2 class="demo-card__title">Editorial Story &amp; Venue</h2>
+          <p class="demo-card__desc">
+            Haute-couture magazine layout for 'How We Met' and 'Venue &amp; Banquet Showcase' featuring dual gold frames, timing ribbons, Google Maps CTA, and graceful fallbacks.
+          </p>
+        </div>
+        <a class="demo-card__link" href="./editorial-showcase-demo.html">Open Editorial Showcase ↗</a>
+      </article>
+
+      <article class="demo-card">
+        <div>
+          <span class="demo-card__icon">🖼️</span>
+          <h2 class="demo-card__title">Photo Compression Engine</h2>
+          <p class="demo-card__desc">
+            In-browser Canvas downscaling to max 1200px WebP (quality: 0.8), reducing 5–10MB RAW smartphone photos down to &lt;250KB with 0ms instant preview.
+          </p>
+        </div>
+        <a class="demo-card__link" href="./photo-upload-demo.html">Open Photo Compression ↗</a>
+      </article>
+    </div>
+
+    <div class="back-nav">
+      <p>Ready to see them live in the integrated product?</p>
+      <a href="../onboard/">👉 Go to Live Onboarding Flow</a> &nbsp;•&nbsp;
+      <a href="../dashboard/">👉 Go to Customer Dashboard</a> &nbsp;•&nbsp;
+      <a href="../">👉 Go to Live Guest Invitation</a>
+    </div>
+  </div>
+</body>
+</html>
+

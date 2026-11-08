@@ -13,6 +13,32 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({
 
 const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? esc(String(u).trim()) : '';
 
+const clean = s => String(s ?? '').trim();
+const safeImg = u => {
+  const s = clean(u);
+  if (!s) return '';
+  if (/^https?:\/\/[^\s'"<>]+$/i.test(s)) return s;
+  if (/^blob:[^\s'"<>]+$/i.test(s)) return s;
+  if (/^\.?\/?assets\/[^\s'"<>]+$/i.test(s)) return s;
+  if (s.startsWith('data:image/') && s.includes(';base64,')) {
+    if (!/[\s'"<>]/.test(s.slice(0, 50))) return s;
+  }
+  return '';
+};
+const getStoredPhoto = k => {
+  try {
+    if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+      const v = localStorage.getItem(k);
+      if (v) return v;
+    }
+    if (typeof sessionStorage !== 'undefined' && typeof sessionStorage.getItem === 'function') {
+      const v = sessionStorage.getItem(k);
+      if (v) return v;
+    }
+  } catch { return ''; }
+  return '';
+};
+
 const lines = s => String(s ?? '').split(/[;\n]/).map(x => x.trim()).filter(Boolean);
 
 const THEMES = {
@@ -196,6 +222,8 @@ const fl = (w = 12) => `<svg viewBox="0 0 160 16" style="width:${w}em;height:${w
 // ============================================================================
 export default function render({ guest, wedding: rawWedding, events = [] } = {}) {
   const w = rawWedding || {};
+  const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
+  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
   const wedding = w;
   const g = guest || {};
   const evsList = Array.isArray(events) ? events : [];

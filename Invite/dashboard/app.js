@@ -178,6 +178,7 @@ async function loadTracking() {
 
 const guestsKey = ref => 'customer-dashboard-guests-' + (ref || 'default');
 const goalKey = ref => 'customer-dashboard-goal-' + (ref || 'default');
+const templateKey = ref => 'customer-dashboard-template-' + (ref || 'default');
 
 function saveLocalGuests(ref, guests) {
   if (!ref) return;
@@ -491,7 +492,14 @@ function renderDashboard(data) {
   setTxt('balance', formatMoney(balance));
 
   const previewLink = $('preview-link');
-  if (previewLink) previewLink.href = '../?code=' + encodeURIComponent((data && data.preview_guest_code) ? data.preview_guest_code : '9D6JGSQY7YD8');
+  if (previewLink) {
+    const baseCode = (data && data.preview_guest_code) ? data.preview_guest_code : '9D6JGSQY7YD8';
+    const chosenTemplate = (data && data.wedding && data.wedding.template_id)
+      || (data && data.template_id)
+      || localStorage.getItem(templateKey(orderReference))
+      || 'template-06';
+    previewLink.href = `../?code=${encodeURIComponent(baseCode)}&template=${encodeURIComponent(chosenTemplate)}`;
+  }
   const guestLinks = $('generate-guest-links');
   if (guestLinks) guestLinks.href = '../guest-list.html?w=' + encodeURIComponent((data && data.wedding_id) ? data.wedding_id : '');
 
@@ -756,7 +764,7 @@ $('guest-search').addEventListener('input', event => {
 
 const csvTemplate = $('csv-template');
 if (csvTemplate) {
-  csvTemplate.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent('guest_name,family_members,phone,category,city_address\nSample Guest,2,+919876543210,Family,Howrah\n'));
+  csvTemplate.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent('guest_name,family_members,phone,category,city_address\nSample Guest,2,+919477929927,Family,Howrah\n'));
 }
 
 $('dashboard-content').addEventListener('click', async event => {

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-blush" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#3d1d29"/>
+      <stop offset="60%" stop-color="#1f0b14"/>
+      <stop offset="100%" stop-color="#0e0308"/>
+    </radialGradient>
+    <linearGradient id="gold-blush" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8a882"/>
+      <stop offset="50%" stop-color="#ffd5be"/>
+      <stop offset="100%" stop-color="#bf7750"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-blush)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-blush)" stroke-width="1.2" stroke-opacity="0.6"/>
+  <!-- Envelope Flap & Wax Seal Motif -->
+  <path d="M40 70 L150 145 L260 70" fill="none" stroke="url(#gold-blush)" stroke-width="1.2" stroke-opacity="0.4"/>
+  <rect x="40" y="70" width="220" height="270" rx="12" fill="none" stroke="url(#gold-blush)" stroke-width="1.5"/>
+  <!-- Wax Seal -->
+  <circle cx="150" cy="145" r="18" fill="#5c1a2c" stroke="url(#gold-blush)" stroke-width="1.5"/>
+  <text x="150" y="150" font-family="'Cinzel', serif" font-size="12" fill="url(#gold-blush)" font-weight="700" text-anchor="middle">⚜</text>
+  <text x="150" y="215" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-blush)" font-weight="700" text-anchor="middle" letter-spacing="4">BLUSH EDITORIAL</text>
+  <text x="150" y="238" font-family="'Playfair Display', Georgia, serif" font-size="15" fill="#fff9fb" font-weight="700" text-anchor="middle" letter-spacing="2">ENVELOPE &amp; ARCH</text>
+  <text x="150" y="258" font-family="'Cormorant Garamond', Georgia, serif" font-size="11" fill="url(#gold-blush)" text-anchor="middle" letter-spacing="3">WAX SEAL &amp; STATIONERY</text>
+  <line x1="85" y1="270" x2="215" y2="270" stroke="url(#gold-blush)" stroke-width="0.8" stroke-opacity="0.4"/>
+  <text x="150" y="288" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#e5d0db" text-anchor="middle">Luxury Ivory Paper Look</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-blush)" text-anchor="middle" letter-spacing="3">EDITORIAL SUITE</text>
+</svg>

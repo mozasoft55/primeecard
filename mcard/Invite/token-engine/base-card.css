@@ -1,0 +1,1488 @@
+@import './editorial-story-venue.css';
+@import './royal-animations.css';
+
+/**
+ * ============================================================================
+ * Token-Driven Wedding Card Architecture — Master Base Design System
+ * All styles strictly derive from CSS Custom Properties defined in templates.json
+ * Features:
+ *   - Step 1: Scrollbar Blink Elimination (scrollbar-width: none, -webkit-scrollbar: none)
+ *   - Step 2: Distinct Cultural Architectures (Hindu Shahnai/Jharokha vs Muslim Multi-Foil/Jaali)
+ *   - Step 3: Grand Cover / Virtual Envelope Unfold First Impression
+ *   - Step 4: Pixel-Perfect Typography, Zero Horizontal Overflow, Centering
+ * ============================================================================
+ */
+
+:root {
+  /* Default Fallback Design Tokens */
+  --card-bg: radial-gradient(ellipse 90% 50% at 50% 0%, #3d0714 0%, #1c0309 60%, #0a0104 100%);
+  --card-surface: rgba(45, 8, 16, 0.78);
+  --card-surface-hover: rgba(65, 12, 24, 0.88);
+  --card-border: 1px solid rgba(212, 175, 55, 0.45);
+  --text-primary: #fff7eb;
+  --text-secondary: #e9cfa6;
+  --text-muted: rgba(240, 218, 190, 0.7);
+  --accent-gold: #d4af37;
+  --accent-gold-light: #fae19c;
+  --accent-foil: linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #d4af37 50%, #fff3cf 75%, #b8860b 100%);
+  --accent-jewel: #c1272d;
+  --card-font-display: 'Cinzel Decorative', Georgia, serif;
+  --card-font-body: 'Cormorant Garamond', Georgia, serif;
+  --card-font-accent: 'Great Vibes', cursive;
+  --frame-motif: none;
+  --corner-motif: radial-gradient(circle at 0 0, rgba(212, 175, 55, 0.45) 0%, transparent 70%);
+  --border-radius-card: 26px;
+  --border-radius-btn: 40px;
+  --card-shadow: 0 24px 60px rgba(10, 1, 4, 0.85), inset 0 1px 0 rgba(255, 230, 180, 0.2);
+  --ease-royal: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Step 1: Eliminate Scrollbar Blink & Fix Frame Alignment
+   ========================================================================== */
+.phone-screen,
+.smartphone-screen-scroll,
+.phone-canvas,
+#mobile-frame,
+#cardElement {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.phone-screen::-webkit-scrollbar,
+.smartphone-screen-scroll::-webkit-scrollbar,
+.phone-canvas::-webkit-scrollbar,
+#mobile-frame::-webkit-scrollbar,
+#cardElement::-webkit-scrollbar {
+  display: none !important; /* Chrome/Safari */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Zero Horizontal Overflow & Centering */
+.card-inner-stage,
+.token-card-stage,
+.token-card-canvas,
+.cultural-layout-hindu,
+.cultural-layout-muslim,
+.phone-screen > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Master Card Stage */
+.token-card-stage {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-family: var(--card-font-body);
+  transition: background 0.5s var(--ease-royal), color 0.4s ease;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.token-card-stage *,
+.token-card-stage *::before,
+.token-card-stage *::after {
+  box-sizing: inherit;
+}
+
+/* Background Cultural Motif Overlay */
+.token-card-motif-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--frame-motif);
+  background-size: 140px 140px;
+  opacity: 0.12;
+  transition: background-image 0.5s var(--ease-royal), opacity 0.4s ease;
+  z-index: 0;
+}
+
+/* Central Card Canvas */
+.token-card-canvas {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 100%;
+  background: var(--card-surface);
+  border: var(--card-border);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: clamp(24px, 5vw, 44px) clamp(16px, 4vw, 32px);
+  text-align: center;
+  transition: background 0.5s var(--ease-royal), border 0.4s ease;
+  overflow: hidden;
+  margin: 0 auto 32px;
+}
+
+/* Corner Motifs */
+.token-card-canvas::before,
+.token-card-canvas::after {
+  content: '';
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  pointer-events: none;
+  background: var(--corner-motif);
+  z-index: 2;
+  transition: background 0.4s ease;
+}
+
+.token-card-canvas::before {
+  top: 0;
+  left: 0;
+}
+
+.token-card-canvas::after {
+  bottom: 0;
+  right: 0;
+  transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Step 3: Grand Cover / Virtual Envelope Unfold First Impression
+   ========================================================================== */
+.card-front-cover {
+  width: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 18px 24px;
+  position: relative;
+  text-align: center;
+  z-index: 3;
+}
+
+.cover-flourish-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cover-invocation {
+  font-family: var(--card-font-display);
+  font-size: clamp(11px, 2.8vw, 14px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-top: 6px;
+  line-height: 1.4;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.cover-centerpiece {
+  width: 100%;
+  max-width: 360px;
+  margin: auto 0;
+}
+
+.cover-monogram-medallion {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold, #d4af37);
+  background: radial-gradient(circle at 35% 35%, rgba(212, 175, 55, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.4), inset 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.monogram-text {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-gold-light, #fae19c);
+  letter-spacing: 2px;
+}
+
+.cover-kicker {
+  font-size: 10px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--accent-gold, #d4af37);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.cover-ceremony-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(26px, 6vw, 36px);
+  color: var(--text-secondary, #e9cfa6);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.cover-couple-names {
+  margin: 6px 0 10px;
+  font-size: clamp(24px, 6.5vw, 36px);
+  line-height: 1.18;
+}
+
+.cover-ampersand {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(26px, 6vw, 38px);
+  color: var(--accent-gold, #d4af37);
+  display: block;
+  margin: 2px 0;
+}
+
+.cover-date-pill {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--accent-gold, #d4af37);
+  border-radius: 20px;
+  font-size: 11.5px;
+  letter-spacing: 1.2px;
+  color: var(--accent-gold-light, #fae19c);
+  background: rgba(0, 0, 0, 0.45);
+  margin-top: 6px;
+  backdrop-filter: blur(6px);
+}
+
+.cover-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+/* The Grand "Open Invitation" Gold Wax Seal Button */
+.royal-envelope-seal {
+  background: linear-gradient(135deg, #d4af37, #9b7012, #fae19c);
+  color: #160206;
+  border: 1px solid #ffd875;
+  border-radius: 999px;
+  padding: 12px 30px;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--card-font-display, 'Cinzel Decorative', serif);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  outline: none;
+}
+
+.royal-envelope-seal:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 24px rgba(212, 175, 55, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.royal-envelope-seal:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.royal-envelope-seal .seal-icon {
+  font-size: 14px;
+}
+
+.royal-envelope-seal .seal-label {
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.royal-envelope-seal .seal-hint {
+  font-size: 9px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   Step 1 & 2: Royal Bengali Architecture & Clean Visual Pacing
+   Mandap Structural Outer Border, Pinned Toran Entrance Arch, Paan Pata Corners
+   ========================================================================== */
+.cultural-layout-hindu {
+  --hindu-crimson: #8B0000;
+  --hindu-parchment: #FAF6EE;
+  --hindu-parchment-soft: #FDF8F0;
+  --hindu-gold: #D4AF37;
+  --hindu-gold-light: #F5E1A4;
+  --hindu-deep-crimson: #5A0514;
+  background: linear-gradient(180deg, #FDF8F0 0%, #FAF6EE 50%, #F5EFEB 100%) !important;
+  color: #5A0514 !important;
+  position: relative;
+  border: 2.5px solid #8B0000;
+  border-radius: 40px 40px 24px 24px;
+  box-shadow: 
+    0 16px 48px rgba(139, 0, 0, 0.14),
+    inset 0 0 0 2px rgba(212, 175, 55, 0.45),
+    inset 0 0 24px rgba(245, 225, 164, 0.25);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Card Canvas Layering Architecture
+   Non-stacking, absolute-positioned decorative frames & motifs
+   ========================================================================== */
+.card-toran-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 2;
+  object-fit: contain;
+  object-position: top center;
+}
+
+.card-corner-motif {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-corner-motif.tl {
+  top: 12px;
+  left: 12px;
+}
+
+.card-corner-motif.tr {
+  top: 12px;
+  right: 12px;
+  transform: scaleX(-1);
+}
+
+.card-corner-motif.bl {
+  bottom: 12px;
+  left: 12px;
+}
+
+.card-corner-motif.br {
+  bottom: 12px;
+  right: 12px;
+  transform: scaleX(-1);
+}
+
+.card-arch-frame {
+  position: absolute;
+  inset: 10px;
+  border: 2px solid var(--accent-gold, #d4af37);
+  border-radius: 36px 36px 16px 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-open-invitation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-gold, #d4af37);
+  background: linear-gradient(135deg, #d4af37 0%, #fae19c 50%, #b8860b 100%);
+  color: #2b0b14;
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  outline: none;
+  margin: 14px auto 0;
+}
+
+.btn-open-invitation:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 26px rgba(212, 175, 55, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.btn-open-invitation:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.hindu-cover-arch {
+  background: linear-gradient(180deg, #FDF8F0 0%, #FAF6EE 60%, #F2E9DE 100%);
+  color: #5A0514;
+  position: relative;
+  min-height: 100%;
+}
+
+/* STEP 1: Toran (Banana Tree) cleanly pinned to the very TOP border */
+.bengali-toran-entrance-arch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 5;
+  line-height: 0;
+}
+
+.toran-arch-img {
+  width: 100%;
+  height: auto;
+  max-height: 92px;
+  object-fit: contain;
+  object-position: top center;
+  mix-blend-mode: multiply;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(139, 0, 0, 0.2));
+}
+
+/* STEP 1: Paan Pata Alpona bottom left & right corner flourishes (width: 48px, opacity: 0.85) */
+.paan-pata-flourish {
+  position: absolute;
+  bottom: 12px;
+  width: 48px;
+  height: auto;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.2));
+}
+
+.paan-pata-flourish.bl {
+  left: 12px;
+}
+
+.paan-pata-flourish.br {
+  right: 12px;
+  transform: scaleX(-1);
+}
+
+/* STEP 2: Royal Bengali Typography & Visual Pacing */
+.bengali-pacing-wrap {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  padding-top: 76px; /* Clearance for pinned entrance toran */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 3;
+}
+
+.bengali-top-inscription {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #D4AF37;
+  text-align: center;
+  letter-spacing: 0.15em;
+  margin: 0 0 8px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.bengali-calligraphy-header {
+  font-family: 'Great Vibes', 'Cinzel', serif;
+  font-size: clamp(34px, 8.5vw, 46px);
+  font-weight: 700;
+  color: #8B0000;
+  line-height: 1.15;
+  margin: 0 0 4px;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
+}
+
+.bengali-ceremony-subtitle {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 11.5px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #7D1326;
+  margin: 0 0 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Monogram / Seal: Circular gold-rimmed Alta Red crest containing couple initials */
+.bengali-monogram-seal {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  border: 2.5px solid #D4AF37;
+  background: radial-gradient(circle at 35% 35%, #8B0000 0%, #4D030C 100%);
+  box-shadow: 
+    0 6px 20px rgba(139, 0, 0, 0.35),
+    0 0 14px rgba(212, 175, 55, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bengali-monogram-seal .monogram-text {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #FFFDF6;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 2;
+}
+
+/* Couple Names: High-contrast royal typography with 1.4 line-height, zero text clipping */
+.bengali-couple-names {
+  margin: 0 0 10px;
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: clamp(23px, 6vw, 32px);
+  font-weight: 700;
+  line-height: 1.4;
+  color: #5A0514;
+  text-align: center;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px rgba(212, 175, 55, 0.35);
+}
+
+.bengali-couple-names .cover-ampersand {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(28px, 6.5vw, 40px);
+  color: #D4AF37;
+  display: block;
+  margin: 2px 0;
+  line-height: 1;
+  text-shadow: 0 1px 3px rgba(139, 0, 0, 0.25);
+}
+
+.cover-date-pill {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1.5px solid #8B0000;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: #5A0514;
+  background: rgba(255, 253, 248, 0.9);
+  margin: 0 0 10px;
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.12);
+}
+
+.shehnai-musicians-crest {
+  width: min(200px, 75%);
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+.shehnai-musicians-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.15));
+}
+
+/* STEP 3: 3D Royal Golden Wax Seal Button & Flap */
+.envelope-flap-trim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(180deg, rgba(139, 0, 0, 0.45) 0%, rgba(90, 5, 20, 0.1) 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  z-index: 6;
+  border-top: 2px solid #D4AF37;
+  pointer-events: none;
+}
+
+.envelope-flap-trim.is-flipped {
+  transform: rotateX(180deg);
+  opacity: 0.15;
+}
+
+.wax-seal-button {
+  background: radial-gradient(circle at 35% 35%, #F5E1A4 0%, #D4AF37 45%, #8B6508 85%, #5E4306 100%);
+  color: #1A0407;
+  border: 2.5px solid #FFF8E7;
+  border-radius: 999px;
+  padding: 12px 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 12px 32px rgba(139, 0, 0, 0.3),
+    0 0 20px rgba(212, 175, 55, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, opacity 0.4s ease;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  outline: none;
+  animation: waxSealPulse 3.5s infinite ease-in-out;
+}
+
+.wax-seal-button:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 16px 38px rgba(139, 0, 0, 0.45), 0 0 28px rgba(212, 175, 55, 0.8);
+}
+
+.wax-seal-button:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.wax-seal-button.seal-unfolded {
+  transform: scale(0.95);
+  filter: brightness(1.15);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+}
+
+@keyframes waxSealPulse {
+  0%, 100% {
+    box-shadow: 0 10px 28px rgba(139, 0, 0, 0.35), 0 0 16px rgba(212, 175, 55, 0.45);
+  }
+  50% {
+    box-shadow: 0 14px 38px rgba(139, 0, 0, 0.5), 0 0 26px rgba(212, 175, 55, 0.75), 0 0 0 6px rgba(212, 175, 55, 0.15);
+  }
+}
+
+.seal-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.seal-crest {
+  font-size: 16px;
+  line-height: 1;
+  color: #4A030C;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));
+}
+
+.seal-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2D0207;
+}
+
+.seal-hint {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: #5A030E;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* Replay Envelope Opening Floating Pill */
+.replay-envelope-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 16px auto 8px;
+}
+
+.btn-replay-envelope {
+  background: rgba(139, 0, 0, 0.08);
+  border: 1px solid rgba(139, 0, 0, 0.3);
+  color: #7D1326;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.btn-replay-envelope:hover {
+  background: rgba(139, 0, 0, 0.16);
+  border-color: #8B0000;
+  color: #5A0514;
+  transform: translateY(-1px);
+}
+
+/* Gold Sheen Sweep Micro-Animation */
+@keyframes goldSheenSweep {
+  0% { transform: translateX(-150%) rotate(25deg); opacity: 0; }
+  20% { opacity: 0.7; }
+  60% { opacity: 0.9; }
+  100% { transform: translateX(250%) rotate(25deg); opacity: 0; }
+}
+
+.gold-sheen-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-sheen-sweep::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.1) 35%,
+    rgba(255, 230, 160, 0.7) 50%,
+    rgba(255, 255, 255, 0.2) 65%,
+    transparent 80%
+  );
+  animation: goldSheenSweep 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Floating Flower Petals Micro-Animation Layer */
+.floating-petals-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.floating-petal {
+  position: absolute;
+  font-size: 14px;
+  opacity: 0.75;
+  animation: floatPetal 12s linear infinite;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.2));
+}
+
+.floating-petal.petal-1 { left: 10%; animation-duration: 11s; animation-delay: 0s; font-size: 16px; }
+.floating-petal.petal-2 { left: 35%; animation-duration: 14s; animation-delay: 2s; font-size: 13px; }
+.floating-petal.petal-3 { left: 60%; animation-duration: 9s;  animation-delay: 4s; font-size: 12px; }
+.floating-petal.petal-4 { left: 80%; animation-duration: 13s; animation-delay: 1s; font-size: 15px; }
+.floating-petal.petal-5 { left: 22%; animation-duration: 16s; animation-delay: 5s; font-size: 14px; }
+.floating-petal.petal-6 { left: 70%; animation-duration: 10s; animation-delay: 3s; font-size: 12px; }
+
+@keyframes floatPetal {
+  0% {
+    top: -5%;
+    transform: translateX(0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    top: 105%;
+    transform: translateX(35px) rotate(360deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* Hindu celebration details canvas */
+.cultural-layout-hindu .hindu-card-canvas {
+  background: rgba(255, 253, 248, 0.96);
+  border: 2px solid #8B0000;
+  box-shadow: 
+    0 20px 48px rgba(139, 0, 0, 0.12),
+    inset 0 0 0 2px rgba(212, 175, 55, 0.35);
+  color: #5A0514;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+  will-change: transform, opacity;
+}
+
+.cultural-layout-hindu .token-card__invocation {
+  color: #8B0000;
+}
+
+.cultural-layout-hindu .token-card__ceremony {
+  color: #7D1326;
+}
+
+.cultural-layout-hindu .token-card__date-badge {
+  border: 1.5px solid #8B0000;
+  background: rgba(255, 253, 248, 0.9);
+}
+
+.cultural-layout-hindu .token-card__date-day {
+  color: #8B0000;
+}
+
+.cultural-layout-hindu .token-card__date-sub {
+  color: #7D1326;
+}
+
+.cultural-layout-hindu .token-card__venue h4 {
+  color: #5A0514;
+}
+
+.cultural-layout-hindu .token-card__venue p {
+  color: #7D1326;
+}
+
+.cultural-layout-hindu .token-card__event-row {
+  background: rgba(253, 248, 240, 0.95);
+  border: 1px solid rgba(139, 0, 0, 0.25);
+}
+
+.cultural-layout-hindu .token-card__event-row:hover {
+  background: #FFFFFF;
+  border-color: #8B0000;
+}
+
+.cultural-layout-hindu .token-card__event-info strong {
+  color: #5A0514;
+}
+
+.cultural-layout-hindu .token-card__event-info span {
+  color: #7D1326;
+}
+
+.cultural-layout-hindu .token-card__event-time {
+  color: #8B0000;
+  font-weight: 600;
+}
+
+/* Centerpiece Bengali Topor Mukut Kula Frame */
+.bengali-artwork-card {
+  margin: 8px auto 24px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+
+.bengali-artwork-frame.bengali-jharokha-frame {
+  position: relative;
+  border: 2.5px solid #8B0000;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(139, 0, 0, 0.22), 0 0 16px rgba(212, 175, 55, 0.4);
+  background: #FAF6EE;
+}
+
+.bengali-artwork-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+.bengali-artwork-ribbon {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(139, 0, 0, 0.95) 45%, #5a030e 100%);
+  padding: 18px 12px 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  color: #fff9e6;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.bengali-ornament-caption {
+  margin-top: 8px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #7D1326;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Musicians Crest & Footer */
+.bengali-footer-musicians {
+  width: min(240px, 85%);
+  margin: 20px auto 16px;
+  opacity: 0.9;
+}
+
+.footer-musicians-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.2));
+}
+
+/* Paan Pata Alpona Divider */
+.paan-pata-divider-wrap {
+  width: min(160px, 60%);
+  margin: 12px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.paan-pata-divider-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(139, 0, 0, 0.2));
+  mix-blend-mode: multiply;
+}
+
+/* ==========================================================================
+   Step 2: Real Cultural Distinction — Muslim Noor-e-Jannat & Mughal Jaali
+   Multi-Foil Arch, Bismillah, Crescent Star, Mughal Jaali Lattice Screen
+   Royal Velvet Emerald (#062C22), Midnight Sapphire (#0B1B3D), Champagne Gold (#E6CA65)
+   ========================================================================== */
+.cultural-layout-muslim {
+  --muslim-emerald: #062C22;
+  --muslim-sapphire: #0B1B3D;
+  --muslim-gold: #E6CA65;
+  --muslim-night: #031410;
+  --muslim-cream: #FAF3E4;
+  background: radial-gradient(ellipse 90% 50% at 50% 0%, #062C22 0%, #0B1B3D 60%, #020C09 100%) !important;
+  color: #FAF3E4 !important;
+  border: 2px solid #E6CA65;
+  border-radius: 40px 40px 24px 24px;
+}
+
+.muslim-cover-arch {
+  background: radial-gradient(ellipse 90% 50% at 50% 0%, #062C22 0%, #051A14 60%, #020C09 100%);
+}
+
+.muslim-card-canvas {
+  background: rgba(6, 44, 34, 0.88);
+  border: 1px solid rgba(230, 202, 101, 0.45);
+  box-shadow: 0 24px 60px rgba(1, 15, 10, 0.85), inset 0 1px 0 rgba(230, 202, 101, 0.25);
+  color: #FAF3E4;
+}
+
+.mughal-jaali-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  color: var(--accent-gold, #E6CA65);
+  z-index: 0;
+}
+
+.crescent-star-crest {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 4px;
+  color: var(--accent-gold, #E6CA65);
+}
+
+.mughal-bismillah-svg {
+  width: min(290px, 92%);
+  height: auto;
+  margin: 0 auto 4px;
+  color: #fae19c;
+  filter: drop-shadow(0 2px 8px rgba(230, 202, 101, 0.45));
+}
+
+.cover-subhanallah {
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  color: var(--accent-gold, #E6CA65);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.muslim-multifoil-frame {
+  position: relative;
+  border: 2px solid #E6CA65;
+  border-radius: 44px 44px 16px 16px;
+  padding: 24px 18px 20px;
+  background: rgba(6, 44, 34, 0.92);
+  box-shadow: 
+    0 16px 40px rgba(1, 15, 10, 0.8),
+    inset 0 0 0 2px rgba(230, 202, 101, 0.3),
+    inset 0 0 28px rgba(6, 44, 34, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.mughal-corner-arabesque {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  color: #E6CA65;
+}
+
+.mughal-corner-arabesque.tl { top: 6px; left: 6px; }
+.mughal-corner-arabesque.tr { top: 6px; right: 6px; transform: scaleX(-1); }
+.mughal-corner-arabesque.bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+.mughal-corner-arabesque.br { bottom: 6px; right: 6px; transform: scale(-1); }
+
+.cover-quran-verse {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #d8f3e5;
+  margin: 10px 0 8px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.muslim-mihrab-header {
+  text-align: center;
+  padding: 4px 0 12px;
+}
+
+.muslim-dawat-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  color: var(--accent-gold-light, #fae19c);
+  letter-spacing: 2px;
+  margin: 4px 0 2px;
+  text-transform: uppercase;
+}
+
+.muslim-dawat-sub {
+  font-size: 12.5px;
+  color: #c0ded0;
+  margin: 0;
+  font-style: italic;
+}
+
+.islamic-star-divider {
+  width: min(280px, 92%);
+  height: auto;
+  color: #E6CA65;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Step 4: Typography, Borders, Ratios, & Liquid Gold Foil
+   ========================================================================== */
+.token-card__header {
+  margin-bottom: 20px;
+}
+
+.token-card__invocation {
+  font-family: var(--card-font-display);
+  font-size: clamp(11px, 2.8vw, 14px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.token-card__ceremony {
+  font-family: var(--card-font-accent);
+  font-size: clamp(24px, 5.5vw, 38px);
+  line-height: 1.25;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+/* Couple Names with Liquid Gold Shimmer */
+.token-card__couple {
+  margin: 8px 0 20px;
+}
+
+.token-foil-text {
+  font-family: var(--card-font-display);
+  font-size: clamp(26px, 7vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  background: var(--accent-foil);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: tokenFoilShimmer 7s linear infinite;
+  display: block;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes tokenFoilShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 220% center; }
+}
+
+.token-card__ampersand {
+  font-family: var(--card-font-accent);
+  font-size: clamp(26px, 6vw, 40px);
+  color: var(--accent-gold);
+  margin: 2px 0;
+  display: block;
+}
+
+/* Divider Ribbon */
+.token-card__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 22px auto;
+  color: var(--accent-gold);
+  opacity: 0.85;
+}
+
+.token-card__divider::before,
+.token-card__divider::after {
+  content: '';
+  height: 1px;
+  width: 50px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold));
+}
+
+.token-card__divider::after {
+  transform: scaleX(-1);
+}
+
+/* Date & Countdown Medallion */
+.token-card__date-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 24px;
+  border: var(--card-border);
+  border-radius: calc(var(--border-radius-card) * 0.7);
+  background: rgba(0, 0, 0, 0.38);
+  margin: 8px 0 24px;
+  backdrop-filter: blur(8px);
+}
+
+.token-card__date-day {
+  font-family: var(--card-font-display);
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--accent-gold-light);
+  letter-spacing: 0.08em;
+}
+
+.token-card__date-sub {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Venue Section */
+.token-card__venue {
+  margin: 16px 0 28px;
+}
+
+.token-card__venue h4 {
+  font-family: var(--card-font-display);
+  font-size: 17px;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  letter-spacing: 0.08em;
+}
+
+.token-card__venue p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Events Timeline List */
+.token-card__events {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.token-card__event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: var(--card-surface);
+  border: var(--card-border);
+  border-radius: calc(var(--border-radius-card) * 0.6);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.token-card__event-row:hover {
+  transform: translateY(-2px);
+  background: var(--card-surface-hover);
+}
+
+.token-card__event-info strong {
+  display: block;
+  font-family: var(--card-font-display);
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.token-card__event-info span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.token-card__event-time {
+  font-family: var(--card-font-display);
+  font-size: 12px;
+  color: var(--accent-gold);
+  letter-spacing: 0.05em;
+  text-align: right;
+}
+
+/* Primary CTA Button */
+.token-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 32px;
+  border-radius: var(--border-radius-btn);
+  border: 1px solid var(--accent-gold);
+  background: var(--accent-foil);
+  color: #1a0308;
+  font-family: var(--card-font-display);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.25s var(--ease-royal), box-shadow 0.25s ease;
+}
+
+.token-card__cta:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+
+/* ==========================================================================
+   5 DEDICATED BENGALI HINDU THEME VARIANTS (EXPERT LEVEL LUXURY)
+   ========================================================================== */
+
+/* 1. Theme Rajbari Heritage (Imperial Crimson & Antique Gold on Parchment) */
+.bengali-theme-rajbari {
+  --bengali-primary: #8B0000;
+  --bengali-accent: #D4AF37;
+  --bengali-bg: linear-gradient(180deg, #FDF8F0 0%, #FAF6EE 50%, #F5EFEB 100%);
+  --bengali-surface: rgba(255, 253, 248, 0.94);
+}
+
+/* 2. Theme Shantiniketan Alpona (Terracotta Rust, Rice-Paste Conch & Haldi) */
+.bengali-theme-alpona {
+  --bengali-primary: #9E381A;
+  --bengali-accent: #E6A117;
+  --bengali-bg: linear-gradient(180deg, #FDF8F0 0%, #FAF5EE 50%, #F5EDE6 100%);
+  --bengali-surface: rgba(255, 253, 248, 0.94);
+}
+.bengali-theme-alpona .bengali-artwork-frame {
+  border-color: #9E381A;
+  box-shadow: 0 12px 30px rgba(158, 56, 26, 0.25), 0 0 18px rgba(230, 161, 23, 0.45);
+}
+.bengali-theme-alpona .bengali-artwork-ribbon {
+  background: linear-gradient(180deg, transparent 0%, rgba(158, 56, 26, 0.95) 45%, #631e0b 100%);
+}
+.bengali-theme-alpona .bengali-calligraphy-header {
+  color: #9E381A;
+  text-shadow: 0 0 14px rgba(230, 161, 23, 0.5);
+}
+.bengali-theme-alpona .bengali-monogram-seal {
+  background: radial-gradient(circle, #fcf4e6 0%, #faebd4 60%, #e6a117 100%);
+  border-color: #9E381A;
+  color: #5C1D0C;
+}
+
+/* 3. Theme Banarasi Zari (Royal Jamdani Indigo & Heavy 24K Gold Zari Foil) */
+.bengali-theme-banarasi {
+  --bengali-primary: #FAF4E8;
+  --bengali-accent: #E5C158;
+  --bengali-bg: radial-gradient(ellipse 90% 50% at 50% 0%, #0d1e3d 0%, #081329 60%, #030712 100%);
+  --bengali-surface: rgba(11, 25, 48, 0.92);
+  color: #FAF4E8 !important;
+}
+.bengali-theme-banarasi .hindu-card-canvas {
+  background: rgba(11, 25, 48, 0.92) !important;
+  border-color: rgba(229, 193, 88, 0.5) !important;
+  color: #FAF4E8 !important;
+}
+.bengali-theme-banarasi .bengali-calligraphy-header {
+  color: #E5C158;
+  text-shadow: 0 0 18px rgba(229, 193, 88, 0.65);
+}
+.bengali-theme-banarasi .bengali-top-inscription {
+  color: #FFF0B3;
+}
+.bengali-theme-banarasi .bengali-ceremony-subtitle {
+  color: #d8c49e;
+}
+.bengali-theme-banarasi .bengali-couple-names {
+  color: #FAF4E8;
+}
+.bengali-theme-banarasi .bengali-artwork-frame {
+  border-color: #E5C158;
+  box-shadow: 0 14px 34px rgba(2, 6, 16, 0.8), 0 0 20px rgba(229, 193, 88, 0.45);
+}
+.bengali-theme-banarasi .bengali-artwork-ribbon {
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 25, 48, 0.96) 45%, #050d1a 100%);
+  color: #FFF0B3;
+}
+.bengali-theme-banarasi .bengali-monogram-seal {
+  background: radial-gradient(circle, #1a335e 0%, #0d1e3d 60%, #060e1d 100%);
+  border-color: #E5C158;
+  color: #FFF0B3;
+  box-shadow: 0 0 20px rgba(229, 193, 88, 0.5);
+}
+.bengali-theme-banarasi .token-card__event-row {
+  background: rgba(16, 36, 68, 0.85);
+  border-color: rgba(229, 193, 88, 0.35);
+  color: #FAF4E8;
+}
+.bengali-theme-banarasi .token-card__event-row:hover {
+  background: rgba(22, 48, 90, 0.95);
+  border-color: #E5C158;
+}
+.bengali-theme-banarasi .token-card__event-info strong {
+  color: #FFF0B3;
+}
+.bengali-theme-banarasi .token-card__event-info span {
+  color: #cbd8f5;
+}
+.bengali-theme-banarasi .token-card__event-time {
+  color: #E5C158;
+}
+
+/* 4. Theme Kunjavan Tuberose (Sandalwood Ivory & Blush Coral Rose) */
+.bengali-theme-kunjavan {
+  --bengali-primary: #C24B5A;
+  --bengali-accent: #C89B3C;
+  --bengali-bg: linear-gradient(180deg, #FCF9F2 0%, #F8F3E8 50%, #F2EBE0 100%);
+  --bengali-surface: rgba(252, 249, 242, 0.95);
+}
+.bengali-theme-kunjavan .bengali-calligraphy-header {
+  color: #C24B5A;
+  text-shadow: 0 0 16px rgba(200, 155, 60, 0.45);
+}
+.bengali-theme-kunjavan .bengali-artwork-frame {
+  border-color: #C24B5A;
+  box-shadow: 0 12px 30px rgba(194, 75, 90, 0.25), 0 0 16px rgba(200, 155, 60, 0.35);
+}
+.bengali-theme-kunjavan .bengali-artwork-ribbon {
+  background: linear-gradient(180deg, transparent 0%, rgba(194, 75, 90, 0.95) 45%, #6e1c27 100%);
+}
+.bengali-theme-kunjavan .bengali-monogram-seal {
+  background: radial-gradient(circle, #fffaf6 0%, #faece9 60%, #c89b3c 100%);
+  border-color: #C24B5A;
+  color: #4A1A24;
+}
+
+/* 5. Theme Swarna Mukut Noir (Obsidian Noir & 24K Sholapith Gold Leaf) */
+.bengali-theme-swarna {
+  --bengali-primary: #FFF7ED;
+  --bengali-accent: #D4AF37;
+  --bengali-bg: radial-gradient(circle at 50% 0%, #1f101a 0%, #0f070c 60%, #050204 100%);
+  --bengali-surface: rgba(22, 11, 18, 0.9);
+  color: #FFF7ED !important;
+}
+.bengali-theme-swarna .hindu-card-canvas {
+  background: rgba(22, 11, 18, 0.92) !important;
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  color: #FFF7ED !important;
+}
+.bengali-theme-swarna .bengali-calligraphy-header {
+  color: #FFE680;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+}
+.bengali-theme-swarna .bengali-top-inscription {
+  color: #FFE680;
+}
+.bengali-theme-swarna .bengali-ceremony-subtitle {
+  color: #d6beaa;
+}
+.bengali-theme-swarna .bengali-couple-names {
+  color: #FFF7ED;
+}
+.bengali-theme-swarna .bengali-artwork-frame {
+  border-color: #D4AF37;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.9), 0 0 22px rgba(212, 175, 55, 0.5);
+}
+.bengali-theme-swarna .bengali-artwork-ribbon {
+  background: linear-gradient(180deg, transparent 0%, rgba(22, 11, 18, 0.96) 45%, #050204 100%);
+  color: #FFE680;
+}
+.bengali-theme-swarna .bengali-monogram-seal {
+  background: radial-gradient(circle, #331c2a 0%, #1a0c15 60%, #070305 100%);
+  border-color: #D4AF37;
+  color: #FFE680;
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.6);
+}
+.bengali-theme-swarna .token-card__event-row {
+  background: rgba(34, 18, 28, 0.85);
+  border-color: rgba(212, 175, 55, 0.35);
+  color: #FFF7ED;
+}
+.bengali-theme-swarna .token-card__event-row:hover {
+  background: rgba(48, 26, 40, 0.95);
+  border-color: #D4AF37;
+}
+.bengali-theme-swarna .token-card__event-info strong {
+  color: #FFE680;
+}
+.bengali-theme-swarna .token-card__event-info span {
+  color: #dfcebf;
+}
+.bengali-theme-swarna .token-card__event-time {
+  color: #D4AF37;
+}
+
+/* Floral Garland Canopy Header (Kunjavan) */
+.kunjavan-garland-canopy {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 12px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.kunjavan-garland-canopy img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+/* Sholapith Zenith Crest (Swarna Mukut) */
+.swarna-zenith-crest {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 8px;
+  color: #FFE680;
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6));
+}

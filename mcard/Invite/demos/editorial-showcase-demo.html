@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Luxury Editorial 'Our Story' & 'Venue Showcase'</title>
+
+  <!-- Google Fonts for Editorial Luxury -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <!-- Master Base CSS & Editorial Styles -->
+  <link rel="stylesheet" href="../token-engine/base-card.css">
+  <link rel="stylesheet" href="../token-engine/editorial-story-venue.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #090104;
+      font-family: var(--story-font-body);
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Showcase Top Switcher Bar */
+    .showcase-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: rgba(15, 3, 7, 0.94);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .showcase-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #dfba61;
+      margin-right: 6px;
+    }
+
+    .showcase-btn {
+      appearance: none;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f7efdc;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+
+    .showcase-btn:hover {
+      border-color: #d4af37;
+      background: rgba(212, 175, 55, 0.2);
+      color: #fff;
+    }
+
+    .showcase-btn.is-active {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #120206;
+      font-weight: 700;
+      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.4);
+    }
+
+    .showcase-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 30px 16px 80px;
+    }
+
+    .showcase-mode-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Theme Switcher -->
+  <nav class="showcase-bar">
+    <span class="showcase-label">Select Color Token:</span>
+    <button type="button" class="showcase-btn is-active" data-theme="crimson">🕉️ Vedic Crimson</button>
+    <button type="button" class="showcase-btn" data-theme="emerald">☪️ Noor Emerald</button>
+    <button type="button" class="showcase-btn" data-theme="sapphire">☬ Sapphire Navy</button>
+    <button type="button" class="showcase-btn" data-theme="amethyst">👑 Amethyst Plum</button>
+  </nav>
+
+  <main class="showcase-container">
+    
+    <!-- State Toggle: Photo Uploaded vs Graceful Fallback -->
+    <div class="showcase-mode-toggle">
+      <button type="button" class="showcase-btn is-active" id="btn-with-photos">
+        📷 Mode 1: With Uploaded Compressed Photos
+      </button>
+      <button type="button" class="showcase-btn" id="btn-no-photos">
+        ✨ Mode 2: Graceful Fallbacks (No Photos Uploaded)
+      </button>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 1: "OUR STORY" (HOW WE MET) EDITORIAL TIMELINE
+         ==================================================================== -->
+    <section class="editorial-section" id="our-story" aria-label="Our Story and Journey">
+      <header class="editorial-header">
+        <p class="editorial-eyebrow">Chapter I • The Beginning of Forever</p>
+        <h2 class="editorial-title">How We Met</h2>
+        <p class="editorial-script">Two Souls, One Beautiful Journey</p>
+        <div class="editorial-divider" aria-hidden="true">✦ ✧ ✦</div>
+      </header>
+
+      <article class="story-card">
+        <!-- Photo Frame with Aspect Ratio 4:5 -->
+        <figure class="story-photo-frame" id="story-frame">
+          <img
+            class="story-photo-img"
+            id="story-img"
+            src="../assets/template-06-couple.jpg"
+            alt="Sanjukta and Purushottam portrait"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+
+        <!-- Narrative Content -->
+        <div class="story-narrative">
+          <time class="story-date-badge" datetime="2023-10-18">
+            <span>🍂</span> October 18, 2023 • Autumn
+          </time>
+
+          <blockquote class="story-pullquote">
+            “One serendipitous afternoon over hot masala chai blossomed into shared dreams, unending laughter, and a love that feels like home.”
+          </blockquote>
+
+          <p class="story-text">
+            What started as a quiet conversation along the riverfront promenade soon unfolded into thousands of shared memories. Through seasons of growth and gentle companionship, we realized that our hearts had chosen each other long before words were spoken. Today, we step together into our forever.
+          </p>
+
+          <div class="story-signature">
+            Sanjukta &amp; Purushottam
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: "VENUE & BANQUET" SHOWCASE CARD
+         ==================================================================== -->
+    <section class="editorial-section" id="venue-details" aria-label="Venue and Banquet Showcase">
+      <header class="editorial-header">
+        <p class="editorial-eyebrow">The Royal Destination</p>
+        <h2 class="editorial-title">Venue &amp; Banquet</h2>
+        <p class="editorial-script">Where Our Celebrations Unfold</p>
+        <div class="editorial-divider" aria-hidden="true">✦ ✧ ✦</div>
+      </header>
+
+      <article class="venue-showcase-card">
+        <!-- Panoramic Venue Photo Frame (Aspect Ratio 16:9) -->
+        <figure class="venue-photo-wrap" id="venue-frame">
+          <img
+            class="venue-photo-img"
+            id="venue-img"
+            src="../assets/template-06-palace.jpg"
+            alt="Grand Heritage Palace Grounds"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="venue-timing-ribbon">
+            <span>⏰</span> 7:00 PM Onwards • Auspicious Ceremony
+          </span>
+        </figure>
+
+        <!-- Venue Details Body -->
+        <div class="venue-details-body">
+          <div class="venue-name-group">
+            <h3 class="venue-grand-name">Grand Heritage Palace Grounds</h3>
+            <p class="venue-sub-hall">The Royal Mandap &amp; Banquet Courtyard</p>
+          </div>
+
+          <address class="venue-address-block">
+            <span class="venue-address-main">Riverfront Promenade, Heritage Boulevard</span>
+            <span class="venue-address-sub">Bally, Howrah, West Bengal — 711201</span>
+          </address>
+
+          <!-- Micro-features -->
+          <div class="venue-features-row">
+            <span class="venue-feature-pill"><span>🚗</span> Complimentary Valet Parking</span>
+            <span class="venue-feature-pill"><span>❄️</span> Air-Conditioned Royal Hall</span>
+            <span class="venue-feature-pill"><span>🏛️</span> Landmark: Riverfront Pier</span>
+          </div>
+
+          <!-- Direct Google Maps CTA -->
+          <a
+            href="https://maps.google.com/?q=Grand+Heritage+Palace+Bally"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="venue-map-cta"
+            aria-label="Get driving directions to Grand Heritage Palace on Google Maps"
+          >
+            <span>Get Driving Directions ↗</span>
+          </a>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <script>
+    // Theme Token Preset Swapping
+    const themes = {
+      crimson: {
+        '--card-bg': 'radial-gradient(ellipse 90% 50% at 50% 0%, #3d0714 0%, #1c0309 60%, #0a0104 100%)',
+        '--story-bg-surface': 'rgba(45, 8, 16, 0.82)',
+        '--story-gold': '#d4af37',
+        '--story-gold-light': '#fae19c',
+        '--story-border': '1px solid rgba(212, 175, 55, 0.45)'
+      },
+      emerald: {
+        '--card-bg': 'radial-gradient(ellipse 90% 50% at 50% 0%, #073322 0%, #031c13 60%, #010c08 100%)',
+        '--story-bg-surface': 'rgba(5, 36, 25, 0.82)',
+        '--story-gold': '#dfba61',
+        '--story-gold-light': '#fdf1be',
+        '--story-border': '1px solid rgba(223, 186, 97, 0.45)'
+      },
+      sapphire: {
+        '--card-bg': 'radial-gradient(ellipse 90% 50% at 50% 0%, #0d1e47 0%, #050f26 60%, #020612 100%)',
+        '--story-bg-surface': 'rgba(10, 26, 62, 0.82)',
+        '--story-gold': '#e2b85e',
+        '--story-gold-light': '#fef3c7',
+        '--story-border': '1px solid rgba(226, 184, 94, 0.45)'
+      },
+      amethyst: {
+        '--card-bg': 'radial-gradient(ellipse 90% 50% at 50% 0%, #2e092b 0%, #170419 60%, #09010a 100%)',
+        '--story-bg-surface': 'rgba(38, 9, 40, 0.82)',
+        '--story-gold': '#e8bca5',
+        '--story-gold-light': '#fff0ea',
+        '--story-border': '1px solid rgba(232, 188, 165, 0.45)'
+      }
+    };
+
+    document.querySelectorAll('.showcase-btn[data-theme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.showcase-btn[data-theme]').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        const theme = themes[btn.dataset.theme];
+        if (theme) {
+          Object.entries(theme).forEach(([prop, val]) => {
+            document.documentElement.style.setProperty(prop, val);
+          });
+        }
+      });
+    });
+
+    // Toggle between Uploaded Photos vs Graceful Fallbacks
+    const btnWithPhotos = document.getElementById('btn-with-photos');
+    const btnNoPhotos = document.getElementById('btn-no-photos');
+    const storyFrame = document.getElementById('story-frame');
+    const venueFrame = document.getElementById('venue-frame');
+
+    btnWithPhotos.addEventListener('click', () => {
+      btnWithPhotos.classList.add('is-active');
+      btnNoPhotos.classList.remove('is-active');
+
+      storyFrame.innerHTML = `
+        <img
+          class="story-photo-img"
+          src="../assets/template-06-couple.jpg"
+          alt="Sanjukta and Purushottam portrait"
+          loading="lazy"
+          decoding="async"
+        />
+      `;
+
+      venueFrame.innerHTML = `
+        <img
+          class="venue-photo-img"
+          src="../assets/template-06-palace.jpg"
+          alt="Grand Heritage Palace Grounds"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="venue-timing-ribbon">
+          <span>⏰</span> 7:00 PM Onwards • Auspicious Ceremony
+        </span>
+      `;
+    });
+
+    btnNoPhotos.addEventListener('click', () => {
+      btnNoPhotos.classList.add('is-active');
+      btnWithPhotos.classList.remove('is-active');
+
+      // Graceful Fallback for Story (Gold Royal Monogram Medallion)
+      storyFrame.innerHTML = `
+        <div class="story-photo-fallback">
+          <span class="story-fallback-icon" aria-hidden="true">⚜️</span>
+          <h4 class="story-fallback-monogram">S &amp; P</h4>
+          <p class="story-fallback-sub">United by Destiny</p>
+        </div>
+      `;
+
+      // Graceful Fallback for Venue (Royal Architectural Arch Engraving)
+      venueFrame.innerHTML = `
+        <div class="venue-photo-fallback">
+          <div class="venue-fallback-arch">🏛️</div>
+          <h4 class="venue-fallback-title">Grand Heritage Palace</h4>
+          <span class="venue-timing-ribbon">
+            <span>⏰</span> 7:00 PM Onwards • Auspicious Ceremony
+          </span>
+        </div>
+      `;
+    });
+
+    try {
+      const c = localStorage.getItem('wedding-couple-photo') || sessionStorage.getItem('wedding-couple-photo');
+      const v = localStorage.getItem('wedding-venue-photo') || sessionStorage.getItem('wedding-venue-photo');
+      if (c) { const img = document.getElementById('story-img'); if (img) img.src = c; }
+      if (v) { const img = document.getElementById('venue-img'); if (img) img.src = v; }
+    } catch (_) {}
+  </script>
+</body>
+</html>
+

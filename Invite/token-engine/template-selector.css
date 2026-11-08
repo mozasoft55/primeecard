@@ -1,0 +1,739 @@
+/**
+ * ============================================================================
+ * template-selector.css — Responsive, High-Performance Template Selector UI
+ * Mobile-First Design • CLS = 0 • Hardware-Accelerated Animations
+ * ============================================================================
+ */
+
+:root {
+  --ts-bg-surface: rgba(18, 12, 16, 0.85);
+  --ts-border-subtle: rgba(212, 175, 55, 0.22);
+  --ts-border-gold: #d4af37;
+  --ts-gold-glow: rgba(212, 175, 55, 0.35);
+  --ts-text-main: #fbf6ec;
+  --ts-text-muted: #cdbeaa;
+  --ts-text-accent: #e2b85e;
+  --ts-card-radius: 16px;
+  --ts-shimmer-base: #1f141a;
+  --ts-shimmer-highlight: #33222d;
+}
+
+/* 1. Main Selector Component Shell */
+.template-selector {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--ts-text-main);
+  background: var(--ts-bg-surface);
+  border-radius: 20px;
+  border: 1px solid var(--ts-border-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* 2. Top Header & Instant Search */
+.ts-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 640px) {
+  .ts-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.ts-header__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ts-header__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ts-text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ts-header__subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ts-text-muted);
+}
+
+/* Search Box Container */
+.ts-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.ts-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 34px 9px 34px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ts-border-subtle);
+  border-radius: 9999px;
+  color: var(--ts-text-main);
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.ts-search-input::placeholder {
+  color: rgba(205, 190, 170, 0.6);
+}
+
+.ts-search-input:focus {
+  border-color: var(--ts-border-gold);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+}
+
+.ts-search-icon {
+  position: absolute;
+  left: 12px;
+  width: 14px;
+  height: 14px;
+  fill: var(--ts-text-accent);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.ts-search-clear {
+  position: absolute;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  color: var(--ts-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.ts-search-clear:hover {
+  opacity: 1;
+  color: #fff;
+}
+
+/* 3. Filter Pills Bar (Non-Restrictive Horizontal Scroll) */
+.ts-filter-bar {
+  position: relative;
+  margin-bottom: 18px;
+  padding-bottom: 2px;
+}
+
+.ts-tablist {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+  padding: 4px 2px 8px 2px;
+}
+
+.ts-tablist::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Individual Filter Pill Button */
+.ts-tab-pill {
+  appearance: none;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ts-border-subtle);
+  border-radius: 9999px;
+  color: var(--ts-text-muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ts-tab-pill:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  color: var(--ts-text-main);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.ts-tab-pill:focus-visible {
+  outline: 2px solid var(--ts-border-gold);
+  outline-offset: 2px;
+}
+
+/* Active Filter Pill State */
+.ts-tab-pill[aria-selected="true"],
+.ts-tab-pill.is-active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.28) 0%, rgba(184, 134, 11, 0.16) 100%);
+  border-color: var(--ts-border-gold);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 14px var(--ts-gold-glow);
+}
+
+.ts-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ts-text-accent);
+}
+
+.ts-tab-pill[aria-selected="true"] .ts-tab-count,
+.ts-tab-pill.is-active .ts-tab-count {
+  background: var(--ts-border-gold);
+  color: #120308;
+}
+
+/* 4. Filter Status Bar (Results summary) */
+.ts-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  color: var(--ts-text-muted);
+}
+
+.ts-status-count {
+  font-weight: 600;
+  color: var(--ts-text-accent);
+}
+
+/* 5. Thumbnail Grid Layout (Mobile-First CSS Grid) */
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 520px) {
+  .ts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  .ts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* 6. Template Card Component (Lightweight Representation) */
+.ts-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(25, 18, 24, 0.65);
+  border: 1.5px solid rgba(212, 175, 55, 0.18);
+  border-radius: var(--ts-card-radius);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  will-change: transform;
+}
+
+.ts-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.65);
+}
+
+.ts-card:focus-visible {
+  outline: 2px solid var(--ts-border-gold);
+  outline-offset: 2px;
+}
+
+/* Active Selected Card State */
+.ts-card[aria-selected="true"],
+.ts-card.is-selected {
+  border-color: var(--ts-border-gold);
+  box-shadow: 0 0 0 2px var(--ts-border-gold),
+              0 8px 30px var(--ts-gold-glow);
+  background: rgba(45, 28, 40, 0.8);
+}
+
+/* 7. Image Container with Fixed Aspect Ratio (CLS = 0) */
+.ts-card__thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--ts-shimmer-base);
+  background-image: linear-gradient(
+    90deg,
+    var(--ts-shimmer-base) 0%,
+    var(--ts-shimmer-highlight) 50%,
+    var(--ts-shimmer-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: ts-shimmer 1.8s infinite linear;
+}
+
+/* When image is successfully loaded, stop shimmer */
+.ts-card__thumb-wrap.is-loaded {
+  animation: none;
+  background: #110910;
+}
+
+/* Image Element */
+.ts-card__thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ts-card__thumb.is-loaded {
+  opacity: 1;
+}
+
+.ts-card:hover .ts-card__thumb {
+  transform: scale(1.05);
+}
+
+/* Community Tag Chip (Floating bottom-left) */
+.ts-card__badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 3px 8px;
+  background: rgba(12, 4, 8, 0.78);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ts-text-accent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Checkmark Indicator (Floating top-right on selected card) */
+.ts-card__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ts-border-gold);
+  color: #1a0308;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.ts-card[aria-selected="true"] .ts-card__check,
+.ts-card.is-selected .ts-card__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 8. Card Meta Typography (Decoupled & Minimalist) */
+.ts-card__meta {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(18, 11, 16, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.1);
+  box-sizing: border-box;
+}
+
+.ts-card__title {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ts-text-main);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-card__theme {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--ts-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 9. Empty State */
+.ts-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--ts-border-subtle);
+  border-radius: var(--ts-card-radius);
+  color: var(--ts-text-muted);
+}
+
+.ts-empty-state__icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+  opacity: 0.8;
+}
+
+.ts-empty-state__msg {
+  font-size: 0.92rem;
+  margin-bottom: 12px;
+}
+
+.ts-empty-state__btn {
+  background: transparent;
+  border: 1px solid var(--ts-border-gold);
+  color: var(--ts-border-gold);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ts-empty-state__btn:hover {
+  background: var(--ts-border-gold);
+  color: #180309;
+}
+
+/* 10. Luxury Theme Badges & Floating Mobile Frame Preview */
+.ts-card__badge-luxury {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 2.5px 7px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.9) 0%, rgba(138, 98, 16, 0.95) 100%);
+  border: 1px solid rgba(254, 243, 199, 0.6);
+  border-radius: 4px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a0308;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.ts-card__mobile-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 3;
+  padding: 4px 9px;
+  background: rgba(18, 4, 10, 0.88);
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  border-radius: 9999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #fef3c7;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ts-card:hover .ts-card__mobile-btn,
+.ts-card:focus-within .ts-card__mobile-btn,
+.ts-card.is-selected .ts-card__mobile-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ts-card__mobile-btn:hover {
+  background: #d4af37;
+  color: #1a0308;
+  border-color: #fae19c;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.45);
+}
+
+/* 11. Shimmer Animation & Accessibility Preferences */
+@keyframes ts-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ts-card,
+  .ts-card__thumb,
+  .ts-tab-pill,
+  .ts-card__check,
+  .ts-card__mobile-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+  .ts-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================================
+ * 12. Studio Sidebar Compact 2-Column Mode
+ * ============================================================================ */
+.studio-sidebar .template-selector,
+.template-selector--compact {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  max-width: 100% !important;
+}
+
+.studio-sidebar .ts-header,
+.template-selector--compact .ts-header {
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+.studio-sidebar .ts-header__title-group,
+.template-selector--compact .ts-header__title-group {
+  display: none !important;
+}
+
+.studio-sidebar .ts-search-wrap,
+.template-selector--compact .ts-search-wrap {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.studio-sidebar .ts-search-input,
+.template-selector--compact .ts-search-input {
+  padding: 8px 32px 8px 32px !important;
+  font-size: 0.8rem !important;
+}
+
+.studio-sidebar .ts-filter-bar,
+.template-selector--compact .ts-filter-bar {
+  margin-bottom: 10px !important;
+}
+
+.studio-sidebar .ts-tablist,
+.template-selector--compact .ts-tablist {
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 6px !important;
+  padding: 2px 2px 6px 2px !important;
+}
+
+.studio-sidebar .ts-tab-pill,
+.template-selector--compact .ts-tab-pill {
+  flex: 0 0 auto !important;
+  padding: 5px 12px !important;
+  font-size: 0.78rem !important;
+  white-space: nowrap !important;
+}
+
+.studio-sidebar .ts-status-bar,
+.template-selector--compact .ts-status-bar {
+  margin-bottom: 8px !important;
+  font-size: 0.74rem !important;
+}
+
+.studio-sidebar .ts-grid,
+.template-selector--compact .ts-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 10px !important;
+}
+
+.studio-sidebar .ts-card,
+.template-selector--compact .ts-card {
+  border-radius: 12px !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.22) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.studio-sidebar .ts-card:hover,
+.template-selector--compact .ts-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+}
+
+.studio-sidebar .ts-card.is-selected,
+.studio-sidebar .ts-card[aria-selected="true"],
+.template-selector--compact .ts-card.is-selected,
+.template-selector--compact .ts-card[aria-selected="true"] {
+  border-color: var(--ts-border-gold) !important;
+  box-shadow: 0 0 0 1.5px var(--ts-border-gold), 0 6px 20px var(--ts-gold-glow) !important;
+  background: rgba(50, 24, 36, 0.85) !important;
+}
+
+.studio-sidebar .ts-card__thumb-wrap,
+.template-selector--compact .ts-card__thumb-wrap {
+  aspect-ratio: 3 / 4 !important;
+  height: 175px !important;
+  max-height: 185px !important;
+  width: 100% !important;
+}
+
+.studio-sidebar .ts-card__meta,
+.template-selector--compact .ts-card__meta {
+  padding: 7px 9px !important;
+  gap: 2px !important;
+}
+
+.studio-sidebar .ts-card__title,
+.template-selector--compact .ts-card__title {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+}
+
+.studio-sidebar .ts-card__theme,
+.template-selector--compact .ts-card__theme {
+  font-size: 0.66rem !important;
+}
+
+.studio-sidebar .ts-card__badge-luxury,
+.template-selector--compact .ts-card__badge-luxury {
+  top: 6px !important;
+  left: 6px !important;
+  font-size: 0.56rem !important;
+  padding: 2px 6px !important;
+}
+
+.studio-sidebar .ts-card__badge,
+.template-selector--compact .ts-card__badge {
+  bottom: 6px !important;
+  left: 6px !important;
+  font-size: 0.6rem !important;
+  padding: 2px 6px !important;
+}
+
+.studio-sidebar .ts-card__mobile-btn,
+.template-selector--compact .ts-card__mobile-btn {
+  display: none !important;
+}
+/* ============================================================================
+ * 13. Skeleton Shimmer & Selection Feedback Haptic Animation
+ * ============================================================================ */
+.ts-card__thumb-wrap {
+  background-color: #19050e !important; /* Fallback preventing white flicker */
+}
+
+.ts-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(28, 10, 18, 0.95) 0%,
+    rgba(212, 175, 55, 0.28) 50%,
+    rgba(28, 10, 18, 0.95) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: ts-shimmer 1.4s infinite linear !important;
+}
+
+.ts-card--skeleton {
+  pointer-events: none !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.15) !important;
+}
+
+.ts-skeleton-line {
+  border-radius: 4px !important;
+  margin-bottom: 5px !important;
+}
+
+.ts-skeleton-line--title {
+  width: 80% !important;
+  height: 12px !important;
+}
+
+.ts-skeleton-line--sub {
+  width: 55% !important;
+  height: 9px !important;
+}
+
+/* Quick 0.15s haptic scale animation on selection */
+@keyframes ts-card-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.ts-card.ts-card--pulse {
+  animation: ts-card-pulse 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}

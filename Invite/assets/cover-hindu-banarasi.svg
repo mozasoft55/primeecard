@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-banarasi" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#142646"/>
+      <stop offset="55%" stop-color="#0a1426"/>
+      <stop offset="100%" stop-color="#040810"/>
+    </radialGradient>
+    <linearGradient id="gold-zari" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e5c158"/>
+      <stop offset="30%" stop-color="#fff0b3"/>
+      <stop offset="60%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#99771a"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-banarasi)"/>
+  <!-- Ornate Banarasi Zari Outer Border -->
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-zari)" stroke-width="1.8" stroke-opacity="0.8"/>
+  <rect x="20" y="20" width="260" height="360" rx="10" fill="none" stroke="url(#gold-zari)" stroke-width="0.8" stroke-dasharray="3,3" stroke-opacity="0.5"/>
+  <!-- Corner Kolka Paisley Flourishes -->
+  <g fill="url(#gold-zari)" opacity="0.9">
+    <circle cx="20" cy="20" r="4"/>
+    <circle cx="280" cy="20" r="4"/>
+    <circle cx="20" cy="380" r="4"/>
+    <circle cx="280" cy="380" r="4"/>
+    <path d="M22 28 C30 28, 38 34, 38 44 C38 48, 34 50, 30 48 C26 46, 28 40, 32 38" fill="none" stroke="url(#gold-zari)" stroke-width="1.2"/>
+    <path d="M278 28 C270 28, 262 34, 262 44 C262 48, 266 50, 270 48 C274 46, 272 40, 268 38" fill="none" stroke="url(#gold-zari)" stroke-width="1.2"/>
+  </g>
+  <!-- Scalloped Rajbari Jharokha Arch -->
+  <path d="M45 180 C45 110, 95 55, 150 55 C205 55, 255 110, 255 180 L255 335 L45 335 Z" fill="none" stroke="url(#gold-zari)" stroke-width="1.8"/>
+  <path d="M58 185 C58 125, 100 72, 150 72 C200 72, 242 125, 242 185 L242 325 L58 325 Z" fill="none" stroke="url(#gold-zari)" stroke-width="0.75" stroke-dasharray="4,2" stroke-opacity="0.6"/>
+  <!-- Invocation -->
+  <text x="150" y="115" font-family="'Cinzel', Georgia, serif" font-size="12" fill="url(#gold-zari)" font-weight="700" text-anchor="middle" letter-spacing="2">|| শ্রী শ্রী রাধাকৃষ্ণায় নমঃ ||</text>
+  <!-- Mandap & Palki Crest Icon -->
+  <g transform="translate(150, 160)" stroke="url(#gold-zari)" stroke-width="1.2" fill="none">
+    <ellipse cx="0" cy="0" rx="16" ry="14"/>
+    <polygon points="0,-12 4,-3 12,-3 6,3 8,11 0,6 -8,11 -6,3 -12,-3 -4,-3" fill="url(#gold-zari)" fill-opacity="0.35"/>
+    <circle cx="0" cy="0" r="4" fill="url(#gold-zari)"/>
+  </g>
+  <!-- Typography -->
+  <text x="150" y="222" font-family="'Cinzel', Georgia, serif" font-size="15" fill="#FAF4E8" font-weight="700" text-anchor="middle" letter-spacing="2">BANARASI ZARI</text>
+  <text x="150" y="243" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-zari)" text-anchor="middle" letter-spacing="3">JHAROKHA DARBAR</text>
+  <line x1="80" y1="258" x2="220" y2="258" stroke="url(#gold-zari)" stroke-width="0.8" stroke-opacity="0.6"/>
+  <text x="150" y="278" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="12" fill="#d2c199" text-anchor="middle">Jamdani Indigo &amp; 24K Gold Zari</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8.5" fill="url(#gold-zari)" text-anchor="middle" letter-spacing="3">ROYAL INVITATION</text>
+</svg>
+

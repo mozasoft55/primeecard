@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Client-Side Image Compression & Upload — Live Demo</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Upload Component Stylesheet -->
+  <link rel="stylesheet" href="../utils/photo-upload.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 15% 20%, #401826 0%, #200810 50%, #0d0206 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #fff8ee;
+      box-sizing: border-box;
+    }
+
+    .demo-container {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .demo-card {
+      background: #fffefa;
+      border: 1px solid #d2b678;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 24px 75px rgba(16, 5, 10, 0.7);
+      color: #34262a;
+    }
+
+    .demo-header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid #e8decb;
+      padding-bottom: 18px;
+    }
+
+    .demo-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #a2824b;
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+
+    .demo-title {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #502132;
+      margin: 0 0 8px;
+    }
+
+    .demo-desc {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.15rem;
+      color: #766b6d;
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fbf6ee;
+      border: 1px solid #dfd2c0;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #502132;
+    }
+
+    .demo-actions-box {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e8decb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .demo-submit-btn {
+      appearance: none;
+      border: none;
+      background: #502132;
+      color: #fff8ed;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .demo-submit-btn:hover {
+      background: #6e1429;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(110, 20, 41, 0.3);
+    }
+
+    .demo-payload-viewer {
+      margin-top: 20px;
+      background: #18050e;
+      border-radius: 12px;
+      padding: 16px;
+      color: #e2b85e;
+      font-family: monospace;
+      font-size: 0.8rem;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-container">
+    <div class="demo-card">
+      <header class="demo-header">
+        <p class="demo-eyebrow">Web Performance & Canvas Engineering</p>
+        <h1 class="demo-title">Client-Side Photo Compression</h1>
+        <p class="demo-desc">
+          High-performance in-browser downscaling with HTML5 Canvas API. Heavy 5–10MB RAW wedding photos are proportionally scaled to max 1200px and converted to modern <code>image/webp</code> (quality: 0.8), reducing file sizes down to ~150–250KB before uploading.
+        </p>
+        <div class="tech-badges">
+          <span class="tech-pill"><span>⚡</span> 0ms Instant Local Preview</span>
+          <span class="tech-pill"><span>🎨</span> HTML5 Canvas Bicubic Downscale</span>
+          <span class="tech-pill"><span>📦</span> WebP Quality 0.8 (150-250KB)</span>
+          <span class="tech-pill"><span>🔒</span> EXIF Auto-Orientation</span>
+          <span class="tech-pill"><span>🛡️</span> Zero Layout Shift (CLS: 0)</span>
+        </div>
+      </header>
+
+      <!-- Mounting Container for PhotoUploadComponent -->
+      <div id="photo-upload-mount"></div>
+
+      <!-- Action Panel -->
+      <div class="demo-actions-box">
+        <span style="font-size: 0.85rem; color: #766b6d;">
+          Photos are compressed instantly on the client device before network transfer.
+        </span>
+        <button type="button" class="demo-submit-btn" id="simulate-upload-btn">
+          <span>🚀</span> Inspect Form Upload Payload
+        </button>
+      </div>
+
+      <!-- Payload Diagnostic Output -->
+      <div id="payload-output" class="demo-payload-viewer" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PhotoUploadComponent } from '../utils/PhotoUploadComponent.js';
+
+    // Initialize Component
+    const uploader = new PhotoUploadComponent({
+      container: '#photo-upload-mount',
+      maxWidth: 1200,
+      quality: 0.8,
+      onPhotoReady: (slot, result) => {
+        console.log(`[Success] ${slot} photo compressed:`, result);
+      },
+      onError: (slot, err) => {
+        console.warn(`[Error] ${slot} photo upload error:`, err);
+      }
+    });
+
+    // Simulate inspection of compressed FormData
+    document.getElementById('simulate-upload-btn').addEventListener('click', () => {
+      const coupleFile = uploader.getFile('couple');
+      const venueFile = uploader.getFile('venue');
+      const output = document.getElementById('payload-output');
+
+      const payload = {
+        couplePhoto: coupleFile ? {
+          name: coupleFile.name,
+          type: coupleFile.type,
+          sizeFormatted: `${(coupleFile.size / 1024).toFixed(1)} KB`,
+          originalSizeFormatted: uploader.getResult('couple')?.originalFormatted,
+          saved: uploader.getResult('couple')?.compressionRatio
+        } : 'None selected',
+        venuePhoto: venueFile ? {
+          name: venueFile.name,
+          type: venueFile.type,
+          sizeFormatted: `${(venueFile.size / 1024).toFixed(1)} KB`,
+          originalSizeFormatted: uploader.getResult('venue')?.originalFormatted,
+          saved: uploader.getResult('venue')?.compressionRatio
+        } : 'None selected'
+      };
+
+      output.style.display = 'block';
+      output.textContent = '📦 FormData Ready for Submission:\n' + JSON.stringify(payload, null, 2);
+    });
+  </script>
+</body>
+</html>
+

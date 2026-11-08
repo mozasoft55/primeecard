@@ -1,0 +1,536 @@
+/**
+ * ============================================================================
+ * editorial-story-venue.css — Luxury Editorial 'Our Story' & 'Venue Showcase'
+ * Senior Creative Web Design • Haute Couture Typography • Zero CLS
+ * ============================================================================
+ */
+
+:root {
+  /* Fallback Token bindings (natively inherits from parent template tokens) */
+  --story-bg-surface: var(--card-surface, rgba(32, 10, 18, 0.85));
+  --story-gold: var(--accent-gold, #d4af37);
+  --story-gold-light: var(--accent-gold-light, #fef3c7);
+  --story-gold-foil: var(--accent-foil, linear-gradient(110deg, #b8860b 0%, #fae19c 25%, #d4af37 50%, #fff3cf 75%, #b8860b 100%));
+  --story-text-primary: var(--text-primary, #fff9f0);
+  --story-text-secondary: var(--text-secondary, #edd4a8);
+  --story-text-muted: var(--text-muted, rgba(237, 212, 168, 0.72));
+  --story-font-display: var(--card-font-display, 'Cinzel Decorative', 'Playfair Display', Georgia, serif);
+  --story-font-body: var(--card-font-body, 'Cormorant Garamond', Georgia, serif);
+  --story-font-accent: var(--card-font-accent, 'Great Vibes', 'Pinyon Script', cursive);
+  --story-border: var(--card-border, 1px solid rgba(212, 175, 55, 0.35));
+  --story-radius: var(--border-radius-card, 22px);
+  --story-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   1. SECTION CONTAINER WRAPPER
+   ========================================================================== */
+.editorial-section {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  margin: 40px auto 0;
+  box-sizing: border-box;
+  font-family: var(--story-font-body);
+  color: var(--story-text-primary);
+}
+
+/* Editorial Header (Eyebrow + Display Title + Script Flourish) */
+.editorial-header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.editorial-eyebrow {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--story-gold);
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.editorial-eyebrow::before,
+.editorial-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--story-gold);
+  opacity: 0.6;
+}
+
+.editorial-title {
+  margin: 0;
+  font-family: var(--story-font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  background: var(--story-gold-foil);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.editorial-script {
+  margin: 4px 0 0;
+  font-family: var(--story-font-accent);
+  font-size: clamp(1.3rem, 3.5vw, 1.7rem);
+  color: var(--story-text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Gold Hairline Divider with Diamond Knot */
+.editorial-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0 24px;
+  color: var(--story-gold);
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.editorial-divider::before,
+.editorial-divider::after {
+  content: "";
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--story-gold), transparent);
+}
+
+/* ==========================================================================
+   2. "OUR STORY" (HOW WE MET) TIMELINE CARD
+   ========================================================================== */
+.story-card {
+  position: relative;
+  background: var(--story-bg-surface);
+  border: var(--story-border);
+  border-radius: var(--story-radius);
+  padding: 24px 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 245, 220, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .story-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    padding: 30px 28px;
+    align-items: center;
+  }
+}
+
+/* Ornamental Corner Filigree Stamps */
+.story-card::before,
+.story-card::after {
+  content: "";
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  opacity: 0.35;
+  border: 1px solid var(--story-gold);
+}
+.story-card::before {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+.story-card::after {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Photo Frame Container (Aspect Ratio 4:5, Zero CLS) */
+.story-photo-frame {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.4);
+  background: radial-gradient(circle at 50% 40%, rgba(55, 14, 26, 0.8) 0%, rgba(18, 3, 8, 0.95) 100%);
+}
+
+/* Dual Gold Inset Border */
+.story-photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(254, 243, 199, 0.35);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Lazy-loaded Compressed Image */
+.story-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+  transition: transform 0.6s var(--story-ease), filter 0.4s ease;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.story-card:hover .story-photo-img {
+  transform: scale(1.05);
+}
+
+/* Graceful Fallback (When No Photo Uploaded) */
+.story-photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 30%, rgba(68, 18, 32, 0.85) 0%, rgba(15, 3, 7, 0.98) 100%);
+  position: relative;
+}
+
+.story-fallback-icon {
+  font-size: 2.8rem;
+  color: var(--story-gold);
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 10px rgba(212, 175, 55, 0.35));
+}
+
+.story-fallback-monogram {
+  font-family: var(--story-font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  background: var(--story-gold-foil);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.story-fallback-sub {
+  font-family: var(--story-font-body);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--story-text-secondary);
+  margin: 4px 0 0;
+  letter-spacing: 0.03em;
+}
+
+/* Narrative Body */
+.story-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.story-date-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  border-radius: 9999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--story-gold-light);
+}
+
+.story-pullquote {
+  margin: 0;
+  font-family: var(--story-font-body);
+  font-size: clamp(1.15rem, 3vw, 1.35rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--story-gold-light);
+  border-left: 2px solid var(--story-gold);
+  padding-left: 14px;
+}
+
+.story-text {
+  margin: 0;
+  font-family: var(--story-font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--story-text-secondary);
+}
+
+.story-text::first-letter {
+  float: left;
+  font-family: var(--story-font-display);
+  font-size: 2.8rem;
+  line-height: 0.85;
+  padding-right: 8px;
+  padding-top: 4px;
+  color: var(--story-gold);
+}
+
+.story-signature {
+  margin-top: 6px;
+  font-family: var(--story-font-accent);
+  font-size: 1.6rem;
+  color: var(--story-gold-light);
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   3. "VENUE & BANQUET" SHOWCASE CARD
+   ========================================================================== */
+.venue-showcase-card {
+  position: relative;
+  background: var(--story-bg-surface);
+  border: var(--story-border);
+  border-radius: var(--story-radius);
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 245, 220, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero Panoramic Hall Frame (Aspect Ratio 16:9, Zero CLS) */
+.venue-photo-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #290814 0%, #0c0205 100%);
+}
+
+.venue-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s var(--story-ease);
+}
+
+.venue-showcase-card:hover .venue-photo-img {
+  transform: scale(1.04);
+}
+
+/* Soft Vignette Bottom Shadow Overlay */
+.venue-photo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 2, 5, 0.1) 0%,
+    rgba(10, 2, 5, 0.4) 50%,
+    rgba(10, 2, 5, 0.95) 100%
+  );
+  pointer-events: none;
+}
+
+/* Floating Timings Ribbon */
+.venue-timing-ribbon {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  z-index: 3;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  background: rgba(14, 3, 7, 0.82);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--story-gold-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Graceful Fallback (When No Venue Photo Uploaded) */
+.venue-photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: radial-gradient(ellipse at 50% 40%, rgba(65, 15, 30, 0.85) 0%, rgba(12, 2, 5, 0.98) 100%);
+  position: relative;
+}
+
+.venue-fallback-arch {
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid var(--story-gold);
+  border-bottom: none;
+  border-radius: 32px 32px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  font-size: 1.8rem;
+  color: var(--story-gold);
+}
+
+.venue-fallback-title {
+  font-family: var(--story-font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--story-gold-light);
+  margin: 0;
+}
+
+/* Venue Information Content Block */
+.venue-details-body {
+  padding: 22px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .venue-details-body {
+    padding: 26px 28px 28px;
+  }
+}
+
+.venue-name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.venue-grand-name {
+  margin: 0;
+  font-family: var(--story-font-display);
+  font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--story-gold-light);
+  line-height: 1.25;
+}
+
+.venue-sub-hall {
+  margin: 0;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--story-gold);
+}
+
+/* Address & Coordinates */
+.venue-address-block {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--story-text-secondary);
+}
+
+.venue-address-main {
+  font-weight: 500;
+}
+
+.venue-address-sub {
+  font-size: 0.88rem;
+  color: var(--story-text-muted);
+}
+
+/* Micro-features (Valet Parking, Landmarks) */
+.venue-features-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+
+.venue-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  color: var(--story-text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Direct Google Maps Action CTA Button */
+.venue-map-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 24px;
+  margin: 8px auto 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(184, 134, 11, 0.12) 100%);
+  border: 1px solid var(--story-gold);
+  color: var(--story-gold-light);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: all 0.26s var(--story-ease);
+}
+
+.venue-map-cta:hover {
+  background: var(--story-gold);
+  color: #1a0309;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+}
+
+.venue-map-cta:focus-visible {
+  outline: 2px solid var(--story-gold);
+  outline-offset: 3px;
+}
+

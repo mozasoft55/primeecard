@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-palace" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#3b1126"/>
+      <stop offset="60%" stop-color="#1c0612"/>
+      <stop offset="100%" stop-color="#0a0106"/>
+    </radialGradient>
+    <linearGradient id="gold-palace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#fae19c"/>
+      <stop offset="100%" stop-color="#aa7c11"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-palace)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-palace)" stroke-width="1.6" stroke-opacity="0.7"/>
+  <!-- 3D Palace Doors & Moonstone Arch -->
+  <path d="M45 180 C45 95, 95 55, 150 55 C205 55, 255 95, 255 180 L255 340 L45 340 Z" fill="none" stroke="url(#gold-palace)" stroke-width="1.8"/>
+  <line x1="150" y1="58" x2="150" y2="340" stroke="url(#gold-palace)" stroke-width="1" stroke-dasharray="4,2"/>
+  <path d="M60 185 C60 115, 100 75, 145 75 L145 330 L60 330 Z" fill="#14040d" fill-opacity="0.5" stroke="url(#gold-palace)" stroke-width="0.8"/>
+  <path d="M155 75 C200 75, 240 115, 240 185 L240 330 L155 330 Z" fill="#14040d" fill-opacity="0.5" stroke="url(#gold-palace)" stroke-width="0.8"/>
+  <!-- Door Knocker Crest -->
+  <circle cx="150" cy="140" r="14" fill="#290a1a" stroke="url(#gold-palace)" stroke-width="1.2"/>
+  <circle cx="150" cy="140" r="5" fill="url(#gold-palace)"/>
+  <text x="150" y="215" font-family="'Marcellus', 'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-palace)" font-weight="700" text-anchor="middle" letter-spacing="4">ROYAL 3D DOORS</text>
+  <text x="150" y="238" font-family="'Marcellus', 'Cinzel', Georgia, serif" font-size="15" fill="#fcf5f9" font-weight="700" text-anchor="middle" letter-spacing="2">CELESTIAL PALACE</text>
+  <text x="150" y="258" font-family="'Cormorant Garamond', Georgia, serif" font-size="11" fill="url(#gold-palace)" text-anchor="middle" letter-spacing="3">PLUM, WINE &amp; ROSE-GOLD</text>
+  <line x1="85" y1="270" x2="215" y2="270" stroke="url(#gold-palace)" stroke-width="0.8" stroke-opacity="0.4"/>
+  <text x="150" y="288" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#e4c6d9" text-anchor="middle">Tilt-Parallax Palace Unveil</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-palace)" text-anchor="middle" letter-spacing="3">VIP PALACE SUITE</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg-darbar" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#2a1824"/>
+      <stop offset="60%" stop-color="#140810"/>
+      <stop offset="100%" stop-color="#050104"/>
+    </radialGradient>
+    <linearGradient id="gold-darbar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#fae19c"/>
+      <stop offset="100%" stop-color="#aa7c11"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="400" fill="url(#bg-darbar)"/>
+  <rect x="14" y="14" width="272" height="372" rx="14" fill="none" stroke="url(#gold-darbar)" stroke-width="1.8" stroke-opacity="0.75"/>
+  <rect x="20" y="20" width="260" height="360" rx="10" fill="none" stroke="url(#gold-darbar)" stroke-width="0.8" stroke-opacity="0.4"/>
+  <!-- Grand Imperial Triple Arch -->
+  <path d="M42 180 C42 90, 95 50, 150 50 C205 50, 258 90, 258 180 L258 340 L42 340 Z" fill="none" stroke="url(#gold-darbar)" stroke-width="2"/>
+  <path d="M54 185 C54 105, 100 68, 150 68 C200 68, 246 105, 246 185 L246 330 L54 330 Z" fill="none" stroke="url(#gold-darbar)" stroke-width="0.8" stroke-dasharray="3,3"/>
+  <!-- Royal Fleur-de-lis / Crest -->
+  <g transform="translate(150, 130)" stroke="url(#gold-darbar)" stroke-width="1.3" fill="none">
+    <path d="M0 -18 C-4 -6, -10 -4, -12 6 C-12 12, -4 14, 0 16 C4 14, 12 12, 12 6 C10 -4, 4 -6, 0 -18 Z" fill="url(#gold-darbar)" fill-opacity="0.2"/>
+    <path d="M0 -18 L0 16"/>
+    <circle cx="0" cy="19" r="2.5" fill="url(#gold-darbar)"/>
+  </g>
+  <text x="150" y="195" font-family="'Cinzel', Georgia, serif" font-size="11" fill="url(#gold-darbar)" font-weight="700" text-anchor="middle" letter-spacing="4">ROYAL DARBAR</text>
+  <text x="150" y="228" font-family="'Cinzel', Georgia, serif" font-size="16" fill="#fff9fb" font-weight="700" text-anchor="middle" letter-spacing="2">IMPERIAL NOIR</text>
+  <text x="150" y="248" font-family="'Cormorant Garamond', Georgia, serif" font-size="11" fill="url(#gold-darbar)" text-anchor="middle" letter-spacing="3">24K GOLD FOIL EMBOSS</text>
+  <line x1="85" y1="262" x2="215" y2="262" stroke="url(#gold-darbar)" stroke-width="0.8" stroke-opacity="0.5"/>
+  <text x="150" y="280" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="11" fill="#e5d0db" text-anchor="middle">Grand Palace Wedding Reception</text>
+  <text x="150" y="315" font-family="'Cinzel', Georgia, serif" font-size="8" fill="url(#gold-darbar)" text-anchor="middle" letter-spacing="3">VIP MONARCH SUITE</text>
+</svg>
