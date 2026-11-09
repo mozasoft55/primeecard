@@ -296,6 +296,18 @@ button{cursor:pointer}
       <div class="field"><label for="groom">Groom's name</label><input type="text" id="groom" value="Purushottam" placeholder="e.g. Purushottam" autocomplete="off" maxlength="40"></div>
       <div class="field"><label for="name_order">Names order</label>
         <select id="name_order"><option value="bride_first">Bride &amp; Groom</option><option value="groom_first">Groom &amp; Bride</option></select></div>
+      <div class="row2">
+        <div class="field">
+          <label for="studio-bride-file">👰 Bride Photo</label>
+          <input type="file" id="studio-bride-file" accept="image/*" style="font-size:11px;padding:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(212,175,55,0.3);border-radius:6px;color:#f0e6d2;width:100%;">
+          <div id="studio-bride-stat" style="font-size:11px;color:#d4af37;margin-top:4px;">Default bride active</div>
+        </div>
+        <div class="field">
+          <label for="studio-groom-file">🤵 Groom Photo</label>
+          <input type="file" id="studio-groom-file" accept="image/*" style="font-size:11px;padding:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(212,175,55,0.3);border-radius:6px;color:#f0e6d2;width:100%;">
+          <div id="studio-groom-stat" style="font-size:11px;color:#d4af37;margin-top:4px;">Default groom active</div>
+        </div>
+      </div>
     </section>
 
     <section class="group">
@@ -355,6 +367,7 @@ button{cursor:pointer}
 <script type="module">
 import { TemplateSelector } from './token-engine/TemplateSelector.js';
 import { TokenTemplateController } from './token-engine/TokenTemplateController.js';
+import { STANDARDIZED_EVENTS, getEventImage } from './onboarding-core.js';
 
 /* ------------------------------------------------------------------ utils */
 const $ = (s, r = document) => r.querySelector(s);
@@ -527,14 +540,22 @@ function buildWeddingState(tpl) {
         || '';
     } catch { return ''; }
   };
+  const storedBride = getStored('wedding-bride-photo') || getStored('wedding_bride_photo') || getStored('onboard-bride-photo');
+  const storedGroom = getStored('wedding-groom-photo') || getStored('wedding_groom_photo') || getStored('onboard-groom-photo');
   const storedCouple = getStored('wedding-couple-photo') || getStored('wedding_couple_photo') || getStored('onboard-couple-photo');
   const storedVenue = getStored('wedding-venue-photo') || getStored('wedding_venue_photo') || getStored('onboard-venue-photo');
 
+  const bridePhoto = storedBride || './assets/default-bride.webp';
+  const groomPhoto = storedGroom || './assets/default-groom.webp';
   const couplePhoto = storedCouple || '';
   const venuePhoto = storedVenue || '';
 
   return {
     couple: { bride, groom, name_order: F.name_order.value || 'bride_first', photo: couplePhoto },
+    bride_photo: bridePhoto,
+    bride_image: bridePhoto,
+    groom_photo: groomPhoto,
+    groom_image: groomPhoto,
     couple_photo: couplePhoto,
     hero_image: couplePhoto,
     invocation: F.invocation.value.trim(),
@@ -555,7 +576,7 @@ function buildWeddingState(tpl) {
       text: 'What began as a quiet conversation along the promenade soon unfolded into thousands of shared memories. Today, surrounded by our loved ones, we step together into our forever.',
       image: couplePhoto || './assets/template-06-couple.webp'
     },
-    events: events.map(e => ({ name: e.name || 'Celebration', date: e.date || date, time: e.time || '7:00 PM', venue: e.venue || venueName })),
+    events: events.map(e => ({ name: e.name || 'Celebration', event_name: e.name || 'Celebration', date: e.date || date, event_date: e.date || date, time: e.time || '7:00 PM', event_time: e.time || '7:00 PM', venue: e.venue || venueName, image: e.image || getEventImage(e.name), event_image: e.image || getEventImage(e.name) })),
     rsvp: { phone },
     show_venue_showcase: true
   };
@@ -642,6 +663,19 @@ function renderEvents() {
   el.evBox.innerHTML = events.map((ev, i) => {
     const isFirst = i === 0;
     const isLast = i === events.length - 1;
+    const curName = (ev.name || '').trim();
+    const isCustom = Boolean(curName && !STANDARDIZED_EVENTS.some(se => se.name.toLowerCase() === curName.toLowerCase()));
+    const eventImg = ev.image || getEventImage(curName);
+
+    const options = [
+      '<option value="">-- Select Event --</option>',
+      ...STANDARDIZED_EVENTS.map(se => {
+        const sel = se.name.toLowerCase() === curName.toLowerCase() ? ' selected' : '';
+        return `<option value="${esc(se.name)}"${sel}>${esc(se.name)} (${esc(se.tradition)})</option>`;
+      }),
+      `<option value="__custom__"${isCustom ? ' selected' : ''}>✍ Custom Type / Other...</option>`
+    ].join('');
+
     return `
     <div class="ev">
       <div class="ev-head"><b>Event ${i + 1}</b>
@@ -650,7 +684,13 @@ function renderEvents() {
           <button type="button" data-mv="1" data-i="${i}" aria-label="Move event down"${isLast ? ' disabled' : ''}>↓</button>
           <button type="button" class="del" data-del="${i}" aria-label="Remove event">✕</button>
         </div></div>
-      <input type="text" placeholder="Event name" value="${esc(ev.name)}" data-i="${i}" data-f="name" maxlength="60" aria-label="Event name">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select data-i="${i}" data-f="select_name" class="studio-event-select" style="flex:1;min-width:0;padding:8px 10px;border-radius:var(--r-sm);border:1.5px solid var(--gold);background:rgba(6,2,4,.9);color:var(--ink);font-size:13.5px;font-weight:600;">
+          ${options}
+        </select>
+        <img src="./assets/${esc(eventImg)}" alt="" class="ev-thumb-img" style="width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid rgba(231,196,128,0.4);flex:none;background:#1a0f15;" onerror="this.src='./assets/template-06-phere.jpg'">
+      </div>
+      <input type="text" placeholder="Enter custom event name" value="${esc(curName)}" data-i="${i}" data-f="custom_name" maxlength="60" aria-label="Custom event name" style="${isCustom ? '' : 'display:none;'}">
       <div class="row2">
         <input type="date" value="${esc(ev.date)}" data-i="${i}" data-f="date" aria-label="Event date">
         <input type="text" placeholder="7:00 PM" value="${esc(ev.time)}" data-i="${i}" data-f="time" maxlength="12" aria-label="Event time">
@@ -671,9 +711,51 @@ el.evBox.addEventListener('click', e => {
   else return;
   renderEvents(); renderSuggestions(); onFieldInput();
 });
+el.evBox.addEventListener('change', e => {
+  const select = e.target.closest('[data-i][data-f="select_name"]');
+  if (!select) return;
+  const i = +select.dataset.i;
+  const ev = events[i];
+  if (!ev) return;
+  const customInp = el.evBox.querySelector(`input[data-i="${i}"][data-f="custom_name"]`);
+  const thumb = el.evBox.querySelector(`.ev:nth-child(${i + 1}) .ev-thumb-img`);
+
+  if (select.value === '__custom__') {
+    if (customInp) {
+      customInp.style.display = 'block';
+      customInp.focus();
+    }
+  } else {
+    if (customInp) {
+      customInp.style.display = 'none';
+      customInp.value = '';
+    }
+    ev.name = select.value;
+    ev.image = getEventImage(select.value);
+    if (thumb) thumb.src = `./assets/${ev.image}`;
+    onFieldInput();
+  }
+});
+
 el.evBox.addEventListener('input', e => {
+  const customInp = e.target.closest('[data-i][data-f="custom_name"]');
+  if (customInp) {
+    const i = +customInp.dataset.i;
+    const ev = events[i];
+    if (ev) {
+      ev.name = customInp.value;
+      ev.image = getEventImage(customInp.value);
+      const thumb = el.evBox.querySelector(`.ev:nth-child(${i + 1}) .ev-thumb-img`);
+      if (thumb) thumb.src = `./assets/${ev.image}`;
+      onFieldInput();
+    }
+    return;
+  }
   const inp = e.target.closest('[data-i][data-f]');
-  if (inp && events[+inp.dataset.i]) { events[+inp.dataset.i][inp.dataset.f] = inp.value; onFieldInput(); }
+  if (inp && events[+inp.dataset.i] && inp.dataset.f !== 'select_name') {
+    events[+inp.dataset.i][inp.dataset.f] = inp.value;
+    onFieldInput();
+  }
 });
 $('#btn-add-event').addEventListener('click', () => addEvent());
 

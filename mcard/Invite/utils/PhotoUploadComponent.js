@@ -1,23 +1,69 @@
 /**
  * ============================================================================
  * PhotoUploadComponent.js — UI Upload Component Manager with Instant Preview
- * Handles Couple/Story & Venue/Banquet Photo Uploads + Live WebP Compression
+ * Handles Groom, Bride, Couple & Venue Photo Uploads + Live WebP Compression
  * ============================================================================
  */
 
 import { compressImage, validateImageFile, formatBytes } from './image-compressor.js';
 
+export const PHOTO_SLOTS = [
+  {
+    slot: 'groom',
+    icon: '🤵',
+    title: "Groom's Photograph",
+    badge: 'Face Focus (1:1)',
+    aspect: 'portrait',
+    prompt: 'Upload Groom photograph',
+    subtext: 'Central face focus portrait. Shows default royal groom if unuploaded.',
+    defaultImg: '../assets/default-groom.webp'
+  },
+  {
+    slot: 'bride',
+    icon: '👰',
+    title: "Bride's Photograph",
+    badge: 'Face Focus (1:1)',
+    aspect: 'portrait',
+    prompt: 'Upload Bride photograph',
+    subtext: 'Central face focus portrait. Shows default royal bride if unuploaded.',
+    defaultImg: '../assets/default-bride.webp'
+  },
+  {
+    slot: 'couple',
+    icon: '💑',
+    title: 'Couple / Story Photo',
+    badge: 'Portrait (3:4)',
+    aspect: 'portrait',
+    prompt: 'Upload Couple photograph',
+    subtext: 'High-res couple portrait. Auto-compressed to crisp WebP.',
+    defaultImg: '../assets/template-06-couple.webp'
+  },
+  {
+    slot: 'venue',
+    icon: '🏛️',
+    title: 'Venue / Banquet Photo',
+    badge: 'Landscape (16:9)',
+    aspect: 'landscape',
+    prompt: 'Upload Venue photograph',
+    subtext: 'Palace, Mandap, or Hall landscape photo.',
+    defaultImg: '../assets/template-06-palace.jpg'
+  }
+];
+
 export class PhotoUploadComponent {
   /**
    * @param {Object} options
    * @param {HTMLElement|string} options.container - Root container element or CSS selector
+   * @param {string[]} [options.slots] - Array of slots to display ['groom', 'bride', 'couple', 'venue']
    * @param {number} [options.maxWidth=1200] - Max bounding box for canvas downscaling
    * @param {number} [options.quality=0.8] - WebP quality factor (0.0 to 1.0)
-   * @param {Function} [options.onPhotoReady] - Callback when photo is successfully compressed: (type, result) => void
-   * @param {Function} [options.onError] - Callback on error: (type, error) => void
+   * @param {Function} [options.onPhotoReady] - Callback when photo is successfully compressed: (slot, result) => void
+   * @param {Function} [options.onPhotoRemoved] - Callback when photo is removed: (slot) => void
+   * @param {Function} [options.onError] - Callback on error: (slot, error) => void
    */
   constructor({
     container,
+    slots = ['groom', 'bride', 'couple', 'venue'],
     maxWidth = 1200,
     quality = 0.8,
     onPhotoReady = null,
@@ -29,17 +75,18 @@ export class PhotoUploadComponent {
       throw new Error('[PhotoUploadComponent] Valid container element is required.');
     }
 
+    this.slotIds = slots;
+    this.slots = PHOTO_SLOTS.filter(s => slots.includes(s.slot));
     this.maxWidth = maxWidth;
     this.quality = quality;
     this.onPhotoReady = onPhotoReady;
     this.onPhotoRemoved = onPhotoRemoved;
     this.onError = onError;
 
-    // Stores compressed result payloads per slot: 'couple' | 'venue'
-    this.state = {
-      couple: null,
-      venue: null
-    };
+    this.state = {};
+    for (const s of this.slotIds) {
+      this.state[s] = null;
+    }
 
     if (this.container) {
       this.render();
@@ -47,167 +94,98 @@ export class PhotoUploadComponent {
     }
   }
 
-  /**
-   * Render HTML Structure for both Couple and Venue photo upload slots
-   */
   render() {
     if (!this.container) return;
 
     this.container.innerHTML = `
       <div class="photo-upload-section" role="region" aria-label="Photo Upload & Optimization">
-        
-        <!-- Slot 1: Couple / Story Photo -->
-        <article class="photo-upload-card" data-slot="couple">
+        ${this.slots.map(conf => `
+        <!-- Slot: ${conf.slot} -->
+        <article class="photo-upload-card" data-slot="${conf.slot}">
           <header class="photo-upload-head">
             <h4 class="photo-upload-title">
-              <span>💑</span> Couple / Story Photo
+              <span>${conf.icon}</span> ${conf.title}
             </h4>
-            <span class="photo-upload-badge">Portrait (3:4)</span>
+            <span class="photo-upload-badge">${conf.badge}</span>
           </header>
 
+          <!-- Default Preview Avatar (Active when no custom photo uploaded) -->
+          <div class="photo-default-preview" data-slot="${conf.slot}">
+            <div class="photo-default-wrap">
+              <img class="photo-default-img" src="${conf.defaultImg}" alt="Default ${conf.title}">
+              <span class="photo-default-badge">Default Preview</span>
+            </div>
+            <p class="photo-default-hint">Shown automatically if no custom photo is uploaded.</p>
+          </div>
+
           <!-- Dropzone Area -->
-          <div class="photo-dropzone" data-slot="couple" tabindex="0" role="button" aria-label="Upload Couple Photo">
+          <div class="photo-dropzone" data-slot="${conf.slot}" tabindex="0" role="button" aria-label="Upload ${conf.title}">
             <input
               type="file"
               class="photo-dropzone__input"
-              data-slot="couple"
+              data-slot="${conf.slot}"
               accept="image/jpeg,image/png,image/webp,image/heic,image/avif"
-              aria-label="Select couple or story photograph"
+              aria-label="Select ${conf.title}"
             />
             <span class="photo-dropzone__icon" aria-hidden="true">📷</span>
-            <p class="photo-dropzone__prompt">Drag & drop or browse photo</p>
-            <p class="photo-dropzone__subtext">High-res portrait photos (JPG, PNG, WebP up to 25MB). Auto-compressed to ~180KB.</p>
+            <p class="photo-dropzone__prompt">${conf.prompt}</p>
+            <p class="photo-dropzone__subtext">${conf.subtext}</p>
           </div>
 
-          <!-- Preview & Compression Stats Container (Initially hidden) -->
-          <div class="photo-preview-slot" data-slot="couple" hidden>
-            <div class="photo-preview-wrap" data-aspect="portrait">
-              <span class="photo-preview-tag" id="couple-preview-tag">
+          <!-- Preview & Compression Stats Container (Initially hidden until uploaded) -->
+          <div class="photo-preview-slot" data-slot="${conf.slot}" hidden>
+            <div class="photo-preview-wrap" data-aspect="${conf.aspect}">
+              <span class="photo-preview-tag" id="${conf.slot}-preview-tag">
                 <span>⚡</span> Compressing...
               </span>
-              <img class="photo-preview-img" id="couple-preview-img" alt="Couple photo preview" />
-              <div class="photo-processing-overlay" id="couple-spinner">
+              <img class="photo-preview-img" id="${conf.slot}-preview-img" alt="${conf.title} preview" />
+              <div class="photo-processing-overlay" id="${conf.slot}-spinner">
                 <div class="photo-spinner"></div>
                 <span>Optimizing WebP...</span>
               </div>
             </div>
 
             <!-- Compression Analytics Bar -->
-            <div class="photo-stats-bar" id="couple-stats-bar">
+            <div class="photo-stats-bar" id="${conf.slot}-stats-bar">
               <div class="photo-stats-row">
                 <span class="photo-stats-label">Original File:</span>
-                <span class="photo-stats-value" id="couple-orig-size">—</span>
+                <span class="photo-stats-value" id="${conf.slot}-orig-size">—</span>
               </div>
               <div class="photo-stats-row">
                 <span class="photo-stats-label">Compressed WebP:</span>
-                <span class="photo-stats-value" id="couple-comp-size">—</span>
+                <span class="photo-stats-value" id="${conf.slot}-comp-size">—</span>
               </div>
               <div class="photo-stats-row">
-                <span class="photo-stats-label">Optimization:</span>
-                <span class="photo-stats-badge" id="couple-ratio">—</span>
+                <span class="photo-stats-label">Status:</span>
+                <span class="photo-stats-badge" id="${conf.slot}-ratio">Uploaded</span>
               </div>
             </div>
 
             <!-- Action Controls -->
             <div class="photo-actions-row">
-              <button type="button" class="photo-action-btn" data-action="replace" data-slot="couple">
+              <button type="button" class="photo-action-btn" data-action="replace" data-slot="${conf.slot}">
                 🔄 Replace Photo
               </button>
-              <button type="button" class="photo-action-btn photo-action-btn--danger" data-action="remove" data-slot="couple">
-                🗑️ Remove
+              <button type="button" class="photo-action-btn photo-action-btn--danger" data-action="remove" data-slot="${conf.slot}">
+                🗑️ Remove (Use Default)
               </button>
             </div>
           </div>
 
           <!-- Inline Error Banner -->
-          <div class="photo-error-banner" id="couple-error" hidden role="alert">
+          <div class="photo-error-banner" id="${conf.slot}-error" hidden role="alert">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
             <span class="photo-error-text"></span>
           </div>
         </article>
-
-        <!-- Slot 2: Venue / Banquet Photo -->
-        <article class="photo-upload-card" data-slot="venue">
-          <header class="photo-upload-head">
-            <h4 class="photo-upload-title">
-              <span>🏛️</span> Venue / Banquet Photo
-            </h4>
-            <span class="photo-upload-badge">Landscape (16:9)</span>
-          </header>
-
-          <!-- Dropzone Area -->
-          <div class="photo-dropzone" data-slot="venue" tabindex="0" role="button" aria-label="Upload Venue Photo">
-            <input
-              type="file"
-              class="photo-dropzone__input"
-              data-slot="venue"
-              accept="image/jpeg,image/png,image/webp,image/heic,image/avif"
-              aria-label="Select venue or banquet photograph"
-            />
-            <span class="photo-dropzone__icon" aria-hidden="true">🏰</span>
-            <p class="photo-dropzone__prompt">Drag & drop or browse photo</p>
-            <p class="photo-dropzone__subtext">Palace, Mandap, or Hall landscape photo. Auto-optimized to crisp 1200px WebP.</p>
-          </div>
-
-          <!-- Preview & Compression Stats Container (Initially hidden) -->
-          <div class="photo-preview-slot" data-slot="venue" hidden>
-            <div class="photo-preview-wrap" data-aspect="landscape">
-              <span class="photo-preview-tag" id="venue-preview-tag">
-                <span>⚡</span> Compressing...
-              </span>
-              <img class="photo-preview-img" id="venue-preview-img" alt="Venue photo preview" />
-              <div class="photo-processing-overlay" id="venue-spinner">
-                <div class="photo-spinner"></div>
-                <span>Optimizing WebP...</span>
-              </div>
-            </div>
-
-            <!-- Compression Analytics Bar -->
-            <div class="photo-stats-bar" id="venue-stats-bar">
-              <div class="photo-stats-row">
-                <span class="photo-stats-label">Original File:</span>
-                <span class="photo-stats-value" id="venue-orig-size">—</span>
-              </div>
-              <div class="photo-stats-row">
-                <span class="photo-stats-label">Compressed WebP:</span>
-                <span class="photo-stats-value" id="venue-comp-size">—</span>
-              </div>
-              <div class="photo-stats-row">
-                <span class="photo-stats-label">Optimization:</span>
-                <span class="photo-stats-badge" id="venue-ratio">—</span>
-              </div>
-            </div>
-
-            <!-- Action Controls -->
-            <div class="photo-actions-row">
-              <button type="button" class="photo-action-btn" data-action="replace" data-slot="venue">
-                🔄 Replace Photo
-              </button>
-              <button type="button" class="photo-action-btn photo-action-btn--danger" data-action="remove" data-slot="venue">
-                🗑️ Remove
-              </button>
-            </div>
-          </div>
-
-          <!-- Inline Error Banner -->
-          <div class="photo-error-banner" id="venue-error" hidden role="alert">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            <span class="photo-error-text"></span>
-          </div>
-        </article>
-
+        `).join('')}
       </div>
     `;
   }
 
-  /**
-   * Bind DOM event listeners with drag and drop delegation
-   * @private
-   */
   _attachEvents() {
     if (!this.container) return;
 
-    // 1. File change listener
     this.container.addEventListener('change', (e) => {
       const input = e.target.closest('.photo-dropzone__input');
       if (!input || !input.files || input.files.length === 0) return;
@@ -217,7 +195,6 @@ export class PhotoUploadComponent {
       this.processFile(slot, file);
     });
 
-    // 2. Drag & Drop visual states
     this.container.addEventListener('dragover', (e) => {
       const dropzone = e.target.closest('.photo-dropzone');
       if (dropzone) {
@@ -247,7 +224,6 @@ export class PhotoUploadComponent {
       }
     });
 
-    // 3. Action Buttons (Replace / Remove)
     this.container.addEventListener('click', (e) => {
       const actionBtn = e.target.closest('[data-action]');
       if (!actionBtn) return;
@@ -267,16 +243,9 @@ export class PhotoUploadComponent {
     });
   }
 
-  /**
-   * Process a selected file: instant local preview + background canvas compression
-   * 
-   * @param {string} slot - 'couple' | 'venue'
-   * @param {File} rawFile
-   */
   async processFile(slot, rawFile) {
     this._clearError(slot);
 
-    // 1. Fast Validation
     try {
       validateImageFile(rawFile);
     } catch (err) {
@@ -286,14 +255,15 @@ export class PhotoUploadComponent {
     }
 
     const dropzone = this.container.querySelector(`.photo-dropzone[data-slot="${slot}"]`);
+    const defaultPreview = this.container.querySelector(`.photo-default-preview[data-slot="${slot}"]`);
     const previewSlot = this.container.querySelector(`.photo-preview-slot[data-slot="${slot}"]`);
     const previewImg = document.getElementById(`${slot}-preview-img`);
     const spinner = document.getElementById(`${slot}-spinner`);
     const tag = document.getElementById(`${slot}-preview-tag`);
 
-    // 2. Instant Local Preview (0ms latency via raw Object URL before compression)
     const instantLocalUrl = URL.createObjectURL(rawFile);
     if (dropzone) dropzone.hidden = true;
+    if (defaultPreview) defaultPreview.hidden = true;
     if (previewSlot) previewSlot.hidden = false;
     if (previewImg) {
       previewImg.src = instantLocalUrl;
@@ -305,29 +275,22 @@ export class PhotoUploadComponent {
       tag.innerHTML = '<span>⚡</span> Compressing...';
     }
 
-    // 3. Run HTML5 Canvas Downscale & WebP Compression
     try {
       const result = await compressImage(rawFile, this.maxWidth, this.quality);
-
-      // Clean up preliminary raw object URL
       URL.revokeObjectURL(instantLocalUrl);
 
-      // Store in component state
       this.state[slot] = result;
 
-      // Update image src to the final compressed WebP blob URL
       if (previewImg) {
         previewImg.src = result.previewUrl;
       }
 
-      // Hide spinner & set success tag
       if (spinner) spinner.style.display = 'none';
       if (tag) {
         tag.className = 'photo-preview-tag is-success';
         tag.innerHTML = `<span>✓</span> WebP (${result.width}×${result.height})`;
       }
 
-      // Populate live compression analytics
       const origEl = document.getElementById(`${slot}-orig-size`);
       const compEl = document.getElementById(`${slot}-comp-size`);
       const ratioEl = document.getElementById(`${slot}-ratio`);
@@ -351,7 +314,6 @@ export class PhotoUploadComponent {
         this.onPhotoReady(slot, result);
       }
     } catch (err) {
-      // Clean up preliminary URL
       URL.revokeObjectURL(instantLocalUrl);
       this.resetSlot(slot);
       this._showError(slot, err.message || 'Image compression failed.');
@@ -359,10 +321,6 @@ export class PhotoUploadComponent {
     }
   }
 
-  /**
-   * Reset slot back to clean dropzone state
-   * @param {string} slot - 'couple' | 'venue'
-   */
   resetSlot(slot) {
     if (this.state[slot]?.previewUrl) {
       URL.revokeObjectURL(this.state[slot].previewUrl);
@@ -370,6 +328,7 @@ export class PhotoUploadComponent {
     this.state[slot] = null;
 
     const dropzone = this.container.querySelector(`.photo-dropzone[data-slot="${slot}"]`);
+    const defaultPreview = this.container.querySelector(`.photo-default-preview[data-slot="${slot}"]`);
     const previewSlot = this.container.querySelector(`.photo-preview-slot[data-slot="${slot}"]`);
     const previewImg = document.getElementById(`${slot}-preview-img`);
     const input = this.container.querySelector(`.photo-dropzone__input[data-slot="${slot}"]`);
@@ -381,27 +340,24 @@ export class PhotoUploadComponent {
     }
     if (previewSlot) previewSlot.hidden = true;
     if (dropzone) dropzone.hidden = false;
+    if (defaultPreview) defaultPreview.hidden = false;
     this._clearError(slot);
     if (typeof this.onPhotoRemoved === 'function') {
       this.onPhotoRemoved(slot);
     }
   }
 
-  /**
-   * Populate an existing saved photo (e.g. from localStorage/sessionStorage)
-   * @param {string} slot - 'couple' | 'venue'
-   * @param {string} url - Image data URL or source URL
-   * @param {string} [label='Saved Photo']
-   */
   loadExisting(slot, url, label = 'Saved Photo') {
     if (!url || !this.container) return;
     const dropzone = this.container.querySelector(`.photo-dropzone[data-slot="${slot}"]`);
+    const defaultPreview = this.container.querySelector(`.photo-default-preview[data-slot="${slot}"]`);
     const previewSlot = this.container.querySelector(`.photo-preview-slot[data-slot="${slot}"]`);
     const previewImg = document.getElementById(`${slot}-preview-img`);
     const spinner = document.getElementById(`${slot}-spinner`);
     const tag = document.getElementById(`${slot}-preview-tag`);
 
     if (dropzone) dropzone.hidden = true;
+    if (defaultPreview) defaultPreview.hidden = true;
     if (previewSlot) previewSlot.hidden = false;
     if (previewImg) {
       previewImg.src = url;
@@ -419,20 +375,10 @@ export class PhotoUploadComponent {
     };
   }
 
-  /**
-   * Get compressed file ready for FormData append
-   * @param {string} slot - 'couple' | 'venue'
-   * @returns {File|null}
-   */
   getFile(slot) {
     return this.state[slot]?.file ?? null;
   }
 
-  /**
-   * Get full compression report payload
-   * @param {string} slot
-   * @returns {Object|null}
-   */
   getResult(slot) {
     return this.state[slot] ?? null;
   }
@@ -452,19 +398,4 @@ export class PhotoUploadComponent {
       errorBanner.hidden = true;
     }
   }
-
-  /**
-   * Clean up all generated Object URLs and DOM listeners
-   */
-  destroy() {
-    ['couple', 'venue'].forEach(slot => {
-      if (this.state[slot]?.previewUrl) {
-        URL.revokeObjectURL(this.state[slot].previewUrl);
-      }
-    });
-    if (this.container) {
-      this.container.innerHTML = '';
-    }
-  }
 }
-

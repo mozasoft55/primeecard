@@ -5,6 +5,8 @@ import {
   DEFAULT_STYLES,
   DEFAULT_THEMES,
   DEFAULT_EVENTS,
+  STANDARDIZED_EVENTS,
+  getEventImage,
   buildUpiUri,
   formatINR,
   validateCashRequest,
@@ -39,9 +41,9 @@ let busy = false;
 function persistUploadedPhoto(slot, result) {
   const dataUrl = result.dataUrl || result.previewUrl || '';
   if (!dataUrl) return;
-  const storageKey = slot === 'couple' ? 'wedding-couple-photo' : 'wedding-venue-photo';
-  const legacyKey = slot === 'couple' ? 'wedding_couple_photo' : 'wedding_venue_photo';
-  const onboardKey = slot === 'couple' ? 'onboard-couple-photo' : 'onboard-venue-photo';
+  const storageKey = `wedding-${slot}-photo`;
+  const legacyKey = `wedding_${slot}_photo`;
+  const onboardKey = `onboard-${slot}-photo`;
 
   try {
     localStorage.setItem(storageKey, dataUrl);
@@ -61,9 +63,9 @@ function persistUploadedPhoto(slot, result) {
 }
 
 function clearUploadedPhoto(slot) {
-  const storageKey = slot === 'couple' ? 'wedding-couple-photo' : 'wedding-venue-photo';
-  const legacyKey = slot === 'couple' ? 'wedding_couple_photo' : 'wedding_venue_photo';
-  const onboardKey = slot === 'couple' ? 'onboard-couple-photo' : 'onboard-venue-photo';
+  const storageKey = `wedding-${slot}-photo`;
+  const legacyKey = `wedding_${slot}_photo`;
+  const onboardKey = `onboard-${slot}-photo`;
 
   try {
     localStorage.removeItem(storageKey);
@@ -94,8 +96,12 @@ if (uploaderContainer) {
     });
 
     try {
+      const savedGroom = localStorage.getItem('wedding-groom-photo') || sessionStorage.getItem('wedding-groom-photo');
+      const savedBride = localStorage.getItem('wedding-bride-photo') || sessionStorage.getItem('wedding-bride-photo');
       const savedCouple = localStorage.getItem('wedding-couple-photo') || sessionStorage.getItem('wedding-couple-photo');
       const savedVenue = localStorage.getItem('wedding-venue-photo') || sessionStorage.getItem('wedding-venue-photo');
+      if (savedGroom) photoUploader.loadExisting('groom', savedGroom, 'Saved');
+      if (savedBride) photoUploader.loadExisting('bride', savedBride, 'Saved');
       if (savedCouple) photoUploader.loadExisting('couple', savedCouple, 'Saved');
       if (savedVenue) photoUploader.loadExisting('venue', savedVenue, 'Saved');
     } catch (_) {}
@@ -292,10 +298,32 @@ function renderEvents() {
     eventList.innerHTML = '<p class="event-empty">No programme events yet. Add at least one event to continue.</p>';
     return;
   }
-  eventList.innerHTML = eventRows.map((event, index) => `
+  eventList.innerHTML = eventRows.map((event, index) => {
+    const curName = (event.event_name || '').trim();
+    const isCustom = Boolean(curName && !STANDARDIZED_EVENTS.some(se => se.name.toLowerCase() === curName.toLowerCase()));
+    const eventImg = event.image || getEventImage(curName);
+
+    const options = [
+      '<option value="">-- Select Event Name --</option>',
+      ...STANDARDIZED_EVENTS.map(se => {
+        const sel = se.name.toLowerCase() === curName.toLowerCase() ? ' selected' : '';
+        return `<option value="${escapeHtml(se.name)}"${sel}>${escapeHtml(se.name)} (${escapeHtml(se.tradition)})</option>`;
+      }),
+      `<option value="__custom__"${isCustom ? ' selected' : ''}>✍ Custom Type / Enter Your Own...</option>`
+    ].join('');
+
+    return `
     <article class="event-card" data-event-card="${index}">
       <div class="event-card-head">
-        <input aria-label="Event ${index + 1} name" data-event-index="${index}" data-event-field="name" value="${escapeHtml(event.event_name)}" maxlength="100" placeholder="Event name" required>
+        <div class="event-select-wrap">
+          <select class="event-dropdown" aria-label="Event ${index + 1} type" data-event-index="${index}" data-event-field="select_name" required>
+            ${options}
+          </select>
+          <input class="event-custom-input" aria-label="Custom event name" data-event-index="${index}" data-event-field="custom_name" value="${isCustom ? escapeHtml(curName) : ''}" maxlength="100" placeholder="Enter custom ceremony name..." ${isCustom ? '' : 'style="display:none;"'}>
+        </div>
+        <div class="event-thumb-preview" title="Linked ceremony image">
+          <img src="../assets/${escapeHtml(eventImg)}" alt="" class="event-thumb-img" onerror="this.src='../assets/template-06-phere.jpg'">
+        </div>
         <button type="button" class="event-action" data-move="${index}" data-direction="-1" aria-label="Move event up" ${index === 0 ? 'disabled' : ''}>↑</button>
         <button type="button" class="event-action" data-move="${index}" data-direction="1" aria-label="Move event down" ${index === eventRows.length - 1 ? 'disabled' : ''}>↓</button>
         <button type="button" class="event-action" data-remove="${index}" aria-label="Remove event">Remove</button>
@@ -305,19 +333,28 @@ function renderEvents() {
         <label class="field">Time${buildTimePicker12h(event.event_time, `event-time`, index)}</label>
         <label class="field field-wide">Notes<input data-event-index="${index}" data-event-field="note" value="${escapeHtml(event.note)}" maxlength="500" placeholder="Optional notes"></label>
       </div>
-    </article>`).join('');
+    </article>`;
+  }).join('');
 }
 
 function readEventInputs() {
   eventRows = eventRows.map((event, index) => {
+    const selectEl = eventList.querySelector(`[data-event-index="${index}"][data-event-field="select_name"]`);
+    const customEl = eventList.querySelector(`[data-event-index="${index}"][data-event-field="custom_name"]`);
+    const selVal = selectEl?.value ?? '';
+    const nameVal = selVal === '__custom__' ? (customEl?.value.trim() || '') : selVal;
     const getValue = field => eventList.querySelector(`[data-event-index="${index}"][data-event-field="${field}"]`)?.value ?? '';
     const getTimePart = part => eventList.querySelector(`[data-time-prefix="event-time"][data-event-index="${index}"][data-time-part="${part}"]`)?.value ?? '';
     const eventTime24 = to24h(getTimePart('hour'), getTimePart('minute'), getTimePart('ampm')) || event.event_time || '';
+    const finalName = nameVal || event.event_name;
+    const eventImg = getEventImage(finalName);
+
     return {
-      event_name: getValue('name') || event.event_name,
+      event_name: finalName,
       event_date: getValue('date') || event.event_date,
       event_time: eventTime24,
-      note: getValue('note')
+      note: getValue('note'),
+      image: eventImg
     };
   });
 }
@@ -514,6 +551,16 @@ function collectInput(overrideData = null) {
   readEventInputs();
   const formData = overrideData || Object.fromEntries(new FormData(form).entries());
   if (photoUploader) {
+    if (!formData.groom_photo) {
+      const res = photoUploader.getResult('groom');
+      const stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-groom-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-groom-photo') : null);
+      if (res?.dataUrl || res?.previewUrl || stored) formData.groom_photo = res?.dataUrl || res?.previewUrl || stored;
+    }
+    if (!formData.bride_photo) {
+      const res = photoUploader.getResult('bride');
+      const stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-bride-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-bride-photo') : null);
+      if (res?.dataUrl || res?.previewUrl || stored) formData.bride_photo = res?.dataUrl || res?.previewUrl || stored;
+    }
     if (!formData.couple_photo) {
       const res = photoUploader.getResult('couple');
       const stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('wedding-couple-photo') : null) || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('wedding-couple-photo') : null);
@@ -708,6 +755,46 @@ backButton.addEventListener('click', () => {
   renderStep();
 });
 
+/* Event Dropdown Listeners */
+eventList.addEventListener('change', e => {
+  const select = e.target.closest('[data-event-field="select_name"]');
+  if (!select) return;
+  const idx = Number(select.dataset.eventIndex);
+  const customInput = eventList.querySelector(`[data-event-index="${idx}"][data-event-field="custom_name"]`);
+  const thumbImg = eventList.querySelector(`[data-event-card="${idx}"] .event-thumb-img`);
+  
+  if (select.value === '__custom__') {
+    if (customInput) {
+      customInput.style.display = 'block';
+      customInput.focus();
+    }
+  } else {
+    if (customInput) {
+      customInput.style.display = 'none';
+      customInput.value = '';
+    }
+    const matchedImg = getEventImage(select.value);
+    if (thumbImg) thumbImg.src = `../assets/${matchedImg}`;
+    if (eventRows[idx]) {
+      eventRows[idx].event_name = select.value;
+      eventRows[idx].image = matchedImg;
+    }
+  }
+});
+
+eventList.addEventListener('input', e => {
+  const custom = e.target.closest('[data-event-field="custom_name"]');
+  if (!custom) return;
+  const idx = Number(custom.dataset.eventIndex);
+  const thumbImg = eventList.querySelector(`[data-event-card="${idx}"] .event-thumb-img`);
+  const matchedImg = getEventImage(custom.value);
+  if (thumbImg) thumbImg.src = `../assets/${matchedImg}`;
+  if (eventRows[idx]) {
+    eventRows[idx].event_name = custom.value;
+    eventRows[idx].image = matchedImg;
+  }
+});
+
 document.getElementById('add-event').addEventListener('click', () => {
   readEventInputs();
   if (eventRows.length >= 40) return showError('A maximum of 40 programme events is allowed.');
@@ -814,13 +901,23 @@ form.addEventListener('submit', async event => {
   showError('');
 
   try {
+    let groomPhoto = '';
+    let bridePhoto = '';
     let couplePhoto = '';
     let venuePhoto = '';
 
     if (photoUploader) {
+      const groomFile = photoUploader.getFile('groom');
+      const brideFile = photoUploader.getFile('bride');
       const coupleFile = photoUploader.getFile('couple');
       const venueFile = photoUploader.getFile('venue');
 
+      if (groomFile) {
+        groomPhoto = await uploadPhotoToSupabase(groomFile, 'groom');
+      }
+      if (brideFile) {
+        bridePhoto = await uploadPhotoToSupabase(brideFile, 'bride');
+      }
       if (coupleFile) {
         couplePhoto = await uploadPhotoToSupabase(coupleFile, 'couple');
       }
@@ -830,6 +927,8 @@ form.addEventListener('submit', async event => {
     }
 
     const rawFormData = Object.fromEntries(new FormData(form).entries());
+    if (groomPhoto) rawFormData.groom_photo = groomPhoto;
+    if (bridePhoto) rawFormData.bride_photo = bridePhoto;
     if (couplePhoto) rawFormData.couple_photo = couplePhoto;
     if (venuePhoto) rawFormData.venue_photo = venuePhoto;
 
@@ -880,6 +979,24 @@ form.addEventListener('submit', async event => {
     sessionStorage.setItem('customer-dashboard-token', currentDashboardToken);
 
     // Persist photo URLs into storage for instant access across dashboard, studio, and guest preview
+    if (groomPhoto) {
+      try {
+        localStorage.setItem('wedding-groom-photo', groomPhoto);
+        localStorage.setItem('wedding_groom_photo', groomPhoto);
+        localStorage.setItem('wedding_groom_photo_' + currentOrderReference, groomPhoto);
+      } catch (e) {}
+      sessionStorage.setItem('wedding-groom-photo', groomPhoto);
+      sessionStorage.setItem('onboard-groom-photo', groomPhoto);
+    }
+    if (bridePhoto) {
+      try {
+        localStorage.setItem('wedding-bride-photo', bridePhoto);
+        localStorage.setItem('wedding_bride_photo', bridePhoto);
+        localStorage.setItem('wedding_bride_photo_' + currentOrderReference, bridePhoto);
+      } catch (e) {}
+      sessionStorage.setItem('wedding-bride-photo', bridePhoto);
+      sessionStorage.setItem('onboard-bride-photo', bridePhoto);
+    }
     if (couplePhoto) {
       try {
         localStorage.setItem('wedding-couple-photo', couplePhoto);

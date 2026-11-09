@@ -1,9 +1,48 @@
+export const STANDARDIZED_EVENTS = Object.freeze([
+  { name: 'Gaye Holud', tradition: 'Bengali Hindu', image: 'template-06-gaye-holud.jpg', time: '10:00' },
+  { name: 'Aashirbad', tradition: 'Bengali Hindu', image: 'template-06-ashirbad.jpg', time: '12:00' },
+  { name: 'Biye / Shubho Bibaho', tradition: 'Bengali Hindu', image: 'template-06-shubho-bibaho.jpg', time: '19:30' },
+  { name: 'Bou Bhaat', tradition: 'Bengali Hindu', image: 'template-06-boubhat.jpg', time: '19:00' },
+  { name: 'Haldi', tradition: 'Hindu / North Indian', image: 'template-06-haldi.jpg', time: '10:00' },
+  { name: 'Mehdi', tradition: 'Hindu / Muslim', image: 'template-06-mehendi.jpg', time: '17:00' },
+  { name: 'Sangeet', tradition: 'Hindu / North Indian', image: 'template-06-sangeet.jpg', time: '19:00' },
+  { name: 'Milaad Sharif', tradition: 'Muslim', image: 'template-06-milad-sharif.jpg', time: '18:00' },
+  { name: 'Nikah', tradition: 'Muslim', image: 'template-06-milad-sharif.jpg', time: '20:00' },
+  { name: 'Walima', tradition: 'Muslim', image: 'template-06-reception.jpg', time: '19:30' },
+  { name: 'Barat', tradition: 'Hindu / Muslim', image: 'template-06-baraat.jpg', time: '18:30' },
+  { name: 'Phere / Varmala', tradition: 'Hindu', image: 'template-06-phere.jpg', time: '20:30' },
+  { name: 'Reception', tradition: 'Universal', image: 'template-06-reception.jpg', time: '19:30' },
+  { name: 'Ring Ceremony / Engagement', tradition: 'Universal', image: 'template-06-jaimala.jpg', time: '18:00' },
+  { name: 'Cocktail Evening', tradition: 'Modern', image: 'template-06-sangeet.jpg', time: '20:00' },
+  { name: 'Anand Karaj', tradition: 'Sikh', image: 'template-06-jaimala.jpg', time: '10:30' }
+]);
+
+export function getEventImage(eventName) {
+  if (!eventName) return 'template-06-phere.jpg';
+  const cleanName = String(eventName).trim().toLowerCase();
+  const match = STANDARDIZED_EVENTS.find(e => e.name.toLowerCase() === cleanName);
+  if (match) return match.image;
+  if (/gaye|holud/i.test(cleanName)) return 'template-06-gaye-holud.jpg';
+  if (/ashirbad|aashirbad/i.test(cleanName)) return 'template-06-ashirbad.jpg';
+  if (/biye|bibaho|vivah|wedding|shaadi/i.test(cleanName)) return 'template-06-shubho-bibaho.jpg';
+  if (/bou\s*bhaat|boubhat/i.test(cleanName)) return 'template-06-boubhat.jpg';
+  if (/haldi|ubtan|pithi/i.test(cleanName)) return 'template-06-haldi.jpg';
+  if (/mehdi|mehendi|henna/i.test(cleanName)) return 'template-06-mehendi.jpg';
+  if (/sangeet|garba|dandiya/i.test(cleanName)) return 'template-06-sangeet.jpg';
+  if (/milaad|milad|nikah/i.test(cleanName)) return 'template-06-milad-sharif.jpg';
+  if (/walima/i.test(cleanName)) return 'template-06-reception.jpg';
+  if (/barat|baraat/i.test(cleanName)) return 'template-06-baraat.jpg';
+  if (/phere|saat\s*paak|sindoor/i.test(cleanName)) return 'template-06-phere.jpg';
+  if (/reception|preeti\s*bhoj|dinner/i.test(cleanName)) return 'template-06-reception.jpg';
+  if (/ring|engagement|sagai/i.test(cleanName)) return 'template-06-jaimala.jpg';
+  return 'template-06-phere.jpg';
+}
+
 export const DEFAULT_EVENTS = Object.freeze([
-  { event_name: 'Milaad Sharif', event_time: '21:00' },
-  { event_name: 'Rasm-e-Haldi', event_time: '06:00' },
-  { event_name: 'Rasm-e-Mehndi', event_time: '18:00' },
-  { event_name: 'Nikah', event_time: '21:30' },
-  { event_name: 'Rukhsati', event_time: '08:00' }
+  { event_name: 'Haldi', event_time: '10:00', image: 'template-06-haldi.jpg' },
+  { event_name: 'Mehdi', event_time: '17:00', image: 'template-06-mehendi.jpg' },
+  { event_name: 'Biye / Shubho Bibaho', event_time: '19:30', image: 'template-06-shubho-bibaho.jpg' },
+  { event_name: 'Reception', event_time: '19:30', image: 'template-06-reception.jpg' }
 ]);
 
 export const AVAILABLE_TEMPLATES = Object.freeze([
@@ -104,12 +143,16 @@ export function validateOnboarding(input) {
     if (!name || name.length > 100) errors[`event_${index}_name`] = 'Each event needs a name (up to 100 characters).';
     if (!isIsoDate(date)) errors[`event_${index}_date`] = 'Each event needs a valid date.';
     if (time && !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) errors[`event_${index}_time`] = 'Please select a valid time.';
-    return {
+    const item = {
       event_name: name.slice(0, 100),
       event_date: date,
       event_time: time,
       note: String(event.note ?? '').trim().slice(0, 500)
     };
+    if (event.image || event.event_image) {
+      item.image = String(event.image || event.event_image).trim().slice(0, 300);
+    }
+    return item;
   });
 
   const mapUrl = text('map_url', 2000);
@@ -149,6 +192,8 @@ export function validateOnboarding(input) {
     venue: text('venue', 180),
     address: text('address', 500),
     map_url: mapUrl,
+    groom_photo: text('groom_photo', 500000),
+    bride_photo: text('bride_photo', 500000),
     couple_photo: text('couple_photo', 500000),
     venue_photo: text('venue_photo', 500000),
     template_style: template,

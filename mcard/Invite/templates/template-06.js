@@ -27,6 +27,7 @@ const safeImg = u => {
   if (/^https?:\/\/[^\s'"<>]+$/i.test(s)) return s;
   if (/^blob:[^\s'"<>]+$/i.test(s)) return s;
   if (/^\.?\/?assets\/[^\s'"<>]+$/i.test(s)) return s;
+  if (/^[a-z0-9_-]+\.(jpg|jpeg|png|webp|svg)$/i.test(s)) return `./assets/${s}`;
   if (s.startsWith('data:image/') && s.includes(';base64,')) {
     if (!/[\s'"<>]/.test(s.slice(0, 50))) return s;
   }
@@ -231,14 +232,21 @@ function themeVars(w) {
 
 /* ---------- Content & Icon Helpers ---------- */
 const KINDS = [
-  { re: /haldi|holud|ubtan|pithi|gaye/i, icon: 'flower', asset: 'template-06-haldi.jpg', dress: { en: 'Yellow & Marigold', bn: 'হলুদ ও গাঁদা রঙ' }, c: '#f4c542' },
+  { re: /gaye\s*holud/i, icon: 'flower', asset: 'template-06-gaye-holud.jpg', dress: { en: 'Yellow & Marigold', bn: 'হলুদ ও গাঁদা রঙ' }, c: '#f4c542' },
+  { re: /biye|shubho\s*bibaho/i, icon: 'kalash', asset: 'template-06-shubho-bibaho.jpg', dress: { en: 'Red, White & Gold', bn: 'লাল, সাদা ও সোনালি' }, c: '#b5121b' },
+  { re: /bou\s*bhat|boubhat|bhaat/i, icon: 'feast', asset: 'template-06-boubhat.jpg', dress: { en: 'Banarasi & Dhuti Elegance', bn: 'বেনারসি ও ধুতি' }, c: '#8e2a45' },
+  { re: /ashirbad|aashirbad/i, icon: 'garland', asset: 'template-06-ashirbad.jpg', dress: { en: 'Traditional Silk', bn: 'ঐতিহ্যবাহী রেশম' }, c: '#d8b56e' },
+  { re: /haldi|ubtan|pithi/i, icon: 'flower', asset: 'template-06-haldi.jpg', dress: { en: 'Yellow & Marigold', bn: 'হলুদ ও গাঁদা রঙ' }, c: '#f4c542' },
+  { re: /phere|saat\s*paak|sampradan|sindoor|vivah|wedding|ceremony|kanyadan/i, icon: 'kalash', asset: 'template-06-phere.jpg', dress: { en: 'Red, White & Gold', bn: 'লাল, সাদা ও সোনালি' }, c: '#b5121b' },
+  { re: /reception|dinner|bhoj|feast/i, icon: 'feast', asset: 'template-06-reception.jpg', dress: { en: 'Banarasi & Formal Elegance', bn: 'জমকালো আনুষ্ঠানিক পোশাক' }, c: '#8e2a45' },
   { re: /mehendi|mehndi|henna/i, icon: 'leaf', asset: 'template-06-mehendi.jpg', dress: { en: 'Green & Pastels', bn: 'সবুজ ও হালকা রঙ' }, c: '#3f8f3a' },
   { re: /sangeet|cocktail|music|dhak|dandiya|garba/i, icon: 'music', asset: 'template-06-sangeet.jpg', dress: { en: 'Festive & Colourful', bn: 'উৎসবের রঙিন পোশাক' }, c: '#7a2a6a' },
-  { re: /aiburo|aibhat|puja|pujo|shanti|ganesh|nandimukh|vrata/i, icon: 'lamp', asset: 'template-06-card-art.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#e9d9a6' },
-  { re: /mala\s*badal|jaimala|varmala|engagement|sagai|tilak|ring|ashirbad|aashirbad/i, icon: 'garland', asset: 'template-06-jaimala.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#d8b56e' },
-  { re: /phere|saat\s*paak|sampradan|sindoor|vivah|biye|bibaho|wedding|ceremony|kanyadan/i, icon: 'kalash', asset: 'template-06-phere.jpg', dress: { en: 'Red, White & Gold', bn: 'লাল, সাদা ও সোনালি' }, c: '#b5121b' },
-  { re: /reception|bou\s*bhat|boubhat|dinner|bhoj|feast|walima/i, icon: 'feast', asset: 'template-06-reception.jpg', dress: { en: 'Formal Elegance', bn: 'অভিজাত পোশাক' }, c: '#8e2a45' },
-  { re: /baraat|bor\s*boron|boron/i, icon: 'lamp', asset: 'template-06-baraat.jpg', dress: { en: 'Royal Festive', bn: 'রাজকীয় উৎসব' }, c: '#c8281e' }
+  { re: /milaad|milad|nikah/i, icon: 'lamp', asset: 'template-06-milad-sharif.jpg', dress: { en: 'Traditional Islamic', bn: 'ঐতিহ্যবাহী পোশাক' }, c: '#2e7d32' },
+  { re: /walima/i, icon: 'feast', asset: 'template-06-boubhat.jpg', dress: { en: 'Royal Reception', bn: 'ওয়ালিমা উৎসব' }, c: '#8e2a45' },
+  { re: /baraat|bor\s*boron|boron/i, icon: 'lamp', asset: 'template-06-baraat.jpg', dress: { en: 'Royal Festive', bn: 'রাজকীয় উৎসব' }, c: '#c8281e' },
+  { re: /jaimala|varmala|mala\s*badal/i, icon: 'garland', asset: 'template-06-jaimala.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#d8b56e' },
+  { re: /anand\s*karaj/i, icon: 'kalash', asset: 'template-06-phere.jpg', dress: { en: 'Traditional Sikh', bn: 'ঐতিহ্যবাহী আনন্দ কারজ' }, c: '#b5121b' },
+  { re: /aiburo|aibhat|puja|pujo|shanti|ganesh|nandimukh|vrata/i, icon: 'lamp', asset: 'template-06-card-art.jpg', dress: { en: 'Traditional', bn: 'ঐতিহ্যবাহী' }, c: '#e9d9a6' }
 ];
 const DEFAULT_KIND = { icon: 'flower', asset: 'template-06-phere.jpg', dress: null, c: '#d9b8a8' };
 const kindOf = name => KINDS.find(k => k.re.test(name)) || DEFAULT_KIND;
@@ -845,14 +853,24 @@ textarea.t9-input{height:110px;padding:12px 16px;resize:none;line-height:1.5}
 /* ---------- Render Function ---------- */
 export default function render({ guest, wedding, events = [] } = {}) {
   const w = wedding || {};
+  const storedBride = getStoredPhoto('wedding-bride-photo') || getStoredPhoto('wedding_bride_photo') || getStoredPhoto('onboard-bride-photo');
+  const storedGroom = getStoredPhoto('wedding-groom-photo') || getStoredPhoto('wedding_groom_photo') || getStoredPhoto('onboard-groom-photo');
   const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
-  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
+  const storedVenue = getStoredPhoto('wedding-venue-photo')
+    || getStoredPhoto('wedding_venue_photo')
+    || getStoredPhoto('onboard-venue-photo')
+    || getStoredPhoto('wedding-banquet-photo')
+    || getStoredPhoto('wedding_banquet_photo')
+    || getStoredPhoto('onboard-banquet-photo')
+    || getStoredPhoto('venue_photo')
+    || getStoredPhoto('banquet_photo');
   const assetBase = clean(w.asset_base) || './assets/';
 
   const defaultBengaliEvents = [
-    { event_name: 'Gaye Holud & Mehendi', event_name_bn: 'গায়ে হলুদ ও মেহেন্দি', event_date: clean(w.date) || '2026-12-04', event_time: '17:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Traditional turmeric ceremony, vibrant alpana, music and blessings.', description_bn: 'ঐতিহ্যবাহী গায়ে হলুদ, আলপনা, সঙ্গীত ও আশীর্বাদ।' },
-    { event_name: 'Shubho Bibaho & Phere', event_name_bn: 'শুভ বিবাহ ও সাতপাক', event_date: clean(w.date) || '2026-12-05', event_time: clean(w.time) || '19:00', venue: clean(w.venue) || 'Royal Mandap Grounds', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'রয়্যাল মণ্ডপ প্রাঙ্গণ', description: 'Sacred Vedic wedding vows, Shubho Drishti, Mala Badal and Saat Paak.', description_bn: 'শুভদৃষ্টি, মালাবদল, সম্প্রদান এবং পবিত্র সাতপাক।' },
-    { event_name: 'Preeti Bhoj & Reception', event_name_bn: 'প্রীতিভোজ ও সংবর্ধনা', event_date: clean(w.date) || '2026-12-06', event_time: '19:30', venue: clean(w.venue) || 'Grand Imperial Palace', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'গ্র্যান্ড ইম্পেরিয়াল প্যালেস', description: 'Grand dinner, royal feast, musical evening and heartfelt celebration.', description_bn: 'রাজকীয় প্রীতিভোজ, সঙ্গীত সন্ধ্যা ও প্রাণবন্ত আনন্দ সম্মিলন।' }
+    { event_name: 'Aashirbad & Blessings', event_name_bn: 'আশীর্বাদ অনুষ্ঠান', event_date: clean(w.date) || '2026-12-03', event_time: '11:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Elderly blessings with dhan-durba, gold ornaments and traditional sweets.', description_bn: 'ধান-দূর্বা, সোনার গয়না ও ঐতিহ্যবাহী মিষ্টি সহযোগে গুরুজনদের শুভ আশীর্বাদ।' },
+    { event_name: 'Gaye Holud & Tattva', event_name_bn: 'গায়ে হলুদ ও তত্ত্ব', event_date: clean(w.date) || '2026-12-04', event_time: '17:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Traditional turmeric ceremony, vibrant alpana, music and blessings.', description_bn: 'ঐতিহ্যবাহী গায়ে হলুদ, আলপনা, সঙ্গীত ও তত্ত্ব আদান-প্রদান।' },
+    { event_name: 'Shubho Bibaho & Saat Paak', event_name_bn: 'শুভ বিবাহ ও সাতপাক', event_date: clean(w.date) || '2026-12-05', event_time: clean(w.time) || '19:00', venue: clean(w.venue) || 'Royal Mandap Grounds', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'রয়্যাল মণ্ডপ প্রাঙ্গণ', description: 'Sacred Vedic wedding vows, Shubho Drishti, Mala Badal and Saat Paak.', description_bn: 'শুভদৃষ্টি, মালাবদল, সম্প্রদান এবং পবিত্র সাতপাক।' },
+    { event_name: 'Bou Bhaat & Reception', event_name_bn: 'বৌভাত ও প্রীতিভোজ', event_date: clean(w.date) || '2026-12-06', event_time: '19:30', venue: clean(w.venue) || 'Grand Imperial Palace', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'গ্র্যান্ড ইম্পেরিয়াল প্যালেস', description: 'Grand dinner, royal feast, musical evening and heartfelt celebration.', description_bn: 'ভাত-কাপড়ের অনুষ্ঠান, রাজকীয় প্রীতিভোজ ও আনন্দ সম্মিলন।' }
   ];
 
   const rawList = (Array.isArray(events) && events.length) ? events : defaultBengaliEvents;
@@ -975,8 +993,16 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const digits = phoneRaw.replace(/\D/g, '') || '9477929927';
   const wa = digits.length === 10 ? `91${digits}` : digits;
   const canRsvp = true;
+  const brideImg = safeImg(w.bride_photo) || safeImg(w.bride_photo_url) || safeImg(w.bride_image) || safeImg(storedBride) || `${assetBase}default-bride.webp`;
+  const groomImg = safeImg(w.groom_photo) || safeImg(w.groom_photo_url) || safeImg(w.groom_image) || safeImg(storedGroom) || `${assetBase}default-groom.webp`;
   const heroImg = safeImg(w.couple_photo) || safeImg(w.hero_image) || safeImg(w.couple_image) || safeImg(storedCouple) || `${assetBase}template-06-couple.webp`;
-  const venueImg = safeImg(w.venue_photo) || safeImg(w.venue_image) || safeImg(w.banquet_image) || safeImg(storedVenue) || `${assetBase}template-06-palace.jpg`;
+  const venueImg = safeImg(w.venue_photo)
+    || safeImg(w.venue_image)
+    || safeImg(w.banquet_image)
+    || safeImg(w.banquet_photo)
+    || safeImg(w.banquet)
+    || safeImg(storedVenue)
+    || `${assetBase}template-06-palace.jpg`;
   const cardArtImg = safeImg(w.card_image) || `${assetBase}template-06-card-clean.webp`;
   const story = readStory(w.story);
   const gallery = readGallery(w.gallery);
@@ -1002,7 +1028,7 @@ export default function render({ guest, wedding, events = [] } = {}) {
     const cards = g.items.map(e => {
       const [nEn, nBn] = evNames(e);
       const k = kindOf(nEn);
-      const img = safeImg(e.image_url) || (k.asset ? `${assetBase}${k.asset}` : '');
+      const img = safeImg(e.image) || safeImg(e.event_image) || safeImg(e.image_url) || safeImg(e.photo_url) || (k.asset ? `${assetBase}${k.asset}` : '');
       const loc = clean(e.venue || e.address) || clean(w.venue);
       const locBn = clean(e.venue_bn || e.address_bn) || loc;
       const tm = clean(e.event_time) ? L(timeEn(e.event_time), timeBn(e.event_time)) : '';
@@ -1062,9 +1088,9 @@ export default function render({ guest, wedding, events = [] } = {}) {
 
   const defaultMoments = [
     heroImg,
-    venueImg,
-    `${assetBase}template-06-jaimala.jpg`,
-    `${assetBase}template-06-reception.jpg`
+    brideImg,
+    groomImg,
+    venueImg
   ];
   const galleryItems = gallery.length ? gallery : defaultMoments;
 
@@ -1801,6 +1827,17 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
 
   applyLang(lang);
   onScroll(true);
+
+  /* Live dynamic photo update listener from onboard page */
+  if (typeof win !== 'undefined' && win.addEventListener) {
+    const onLivePhoto = e => {
+      if (e.detail?.slot === 'venue' && e.detail?.dataUrl) {
+        $$('.t9-venue-photo img', host).forEach(img => { img.src = e.detail.dataUrl; });
+      }
+    };
+    win.addEventListener('wedding-photo-updated', onLivePhoto);
+    undo.push(() => win.removeEventListener('wedding-photo-updated', onLivePhoto));
+  }
 
   const cleanup = () => {
     dead = true;
