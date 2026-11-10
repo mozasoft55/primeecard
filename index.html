@@ -2263,12 +2263,182 @@
       }
     }
 
-    /* 6. Hero Section - Responsive Desktop vs Mobile */
+    /* 6. Hero Section - Responsive Desktop vs Mobile (Template 5 & 6 Luxury Visuals) */
     section#home.hero, section.hero, .hero {
       position: relative !important;
       margin: 0 auto !important;
       width: 100% !important;
       box-sizing: border-box !important;
+    }
+
+    /* Template 5 & 6 Royal Ornamental Divider */
+    .royal-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 280px;
+      margin: 8px 0 16px 0;
+    }
+    .royal-divider i {
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, rgba(201, 162, 75, 0.75), transparent);
+    }
+    .royal-divider .royal-gem {
+      color: #C9A24B;
+      font-size: 13px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(226, 177, 68, 0.55);
+      animation: royalGemPulse 3.2s ease-in-out infinite;
+    }
+    @keyframes royalGemPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(201, 162, 75, 0.4)); }
+      50% { transform: scale(1.18); filter: drop-shadow(0 0 8px rgba(226, 177, 68, 0.8)); }
+    }
+
+    /* 3 Core Focus Pillars: Invitation • RSVP • WhatsApp */
+    .hero-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 0 18px 0;
+      box-sizing: border-box;
+    }
+    .pillar-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255, 253, 249, 0.98), rgba(250, 245, 235, 0.96));
+      border: 1px solid rgba(201, 162, 75, 0.38);
+      border-left: 3.5px solid #C9A24B;
+      border-radius: 14px;
+      padding: 13px 15px 12px;
+      box-shadow: 0 4px 16px rgba(20, 40, 75, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      text-align: left;
+      box-sizing: border-box;
+      width: 100%;
+      overflow: hidden;
+    }
+    :root[data-theme="dark"] .pillar-card {
+      background: linear-gradient(135deg, rgba(14, 28, 54, 0.94), rgba(7, 18, 38, 0.98));
+      border-color: rgba(226, 177, 68, 0.3);
+      border-left-color: #E2B144;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+    .pillar-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(201, 162, 75, 0.65);
+      box-shadow: 0 8px 24px rgba(201, 162, 75, 0.16);
+    }
+    .pillar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+    .pillar-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(226, 177, 68, 0.22), rgba(181, 129, 28, 0.12));
+      border: 1px solid rgba(201, 162, 75, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(201, 162, 75, 0.15);
+    }
+    .pillar-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .pillar-tag {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #B5811C;
+      line-height: 1;
+    }
+    :root[data-theme="dark"] .pillar-tag {
+      color: #F2C766;
+    }
+    .pillar-title {
+      font-family: var(--display);
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--wine);
+      line-height: 1.2;
+      margin: 2px 0 0 0;
+    }
+    .pillar-bullets {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .pillar-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--ink-soft);
+    }
+    .pillar-bullets li strong {
+      color: var(--wine);
+      font-weight: 600;
+    }
+    .bullet-star {
+      color: #C9A24B;
+      font-size: 11px;
+      line-height: 1.45;
+      flex-shrink: 0;
+    }
+
+    /* Shimmer light-sweep on primary CTA */
+    .hero .cta .btn.g {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e2b144 0%, #c9a24b 45%, #b5811c 100%) !important;
+      color: #1c0b02 !important;
+      box-shadow: 0 6px 20px rgba(201, 162, 75, 0.35) !important;
+      font-weight: 700 !important;
+    }
+    .hero .cta .btn.g::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -80%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transform: skewX(-22deg);
+      animation: royalBtnSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      pointer-events: none;
+    }
+    @keyframes royalBtnSweep {
+      0%, 60% { transform: translateX(-150%) skewX(-22deg); }
+      100% { transform: translateX(380%) skewX(-22deg); }
+    }
+
+    /* WhatsApp Button with rich pulse glow */
+    .hero .cta .btn.wa-btn {
+      background: linear-gradient(135deg, #25d366, #128c7e) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.28) !important;
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .hero .cta .btn.wa-btn:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4) !important;
     }
 
     /* Desktop View: Two Columns */
@@ -2299,16 +2469,13 @@
         line-height: 1.15 !important;
         letter-spacing: -0.01em !important;
         color: var(--wine) !important;
-        margin: 0 0 12px 0 !important;
+        margin: 0 0 10px 0 !important;
         font-weight: 600 !important;
       }
-      .hero p {
-        text-align: left !important;
-        font-size: clamp(13px, 1.2vw, 14.5px) !important;
-        line-height: 1.6 !important;
-        max-width: 52ch !important;
-        color: var(--ink) !important;
-        margin: 0 0 18px 0 !important;
+      .royal-divider {
+        margin: 6px 0 16px 0 !important;
+        justify-content: flex-start !important;
+        max-width: 320px !important;
       }
       .hero .cta {
         display: flex !important;
@@ -2343,16 +2510,18 @@
       }
     }
 
-    /* Mobile & Tablet View: Single Stacked Column, Perfectly Centered */
+    /* Mobile & Tablet View: Edge-to-Edge Responsive (393px and below) */
     @media (max-width: 980px) {
       section#home.hero, section.hero, .hero {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         text-align: center !important;
-        padding: 24px 20px 32px !important;
-        gap: 28px !important;
-        max-width: 680px !important;
+        padding: 20px 14px 28px !important;
+        gap: 22px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
       }
       .hero > div:first-child, .hero-left {
         display: flex !important;
@@ -2360,73 +2529,123 @@
         align-items: center !important;
         text-align: center !important;
         width: 100% !important;
+        max-width: 100% !important;
         padding: 0 !important;
+        box-sizing: border-box !important;
       }
       .hero .trust-pill {
         align-self: center !important;
         margin: 0 auto 10px !important;
-        font-size: 11px !important;
-        padding: 4px 12px !important;
+        font-size: 11.5px !important;
+        padding: 4px 14px !important;
+        border: 1px solid rgba(201, 162, 75, 0.4) !important;
+        background: rgba(201, 162, 75, 0.12) !important;
+        color: #b5811c !important;
+      }
+      :root[data-theme="dark"] .hero .trust-pill {
+        color: #f2c766 !important;
       }
       .hero h1 {
         text-align: center !important;
         font-family: var(--display) !important;
-        font-size: clamp(1.75rem, 5.5vw, 2.3rem) !important;
+        font-size: clamp(1.72rem, 6.2vw, 2.25rem) !important;
         line-height: 1.18 !important;
-        margin: 0 auto 12px !important;
-        max-width: 24ch !important;
+        margin: 0 auto 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
-      .hero p {
-        text-align: center !important;
-        font-size: clamp(13px, 3.4vw, 14.5px) !important;
-        line-height: 1.62 !important;
-        max-width: 52ch !important;
+      .royal-divider {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+        max-width: 260px !important;
+        margin: 6px auto 16px !important;
+      }
+      .hero-pillars {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
         margin: 0 auto 18px !important;
+        box-sizing: border-box !important;
+      }
+      .pillar-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 14px 14px 12px !important;
+      }
+      .pillar-bullets li {
+        font-size: 12.5px !important;
+        line-height: 1.45 !important;
       }
       .hero .cta {
         display: flex !important;
-        flex-wrap: wrap !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
         justify-content: center !important;
         gap: 10px !important;
         width: 100% !important;
-        margin: 0 auto 16px !important;
+        max-width: 100% !important;
+        margin: 4px auto 14px !important;
+        box-sizing: border-box !important;
       }
       .hero .cta .btn {
-        flex: 1 1 200px !important;
-        max-width: 280px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 auto !important;
+        min-height: 48px !important;
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+        border-radius: 999px !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        justify-content: center !important;
       }
       .hero-features {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px 12px !important;
-        margin: 14px auto 0 !important;
-        padding-top: 14px !important;
+        gap: 8px 10px !important;
+        margin: 12px auto 0 !important;
+        padding: 12px 2px 0 !important;
         border-top: 1px solid var(--ln) !important;
-        max-width: 520px !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         text-align: left !important;
+      }
+      .hero-feat-item {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
       }
       .phone-stage {
         width: 100% !important;
+        max-width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        margin: 8px auto 0 !important;
+        margin: 12px auto 0 !important;
+        box-sizing: border-box !important;
       }
       .phone-tabs {
         display: flex !important;
         justify-content: center !important;
         gap: 5px !important;
-        padding: 5px !important;
+        padding: 6px 4px !important;
+        width: 100% !important;
         max-width: 100% !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
         scrollbar-width: none !important;
         margin: 0 auto 14px !important;
         background: var(--surf) !important;
-        border: 1px solid var(--ln) !important;
+        border: 1px solid rgba(201, 162, 75, 0.35) !important;
         border-radius: 999px !important;
-        box-shadow: var(--shadow-sm) !important;
+        box-shadow: 0 4px 14px rgba(20, 40, 75, 0.08) !important;
+        box-sizing: border-box !important;
       }
       .phone-tabs::-webkit-scrollbar {
         display: none !important;
@@ -2436,26 +2655,44 @@
         font-size: 12px !important;
         white-space: nowrap !important;
         flex-shrink: 0 !important;
+        border-radius: 999px !important;
+        transition: all 0.25s ease !important;
+      }
+      .phone-tab-btn.active {
+        background: linear-gradient(135deg, #14284B, #0C1930) !important;
+        color: #F2C766 !important;
+        border: 1px solid rgba(242, 199, 102, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(20, 40, 75, 0.3) !important;
+        font-weight: 700 !important;
       }
       .phone-stage .phone {
-        width: min(290px, 82vw) !important;
-        height: 580px !important;
+        width: min(290px, 86vw) !important;
+        height: 570px !important;
         margin: 0 auto !important;
       }
     }
 
     @media (max-width: 520px) {
+      section#home.hero, section.hero, .hero {
+        padding: 16px 12px 24px !important;
+        gap: 18px !important;
+      }
       .hero-features {
-        grid-template-columns: 1fr !important;
-        max-width: 320px !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 6px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .hero-feat-item {
+        font-size: 11.5px !important;
       }
       .hero .cta .btn {
         width: 100% !important;
         max-width: 100% !important;
       }
       .phone-stage .phone {
-        width: min(270px, 86vw) !important;
-        height: 540px !important;
+        width: min(280px, 88vw) !important;
+        height: 550px !important;
       }
     }
 
@@ -2527,7 +2764,7 @@
     }
     @media (max-width: 480px) {
       .stats-wrap {
-        padding: 0 14px !important;
+        padding: 0 12px !important;
       }
       .stat-col {
         padding: 14px 10px !important;
@@ -2537,6 +2774,51 @@
       }
       .stat-label {
         font-size: 11px !important;
+      }
+    }
+
+    /* Edge-to-Edge Responsive Container Rules for Mobile (393px and below) */
+    @media (max-width: 768px) {
+      section,
+      .features-section,
+      .beyond-section,
+      .about-section,
+      .contact-section,
+      #traditions,
+      #designs,
+      #compare,
+      #packages,
+      #reviews,
+      #faq {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 34px 14px !important;
+        box-sizing: border-box !important;
+      }
+      .stats-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+        margin: 14px auto 28px !important;
+      }
+      .stats {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 14px !important;
+      }
+      header .in {
+        padding: 8px 14px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .site-footer {
+        padding: 38px 14px 24px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
       }
     }
 
@@ -2965,9 +3247,66 @@
   <!-- Hero Section -->
   <section class="hero" id="home">
     <div>
-      <div class="trust-pill">✦ Smart Digital Invitations &amp; Event Management ✦</div>
+      <div class="trust-pill">✦ Royal Digital Wedding Invitations ✦</div>
       <h1>Your love story deserves an extraordinary invitation.</h1>
-      <p><strong>Save Time, Effort &amp; Money.</strong> Manage your entire wedding invitation and guest experience from A to Z on WhatsApp. Professional luxury designs, individual guest name personalization, live RSVP tracking, Google Maps GPS, menu list, and expense planner — delivered in under 1 hour.</p>
+
+      <!-- Template 5 & 6 Royal Ornamental Divider -->
+      <div class="royal-divider" aria-hidden="true">
+        <i></i>
+        <span class="royal-gem">❖</span>
+        <i></i>
+      </div>
+
+      <!-- 3 Core Focus Pillars: Invitation • RSVP • WhatsApp (Crisp, High-Impact Luxury Cards) -->
+      <div class="hero-pillars">
+        <!-- 1. INVITATION -->
+        <div class="pillar-card pillar-invitation">
+          <div class="pillar-header">
+            <span class="pillar-badge">💌</span>
+            <div class="pillar-title-group">
+              <span class="pillar-tag">Pillar 01</span>
+              <h3 class="pillar-title">Royal Invitation</h3>
+            </div>
+          </div>
+          <ul class="pillar-bullets">
+            <li><span class="bullet-star">✦</span> <span><strong>Personalised for Every Guest:</strong> Unique link with individual guest &amp; family name on the card.</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>Royal Animated Entrance:</strong> Traditional door opening ceremony with background Shehnai music.</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>Cultural Authenticity:</strong> Bengali, Hindu, Muslim, Sikh &amp; Royal Palace designs.</span></li>
+          </ul>
+        </div>
+
+        <!-- 2. RSVP -->
+        <div class="pillar-card pillar-rsvp">
+          <div class="pillar-header">
+            <span class="pillar-badge">📊</span>
+            <div class="pillar-title-group">
+              <span class="pillar-tag">Pillar 02</span>
+              <h3 class="pillar-title">Live RSVP Tracker</h3>
+            </div>
+          </div>
+          <ul class="pillar-bullets">
+            <li><span class="bullet-star">✦</span> <span><strong>Real-Time Attendance:</strong> Exact headcount of attending guests &amp; accompanying family.</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>Ceremony Breakdown:</strong> Ceremony-wise tracking (Haldi, Mehendi, Reception, Bou Bhaat).</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>Instant Export:</strong> Live WhatsApp updates and one-tap guest list download.</span></li>
+          </ul>
+        </div>
+
+        <!-- 3. WHATSAPP -->
+        <div class="pillar-card pillar-whatsapp">
+          <div class="pillar-header">
+            <span class="pillar-badge">⚡</span>
+            <div class="pillar-title-group">
+              <span class="pillar-tag">Pillar 03</span>
+              <h3 class="pillar-title">WhatsApp Delivery</h3>
+            </div>
+          </div>
+          <ul class="pillar-bullets">
+            <li><span class="bullet-star">✦</span> <span><strong>1-Click WhatsApp Delivery:</strong> Share directly to guests, delivered in under 1 hour.</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>1-Tap Google Maps GPS:</strong> Exact venue GPS directions right inside the invitation.</span></li>
+            <li><span class="bullet-star">✦</span> <span><strong>Instant Calendar Sync:</strong> Save-the-Date button for Google &amp; Apple Calendar.</span></li>
+          </ul>
+        </div>
+      </div>
       
       <div class="cta">
         <a class="btn g" href="#designs">✦ Explore 10 Royal Designs ↓</a>
