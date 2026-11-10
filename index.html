@@ -985,9 +985,14 @@
       overflow: hidden;
       box-shadow: var(--shadow-sm);
       margin-top: 32px;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
     }
     .comp-table {
       width: 100%;
+      min-width: 640px;
       border-collapse: collapse;
       text-align: left;
     }
@@ -1161,7 +1166,7 @@
     .floating-wa {
       position: fixed;
       right: 20px;
-      bottom: 24px;
+      bottom: 20px;
       background: #1F8F4E;
       color: #FFFFFF;
       border-radius: 999px;
@@ -1169,7 +1174,7 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 14.5px;
-      z-index: 50;
+      z-index: 9999;
       box-shadow: 0 8px 24px rgba(31, 143, 78, 0.45);
       display: flex;
       align-items: center;
@@ -1976,6 +1981,9 @@
     /* 5. Removed Unwanted Space across all sections */
     section {
       padding: 42px 20px;
+      max-width: 1220px;
+      margin: 0 auto;
+      box-sizing: border-box;
     }
     .stats-wrap {
       margin: 6px auto 28px !important;
@@ -2793,7 +2801,20 @@
         width: 100% !important;
         max-width: 100% !important;
         padding: 34px 14px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
         box-sizing: border-box !important;
+      }
+      .comp-table-wrap {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .comp-table {
+        min-width: 560px !important;
+      }
+      .comp-table th, .comp-table td {
+        padding: 14px 12px !important;
+        font-size: 13px !important;
       }
       .stats-wrap {
         width: 100% !important;
@@ -2819,6 +2840,16 @@
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+      }
+      .floating-wa {
+        right: 14px !important;
+        bottom: 16px !important;
+        padding: 11px 18px !important;
+        font-size: 13.5px !important;
+      }
+      .packages-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
       }
     }
 
