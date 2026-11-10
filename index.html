@@ -904,19 +904,52 @@
     .share-btn.fb { background: #1877F2; color: #FFF; }
     .share-btn.cp { background: rgba(255, 255, 255, 0.12); color: #FFF; border: 1px solid rgba(255, 255, 255, 0.3); }
 
-    /* Customizer Wizard (4 Steps) */
+    /* Customizer Wizard (4 Steps) - Centered & Equal Side Alignment */
+    #customise {
+      width: 100%;
+      max-width: 1220px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
     .wiz-wrap {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
-      gap: 40px;
+      gap: 36px;
       align-items: start;
-      margin-top: 24px;
+      margin: 24px auto 0;
+      width: 100%;
+      max-width: 1220px;
+      box-sizing: border-box;
     }
-    @media (max-width: 900px) { .wiz-wrap { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) {
+      .wiz-wrap {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        max-width: 620px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100% !important;
+      }
+      .wiz-preview-col {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin-top: 18px !important;
+      }
+      .wiz-preview-col .phone {
+        width: min(290px, 86vw) !important;
+        height: 560px !important;
+        margin: 0 auto !important;
+      }
+    }
     .steps-nav {
       display: flex;
       gap: 6px;
       margin-bottom: 24px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .step-item {
       flex: 1;
@@ -935,11 +968,27 @@
       border-radius: var(--r-lg);
       padding: 28px;
       box-shadow: var(--shadow-sm);
+      width: 100%;
+      box-sizing: border-box;
     }
-    .form-group { display: grid; gap: 14px; }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 600px) { .form-row-2 { grid-template-columns: 1fr; } }
-    .field { display: grid; gap: 6px; }
+    .form-group { display: grid; gap: 14px; width: 100%; box-sizing: border-box; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; box-sizing: border-box; }
+    @media (max-width: 600px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+      .form-panel {
+        padding: 20px 14px !important;
+        border-radius: 16px !important;
+      }
+      .steps-nav {
+        gap: 4px !important;
+        margin-bottom: 18px !important;
+      }
+      .step-item {
+        font-size: 11.5px !important;
+        padding-top: 6px !important;
+      }
+    }
+    .field { display: grid; gap: 6px; width: 100%; max-width: 100%; box-sizing: border-box; }
     .field label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
     .field input, .field select, .field textarea {
       padding: 12px 14px;
@@ -950,11 +999,166 @@
       font: inherit;
       font-size: 14.5px;
       outline: none;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field select {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
     .field input:focus, .field select:focus, .field textarea:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 3px var(--glow);
+    }
+
+    /* Custom Luxury Dropdown with Right Scrollbar (overflow-y: auto) */
+    .custom-select-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .custom-select-trigger {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: var(--bg);
+      border: 1.5px solid var(--ln);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-align: left;
+      font: inherit;
+      color: var(--ink);
+      gap: 10px;
+    }
+    .custom-select-trigger:focus,
+    .custom-select-trigger.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--glow);
+      outline: none;
+    }
+    .custom-select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      max-height: 240px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--surf);
+      border: 1.5px solid var(--gold);
+      border-radius: var(--r-md);
+      box-shadow: 0 14px 36px rgba(20, 40, 75, 0.22);
+      z-index: 999;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold) rgba(201, 162, 75, 0.1);
+    }
+    .custom-select-menu.open {
+      display: block;
+      animation: menuFadeIn 0.18s ease-out;
+    }
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-select-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-select-menu::-webkit-scrollbar-track {
+      background: rgba(201, 162, 75, 0.08);
+      border-radius: 999px;
+    }
+    .custom-select-menu::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 999px;
+    }
+    .custom-select-opt {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--ln);
+      cursor: pointer;
+      transition: background 0.18s ease;
+      gap: 10px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .custom-select-opt:last-child {
+      border-bottom: none;
+    }
+    .custom-select-opt:hover {
+      background: rgba(201, 162, 75, 0.12);
+    }
+    .custom-select-opt.selected {
+      background: rgba(201, 162, 75, 0.18);
+    }
+    .opt-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      text-align: left;
+    }
+    .opt-title {
+      font-size: 13.5px;
+      color: var(--ink);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .opt-meta {
+      font-size: 11px;
+      color: var(--mute);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .opt-price {
+      font-family: var(--display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--goldtx);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* Symmetrical Buttons Row in Wizard */
+    .wiz-buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .wiz-buttons-row {
+        gap: 10px;
+      }
+      .wiz-buttons-row .btn {
+        flex: 1 1 auto;
+        min-height: 48px;
+        font-size: 14px;
+        text-align: center;
+        justify-content: center;
+      }
     }
     .addons-list { display: grid; gap: 10px; }
     .addon-item {
@@ -3620,27 +3824,6 @@
     </div>
   </section>
 
-  <!-- Viral Marketing & Social Sharing Hub -->
-  <section style="padding-top:0">
-    <div class="viral-share-box">
-      <div class="trust-pill" style="background:rgba(255,255,255,0.12);color:#F8E3B0;border-color:rgba(255,255,255,0.25);">✦ Share &amp; Win Special ✦</div>
-      <h2>Loved these invitations? Share with couples getting married!</h2>
-      <p>Share this link on WhatsApp, Instagram Bio, or Facebook. Help family &amp; friends save time, effort &amp; money with a smart digital invitation.</p>
-      
-      <div class="share-buttons">
-        <a class="share-btn wa" id="shareWaBtn" href="#" target="_blank">
-          <span>💬 Share on WhatsApp</span>
-        </a>
-        <a class="share-btn fb" id="shareFbBtn" href="#" target="_blank">
-          <span>f Share on Facebook</span>
-        </a>
-        <button class="share-btn cp" onclick="copyShareLink()">
-          <span>📋 Copy Link &amp; Code (WELCOME10)</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
   <!-- Interactive 4-Step Personalize Wizard & Instant WhatsApp Order -->
   <section id="customise">
     <div class="section-head">
@@ -3661,14 +3844,14 @@
           <!-- Step Form Bodies injected dynamically -->
         </div>
 
-        <div style="display:flex;justify-content:space-between;margin-top:20px;">
-          <button class="btn o" id="wizBackBtn" style="visibility:hidden;">← Back</button>
-          <button class="btn g" id="wizNextBtn">Continue to Details →</button>
+        <div class="wiz-buttons-row">
+          <button class="btn o" id="wizBackBtn" style="display:none;">← Back</button>
+          <button class="btn g" id="wizNextBtn" style="width:100%;">Continue to Details →</button>
         </div>
       </div>
 
       <!-- Live Preview Phone -->
-      <div>
+      <div class="wiz-preview-col">
         <div class="phone" style="height:560px;">
           <div class="phone-notch"><span class="phone-camera"></span></div>
           <div class="scr" id="wizLivePhone">
@@ -4714,18 +4897,48 @@
 
       const backBtn = $('#wizBackBtn');
       const nextBtn = $('#wizNextBtn');
-      backBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+      if (currentStep === 0) {
+        backBtn.style.display = 'none';
+        nextBtn.style.width = '100%';
+      } else {
+        backBtn.style.display = 'inline-flex';
+        nextBtn.style.width = '';
+      }
 
       if (currentStep === 0) {
-        // Step 1: Design Pick
+        // Step 1: Design Pick with Custom Luxury Scrollable Dropdown
+        const activeTpl = CATALOG.find(t => t.id === wizardData.templateId) || CATALOG[0];
         formPanel.innerHTML = `
           <div class="form-group">
             <h3 style="color:var(--wine);margin-bottom:6px;">Step 1: Choose Your Royal Design</h3>
             <div class="field">
               <label>Select Wedding Template</label>
-              <select id="wizTplSelect">
-                ${CATALOG.map(t => `<option value="${t.id}" ${t.id === wizardData.templateId ? 'selected' : ''}>${t.title} (${t.community}) — ₹${t.price.toLocaleString('en-IN')}</option>`).join('')}
-              </select>
+              <div class="custom-select-wrap" id="wizTplDropdownWrap">
+                <button type="button" class="custom-select-trigger" id="wizTplDropdownTrigger" aria-haspopup="listbox" aria-expanded="false">
+                  <div class="opt-main">
+                    <span class="opt-title" id="wizTplSelectedTitle">${activeTpl.title}</span>
+                    <span class="opt-meta" id="wizTplSelectedMeta">${activeTpl.community} · ${activeTpl.badge || 'Royal Design'}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                    <span class="opt-price" id="wizTplSelectedPrice">₹${activeTpl.price.toLocaleString('en-IN')}</span>
+                    <span class="tpl-arrow" id="wizTplArrow" style="transition:transform 0.2s;font-size:11px;color:var(--mute);">▼</span>
+                  </div>
+                </button>
+                <div class="custom-select-menu" id="wizTplDropdownMenu" role="listbox">
+                  ${CATALOG.map(t => `
+                    <div class="custom-select-opt ${t.id === wizardData.templateId ? 'selected' : ''}" data-value="${t.id}" role="option" aria-selected="${t.id === wizardData.templateId}">
+                      <div class="opt-main">
+                        <span class="opt-title">${t.title}</span>
+                        <span class="opt-meta">${t.community} · ${t.badge || 'Royal Design'}</span>
+                      </div>
+                      <span class="opt-price">₹${t.price.toLocaleString('en-IN')}</span>
+                    </div>
+                  `).join('')}
+                </div>
+                <select id="wizTplSelect" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" aria-hidden="true" tabindex="-1">
+                  ${CATALOG.map(t => `<option value="${t.id}" ${t.id === wizardData.templateId ? 'selected' : ''}>${t.title} (${t.community}) — ₹${t.price.toLocaleString('en-IN')}</option>`).join('')}
+                </select>
+              </div>
             </div>
             <p style="font-size:13.5px;color:var(--mute);">Preview all 10 templates above or explore live in the Studio Builder.</p>
           </div>
@@ -4965,6 +5178,71 @@ _Please confirm my order and share the payment details!_`;
           wizardData.addons = wizardData.addons.filter(x => x !== addId);
         }
         renderWizardLivePhone();
+      }
+    });
+
+    // Custom template dropdown interaction in Wizard
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('#wizTplDropdownTrigger');
+      const opt = e.target.closest('.custom-select-opt');
+      const menu = document.getElementById('wizTplDropdownMenu');
+      const triggerBtn = document.getElementById('wizTplDropdownTrigger');
+      const arrow = document.getElementById('wizTplArrow');
+
+      if (trigger) {
+        e.preventDefault();
+        if (menu) {
+          const isOpen = menu.classList.toggle('open');
+          triggerBtn.classList.toggle('active', isOpen);
+          triggerBtn.setAttribute('aria-expanded', String(isOpen));
+          if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+        return;
+      }
+
+      if (opt) {
+        const val = opt.dataset.value;
+        if (val) {
+          wizardData.templateId = val;
+          const selectedTpl = CATALOG.find(t => t.id === val);
+          if (selectedTpl) {
+            const titleEl = document.getElementById('wizTplSelectedTitle');
+            const metaEl = document.getElementById('wizTplSelectedMeta');
+            const priceEl = document.getElementById('wizTplSelectedPrice');
+            if (titleEl) titleEl.textContent = selectedTpl.title;
+            if (metaEl) metaEl.textContent = `${selectedTpl.community} · ${selectedTpl.badge || 'Royal Design'}`;
+            if (priceEl) priceEl.textContent = `₹${selectedTpl.price.toLocaleString('en-IN')}`;
+          }
+          const nativeSelect = document.getElementById('wizTplSelect');
+          if (nativeSelect) {
+            nativeSelect.value = val;
+            nativeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+            nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+          document.querySelectorAll('.custom-select-opt').forEach(el => {
+            const isSel = el.dataset.value === val;
+            el.classList.toggle('selected', isSel);
+            el.setAttribute('aria-selected', String(isSel));
+          });
+          if (menu) menu.classList.remove('open');
+          if (triggerBtn) {
+            triggerBtn.classList.remove('active');
+            triggerBtn.setAttribute('aria-expanded', 'false');
+          }
+          if (arrow) arrow.style.transform = 'rotate(0deg)';
+          renderWizardLivePhone();
+        }
+        return;
+      }
+
+      // Close when clicking anywhere outside
+      if (menu && menu.classList.contains('open')) {
+        menu.classList.remove('open');
+        if (triggerBtn) {
+          triggerBtn.classList.remove('active');
+          triggerBtn.setAttribute('aria-expanded', 'false');
+        }
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
       }
     });
 
