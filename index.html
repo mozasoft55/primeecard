@@ -96,7 +96,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; width: 100%; max-width: 100vw; overflow-x: hidden; }
     body {
       background: var(--bg);
       color: var(--ink);
@@ -910,6 +910,7 @@
       max-width: 1220px;
       margin: 0 auto;
       box-sizing: border-box;
+      overflow: hidden;
     }
     .wiz-wrap {
       display: grid;
@@ -921,14 +922,24 @@
       max-width: 1220px;
       box-sizing: border-box;
     }
+    .wiz-wrap > div:first-child {
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
     @media (max-width: 900px) {
       .wiz-wrap {
-        grid-template-columns: 1fr !important;
-        gap: 24px !important;
-        max-width: 620px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        grid-template-columns: 100% !important;
+        gap: 20px !important;
+        max-width: 100% !important;
+        margin: 20px auto 0 !important;
         width: 100% !important;
+      }
+      .wiz-wrap > div:first-child {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
       }
       .wiz-preview-col {
         display: flex !important;
@@ -936,12 +947,15 @@
         align-items: center !important;
         justify-content: center !important;
         width: 100% !important;
-        margin-top: 18px !important;
+        max-width: 100% !important;
+        margin-top: 22px !important;
+        min-width: 0 !important;
       }
       .wiz-preview-col .phone {
-        width: min(290px, 86vw) !important;
-        height: 560px !important;
+        width: min(280px, 84vw) !important;
+        height: 540px !important;
         margin: 0 auto !important;
+        max-width: 100% !important;
       }
     }
     .steps-nav {
@@ -949,10 +963,13 @@
       gap: 6px;
       margin-bottom: 24px;
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     .step-item {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
       border-top: 3px solid var(--ln);
       padding-top: 8px;
       font-size: 13px;
@@ -960,6 +977,9 @@
       color: var(--mute);
       text-align: center;
       transition: border-color 0.3s, color 0.3s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .step-item.active { border-color: var(--gold); color: var(--wine); font-weight: 700; }
     .form-panel {
@@ -969,26 +989,31 @@
       padding: 28px;
       box-shadow: var(--shadow-sm);
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
-    .form-group { display: grid; gap: 14px; width: 100%; box-sizing: border-box; }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; box-sizing: border-box; }
+    .form-group { display: grid; gap: 14px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
     @media (max-width: 600px) {
-      .form-row-2 { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 100% !important; gap: 12px !important; }
       .form-panel {
         padding: 20px 14px !important;
         border-radius: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
       .steps-nav {
         gap: 4px !important;
         margin-bottom: 18px !important;
       }
       .step-item {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         padding-top: 6px !important;
+        letter-spacing: -0.02em !important;
       }
     }
-    .field { display: grid; gap: 6px; width: 100%; max-width: 100%; box-sizing: border-box; }
+    .field { display: grid; gap: 6px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
     .field label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
     .field input, .field select, .field textarea {
       padding: 12px 14px;
@@ -1001,6 +1026,7 @@
       outline: none;
       width: 100%;
       max-width: 100%;
+      min-width: 0;
       box-sizing: border-box;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
@@ -1020,6 +1046,7 @@
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     .custom-select-trigger {
       width: 100%;
@@ -1038,6 +1065,8 @@
       font: inherit;
       color: var(--ink);
       gap: 10px;
+      min-width: 0;
+      overflow: hidden;
     }
     .custom-select-trigger:focus,
     .custom-select-trigger.active {
@@ -1097,6 +1126,7 @@
       width: 100%;
       max-width: 100%;
       overflow: hidden;
+      min-width: 0;
     }
     .custom-select-opt:last-child {
       border-bottom: none;
@@ -1110,7 +1140,9 @@
     .opt-main {
       display: flex;
       flex-direction: column;
+      flex: 1 1 0%;
       min-width: 0;
+      width: 0;
       overflow: hidden;
       text-align: left;
     }
@@ -1121,6 +1153,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
     .opt-meta {
       font-size: 11px;
@@ -1128,6 +1162,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
     .opt-price {
       font-family: var(--display);
@@ -1146,7 +1182,9 @@
       gap: 12px;
       margin-top: 20px;
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     @media (max-width: 600px) {
       .wiz-buttons-row {
@@ -3027,17 +3065,38 @@
       .contact-section,
       #traditions,
       #designs,
+      #customise,
       #compare,
       #packages,
-      #reviews,
       #faq {
         width: 100% !important;
         max-width: 100% !important;
-        padding: 34px 14px !important;
+        padding: 34px 16px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         box-sizing: border-box !important;
+        overflow: hidden !important;
       }
+    }
+    @media (max-width: 480px) {
+      section,
+      .features-section,
+      .beyond-section,
+      .about-section,
+      .contact-section,
+      #traditions,
+      #designs,
+      #customise,
+      #compare,
+      #packages,
+      #faq {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+      }
+      .form-panel {
+        padding: 18px 12px !important;
+      }
+    }
       .comp-table-wrap {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
@@ -3490,19 +3549,20 @@
       z-index: 0;
     }
     .mandala-watermark.top-left {
-      top: -30px;
-      left: -30px;
+      top: -20px;
+      left: 0px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
     }
     .mandala-watermark.top-right {
-      top: -30px;
-      right: -30px;
+      top: -20px;
+      right: 0px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
     }
 
     /* Hero Refined Balanced Layout (1920x1080 Desktop Split & Mobile Stacked) */
     .hero {
       position: relative;
+      overflow: hidden;
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 48px;
@@ -3655,6 +3715,7 @@
     /* Mobile Live Demo Section (Matches Screenshot 3) */
     .mobile-live-demo-section {
       display: none;
+      overflow: hidden;
       padding: 40px 16px 20px;
       text-align: center;
       position: relative;
@@ -4255,7 +4316,7 @@
   <section id="customise">
     <div class="section-head">
       <h2>Instant Personalization &amp; WhatsApp Quote</h2>
-      <p>Fill your celebration details below. Review live on the right and order in 1 click!</p>
+      <p>Fill your celebration details below to review live and order in 1 click!</p>
     </div>
 
     <div class="wiz-wrap">
