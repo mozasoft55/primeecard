@@ -3432,7 +3432,357 @@
       }
     }
 
-</style>
+
+    /* Traditional Mandala Watermark & Royal Backdrop */
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 100% 0%, rgba(201, 162, 75, 0.09) 0%, transparent 480px),
+        radial-gradient(circle at 0% 25%, rgba(201, 162, 75, 0.07) 0%, transparent 420px),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23C5A059' fill-opacity='0.032'%3E%3Cpath d='M40 0 C42 15 45 18 60 20 C45 22 42 25 40 40 C38 25 35 22 20 20 C35 18 38 15 40 0 Z M40 40 C42 55 45 58 60 60 C45 62 42 65 40 80 C38 65 35 62 20 60 C35 58 38 55 40 40 Z'/%3E%3Ccircle cx='40' cy='40' r='5' fill='%23C5A059' fill-opacity='0.04'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .mandala-watermark {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      opacity: 0.12;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      background-size: contain;
+      z-index: 0;
+    }
+    .mandala-watermark.top-left {
+      top: -30px;
+      left: -30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
+    }
+    .mandala-watermark.top-right {
+      top: -30px;
+      right: -30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
+    }
+
+    /* Hero Refined Balanced Layout (1920x1080 Desktop Split & Mobile Stacked) */
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+      min-height: calc(84vh - 76px);
+      padding: 40px 20px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .hero-left-col {
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 24px 16px 32px;
+        text-align: center;
+        gap: 20px;
+      }
+      .hero .cta {
+        justify-content: center;
+      }
+      .hero-left-col {
+        margin: 0 auto;
+      }
+      .phone-stage-desktop {
+        display: none !important;
+      }
+    }
+
+    .hero-trust-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 9px 18px;
+      background: rgba(201, 162, 75, 0.08);
+      border: 1px solid rgba(201, 162, 75, 0.28);
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 16px auto 24px;
+      box-shadow: 0 2px 10px rgba(201, 162, 75, 0.08);
+    }
+    .hero-trust-badge .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .hero-trust-badge .trust-sep {
+      color: rgba(201, 162, 75, 0.5);
+      font-weight: 300;
+    }
+    .hero-trust-micro {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: var(--mute);
+      font-weight: 500;
+    }
+    @media (max-width: 860px) {
+      .hero-trust-micro {
+        justify-content: center;
+      }
+    }
+
+    /* Compact 4-Card Features ("Inside the Invitation" Features) */
+    .features-grid-compact {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 32px;
+      max-width: 1220px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 900px) {
+      .features-grid-compact {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+    }
+    .compact-feat-card {
+      background: var(--surf);
+      border: 1px solid rgba(201, 162, 75, 0.25);
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: left;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .compact-feat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(201, 162, 75, 0.12);
+      border-color: var(--goldtx);
+    }
+    .compact-feat-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(201, 162, 75, 0.12);
+      border: 1px solid rgba(201, 162, 75, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .compact-feat-title {
+      font: 700 1.15rem var(--display);
+      color: var(--ink);
+      margin: 0 0 8px;
+      line-height: 1.3;
+    }
+    .compact-feat-desc {
+      font-size: 13.5px;
+      color: var(--mute);
+      line-height: 1.5;
+      margin: 0;
+    }
+    @media (max-width: 600px) {
+      .compact-feat-card {
+        padding: 18px 14px;
+        border-radius: 14px;
+      }
+      .compact-feat-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .compact-feat-title {
+        font-size: 1.05rem;
+        margin-bottom: 6px;
+      }
+      .compact-feat-desc {
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+    }
+
+    /* Mobile Live Demo Section (Matches Screenshot 3) */
+    .mobile-live-demo-section {
+      display: none;
+      padding: 40px 16px 20px;
+      text-align: center;
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    @media (max-width: 860px) {
+      .mobile-live-demo-section {
+        display: block;
+      }
+    }
+    .full-demo-btn {
+      width: 100%;
+      max-width: 320px;
+      margin: 16px auto 0;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 18px rgba(201, 162, 75, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Beyond Weddings Pills Grid (Matches Screenshot 3) */
+    .beyond-pills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+      max-width: 1080px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .beyond-pill-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      background: var(--surf);
+      border: 1px solid rgba(201, 162, 75, 0.25);
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .beyond-pill-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--goldtx);
+    }
+    .beyond-pill-item.active {
+      background: linear-gradient(135deg, #DEB866 0%, #C9A24B 100%);
+      border-color: #B3862A;
+      color: #0F1B29;
+      box-shadow: 0 4px 14px rgba(201, 162, 75, 0.25);
+    }
+    .beyond-pill-item.active .beyond-text b,
+    .beyond-pill-item.active .beyond-text span {
+      color: #0F1B29 !important;
+    }
+    .beyond-ico {
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(201, 162, 75, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .beyond-pill-item.active .beyond-ico {
+      background: rgba(255, 255, 255, 0.4);
+    }
+    .beyond-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .beyond-text b {
+      font-size: 15px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .beyond-text span {
+      font-size: 12px;
+      color: var(--mute);
+      font-weight: 500;
+    }
+
+    /* Smart Split Comparison Card (Mobile vs Desktop) */
+    .smart-compare-card {
+      display: none;
+      margin-top: 28px;
+    }
+    @media (max-width: 768px) {
+      .smart-compare-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .comp-table-wrap {
+        display: none !important;
+      }
+    }
+    .split-col-paper, .split-col-digital {
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: left;
+    }
+    .split-col-paper {
+      background: rgba(240, 243, 246, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+    .split-col-digital {
+      background: var(--surf);
+      border: 2px solid var(--goldtx);
+      box-shadow: 0 8px 30px rgba(201, 162, 75, 0.16);
+      position: relative;
+    }
+    .split-col-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .badge-paper {
+      background: rgba(148, 163, 184, 0.2);
+      color: #475569;
+    }
+    .badge-digital {
+      background: linear-gradient(135deg, #DEB866 0%, #C9A24B 100%);
+      color: #0F1B29;
+    }
+    .split-col-title {
+      font: 700 1.25rem var(--display);
+      margin: 0 0 14px;
+      color: var(--ink);
+    }
+    .split-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13.5px;
+    }
+    .split-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+    }
+    .split-list li .bullet-ico {
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+    .split-col-paper .bullet-ico { color: #E53935; }
+    .split-col-digital .bullet-ico { color: #2E7D32; font-size: 15px; }
+
+  </style>
 </head>
 <body>
 
@@ -3480,85 +3830,46 @@
   </header>
 
   <!-- Hero Section -->
+    <!-- Hero Section (Balanced Split Layout on Desktop, Clean Stack on Mobile) -->
   <section class="hero" id="home">
-    <div>
+    <div class="mandala-watermark top-left" aria-hidden="true"></div>
+    <div class="mandala-watermark top-right" aria-hidden="true"></div>
+
+    <div class="hero-left-col">
       <div class="trust-pill">✦ Royal Digital Wedding Invitations ✦</div>
       <h1>Your love story deserves an extraordinary invitation.</h1>
 
-      <!-- Template 5 & 6 Royal Ornamental Divider -->
+      <!-- Royal Diamond Divider -->
       <div class="royal-divider" aria-hidden="true">
         <i></i>
         <span class="royal-gem">❖</span>
         <i></i>
       </div>
 
-      <!-- 3 Core Focus Pillars: Invitation • RSVP • WhatsApp (Crisp, High-Impact Luxury Cards) -->
-      <div class="hero-pillars">
-        <!-- 1. INVITATION -->
-        <div class="pillar-card pillar-invitation">
-          <div class="pillar-header">
-            <span class="pillar-badge">💌</span>
-            <div class="pillar-title-group">
-              <span class="pillar-tag">Pillar 01</span>
-              <h3 class="pillar-title">Royal Invitation</h3>
-            </div>
-          </div>
-          <ul class="pillar-bullets">
-            <li><span class="bullet-star">✦</span> <span><strong>Personalised for Every Guest:</strong> Unique link with individual guest &amp; family name on the card.</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>Royal Animated Entrance:</strong> Traditional door opening ceremony with background Shehnai music.</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>Cultural Authenticity:</strong> Bengali, Hindu, Muslim, Sikh &amp; Royal Palace designs.</span></li>
-          </ul>
-        </div>
-
-        <!-- 2. RSVP -->
-        <div class="pillar-card pillar-rsvp">
-          <div class="pillar-header">
-            <span class="pillar-badge">📊</span>
-            <div class="pillar-title-group">
-              <span class="pillar-tag">Pillar 02</span>
-              <h3 class="pillar-title">Live RSVP Tracker</h3>
-            </div>
-          </div>
-          <ul class="pillar-bullets">
-            <li><span class="bullet-star">✦</span> <span><strong>Real-Time Attendance:</strong> Exact headcount of attending guests &amp; accompanying family.</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>Ceremony Breakdown:</strong> Ceremony-wise tracking (Haldi, Mehendi, Reception, Bou Bhaat).</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>Instant Export:</strong> Live WhatsApp updates and one-tap guest list download.</span></li>
-          </ul>
-        </div>
-
-        <!-- 3. WHATSAPP -->
-        <div class="pillar-card pillar-whatsapp">
-          <div class="pillar-header">
-            <span class="pillar-badge">⚡</span>
-            <div class="pillar-title-group">
-              <span class="pillar-tag">Pillar 03</span>
-              <h3 class="pillar-title">WhatsApp Delivery</h3>
-            </div>
-          </div>
-          <ul class="pillar-bullets">
-            <li><span class="bullet-star">✦</span> <span><strong>1-Click WhatsApp Delivery:</strong> Share directly to guests, delivered in under 1 hour.</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>1-Tap Google Maps GPS:</strong> Exact venue GPS directions right inside the invitation.</span></li>
-            <li><span class="bullet-star">✦</span> <span><strong>Instant Calendar Sync:</strong> Save-the-Date button for Google &amp; Apple Calendar.</span></li>
-          </ul>
-        </div>
+      <!-- 1-Line Trust Badge Strip -->
+      <div class="hero-trust-badge">
+        <span class="trust-item"><span class="trust-ico">⚡</span> 1-Hour Delivery</span>
+        <span class="trust-sep">|</span>
+        <span class="trust-item"><span class="trust-ico">📍</span> Google Maps GPS</span>
+        <span class="trust-sep">|</span>
+        <span class="trust-item"><span class="trust-ico">👥</span> Live RSVP</span>
       </div>
-      
+
       <div class="cta">
-        <a class="btn g" href="#designs">✦ Explore 10 Royal Designs ↓</a>
-        <a class="btn o" href="./Invite/studio.html" target="_blank">Open Studio Builder ↗</a>
+        <a class="btn g hero-btn-explore" href="#designs">✦ Explore 10 Royal Designs ↓</a>
         <a class="btn wa-btn" id="heroWaBtn" href="#" target="_blank">Direct WhatsApp Order 💬</a>
+        <a class="btn o" href="./Invite/studio.html" target="_blank">Open Studio Builder ↗</a>
       </div>
 
-      <div class="hero-features">
-        <div class="hero-feat-item"><span class="icon">✓</span> Every Guest Name Personalization</div>
-        <div class="hero-feat-item"><span class="icon">✓</span> Live RSVP &amp; Guest Attendance Tracker</div>
-        <div class="hero-feat-item"><span class="icon">✓</span> 1-Click Google Maps Venue GPS</div>
-        <div class="hero-feat-item"><span class="icon">✓</span> Delivered in Under 1 Hour</div>
+      <div class="hero-trust-micro">
+        <span>✓ Instant Live Preview</span>
+        <span>✓ 1-Click WhatsApp Sharing</span>
+        <span>✓ Zero App Download Needed</span>
       </div>
     </div>
 
-    <!-- Phone Canvas Mockup with Interactive Tradition Switcher -->
-    <div class="phone-stage">
+    <!-- Desktop Photorealistic Phone Mockup in Hero Split Layout -->
+    <div class="phone-stage phone-stage-desktop">
       <div class="phone-tabs" role="tablist">
         <button class="phone-tab-btn active" data-trad="hindu">🕉️ Hindu</button>
         <button class="phone-tab-btn" data-trad="muslim">☪️ Muslim</button>
@@ -3569,179 +3880,163 @@
 
       <div class="phone" id="phoneMockup">
         <div class="phone-notch"><span class="phone-camera"></span></div>
-        <div class="scr" id="heroPhoneContent">
+        <div class="scr hero-phone-scr" id="heroPhoneContent">
           <!-- Live Preview Card renders here dynamically -->
         </div>
       </div>
 
       <!-- Music Toggle Pill -->
-      <button class="audio-pill" id="audioToggleBtn" aria-label="Play background wedding music">
-        <div class="audio-eq paused" id="audioEq">
+      <button class="audio-pill audio-pill-btn" aria-label="Play background wedding music">
+        <div class="audio-eq paused">
           <span></span><span></span><span></span><span></span>
         </div>
-        <span id="audioLabel">♫ Preview Shehnai Music</span>
+        <span class="audio-label-text">♫ Preview Shehnai Music</span>
       </button>
-      <audio id="weddingAudio" src="./Invite/invitation.mp3" preload="none" loop></audio>
     </div>
   </section>
 
-  <!-- Key Figures Bar -->
+  <!-- Key Figures Bar (4-Metric Counter Strip) -->
   <div class="stats-wrap">
     <div class="stats">
-      <div class="stat-col"><b>2,500+</b><span class="stat-label">Invitations Delivered</span></div>
-      <div class="stat-col"><b>4.9 / 5.0</b><span class="stat-label">Couple Satisfaction</span></div>
-      <div class="stat-col"><b>₹25,000+</b><span class="stat-label">Saved vs Paper Cards</span></div>
-      <div class="stat-col"><b>60 Mins</b><span class="stat-label">Average Delivery Speed</span></div>
+      <div class="stat-col"><b>2,500+</b><span class="stat-label">Invitations Sent</span></div>
+      <div class="stat-col"><b>4.9 / 5.0</b><span class="stat-label">Couple Rating</span></div>
+      <div class="stat-col"><b>₹25,000+</b><span class="stat-label">Saved on Paper</span></div>
+      <div class="stat-col"><b>60 Mins</b><span class="stat-label">Average Delivery</span></div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       12 SMART FEATURES: A TO Z EVENT & INVITATION MANAGEMENT
-       ========================================================================== -->
-    <!-- Features Section (Everything Your Invitation Needs) -->
+  <!-- Compact "Inside the Invitation" Features (4-Card Row on Desktop, 2x2 Grid on Mobile) -->
   <section id="features" class="features-section">
     <div class="section-head">
-      <h2>Everything Your Invitation Needs</h2>
+      <h2>"Inside the Invitation" Features</h2>
       <div class="gold-hairline"></div>
       <p>Thoughtful details that make inviting easier for you, and more delightful for every guest.</p>
     </div>
 
-    <div class="features-grid">
-      <!-- 1 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">🏷️</div>
-        <h3 class="feat-title">Personalised for Every Guest</h3>
-        <p class="feat-desc">Each guest or family receives their own link and is greeted by name on the card.</p>
+    <div class="features-grid-compact">
+      <!-- 1. Personalised Invites -->
+      <div class="compact-feat-card">
+        <div class="compact-feat-badge">💌</div>
+        <h3 class="compact-feat-title">Personalised Invites</h3>
+        <p class="compact-feat-desc">Each guest's name on their invite with royal entry music.</p>
       </div>
 
-      <!-- 2 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">👨‍👩‍👧‍👦</div>
-        <h3 class="feat-title">Individual &amp; Family Invites</h3>
-        <p class="feat-desc">Invite one person or an entire family, with adult and children counts built in.</p>
+      <!-- 2. Live RSVP Tracker -->
+      <div class="compact-feat-card">
+        <div class="compact-feat-badge">📊</div>
+        <h3 class="compact-feat-title">Live RSVP Tracker</h3>
+        <p class="compact-feat-desc">Track RSVP responses &amp; event attendance in real time.</p>
       </div>
 
-      <!-- 3 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">📊</div>
-        <h3 class="feat-title">Live RSVP Tracking</h3>
-        <p class="feat-desc">See who has confirmed, who has declined and your total headcount, with meal preferences.</p>
+      <!-- 3. Venue & GPS Maps -->
+      <div class="compact-feat-card">
+        <div class="compact-feat-badge">📍</div>
+        <h3 class="compact-feat-title">Venue &amp; GPS Maps</h3>
+        <p class="compact-feat-desc">Guests get exact GPS routes straight inside the invite.</p>
       </div>
 
-      <!-- 4 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">📅</div>
-        <h3 class="feat-title">Multi-Event Planning</h3>
-        <p class="feat-desc">Haldi, Mehendi, Sangeet, Phere or Reception: know exactly who is attending which.</p>
-      </div>
-
-      <!-- 5 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">✨</div>
-        <h3 class="feat-title">Scratch-to-Reveal Message</h3>
-        <p class="feat-desc">A gold-foil scratch panel unveils a heartfelt message or blessing.</p>
-      </div>
-
-      <!-- 6 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">📍</div>
-        <h3 class="feat-title">One-Tap Venue Directions</h3>
-        <p class="feat-desc">Guests open Google Maps straight to the venue, with no last-minute calls for directions.</p>
-      </div>
-
-      <!-- 7 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">⏳</div>
-        <h3 class="feat-title">Save-the-Date &amp; Countdown</h3>
-        <p class="feat-desc">A dynamic real-time clock and 1-tap calendar sync keep guests excited as the date approaches.</p>
-      </div>
-
-      <!-- 8 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">🍽️</div>
-        <h3 class="feat-title">Curated Food &amp; Catering Menu</h3>
-        <p class="feat-desc">Delight guests with your ceremony dining menu: welcome drinks, live counters, and banquet feast.</p>
-      </div>
-
-      <!-- 9 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">💰</div>
-        <h3 class="feat-title">Smart Wedding Expense Planner</h3>
-        <p class="feat-desc">Track vendor payments, advance receipts, and shagun gifts in one organized digital view.</p>
-      </div>
-
-      <!-- 10 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">🎵</div>
-        <h3 class="feat-title">Royal Background Music</h3>
-        <p class="feat-desc">Authentic shehnai and sitar melodies play as the envelope reveals your royal invitation.</p>
-      </div>
-
-      <!-- 11 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">💬</div>
-        <h3 class="feat-title">Rich WhatsApp Share Cards</h3>
-        <p class="feat-desc">Instant luxury preview cards on WhatsApp with high-res couple artwork and personalized links.</p>
-      </div>
-
-      <!-- 12 -->
-      <div class="feat-card">
-        <div class="feat-icon-wrap">⚡</div>
-        <h3 class="feat-title">Express 1-Hour Turnaround</h3>
-        <p class="feat-desc">Share your details and receive your live, shareable digital invitation in under 60 minutes.</p>
+      <!-- 4. Fast Delivery -->
+      <div class="compact-feat-card">
+        <div class="compact-feat-badge">⚡</div>
+        <h3 class="compact-feat-title">Fast Delivery</h3>
+        <p class="compact-feat-desc">Get your live shareable link delivered in under 60 mins.</p>
       </div>
     </div>
   </section>
 
-  <!-- Beyond Weddings Section -->
+  <!-- Mobile Dedicated Live Demo & Tradition Switcher Section (Matches Screenshot 3) -->
+  <section id="live-demo-section" class="mobile-live-demo-section">
+    <div class="mandala-watermark top-left" aria-hidden="true"></div>
+    <div class="mandala-watermark top-right" aria-hidden="true"></div>
+
+    <div class="section-head">
+      <h2>Discover Royal Designs</h2>
+      <p style="font-size:1.15rem;font-weight:600;color:var(--goldtx);margin-top:4px;">Choose Your Tradition</p>
+    </div>
+
+    <div class="phone-stage phone-stage-mobile">
+      <div class="phone-tabs" role="tablist">
+        <button class="phone-tab-btn active" data-trad="hindu">🕉️ Hindu</button>
+        <button class="phone-tab-btn" data-trad="muslim">☪️ Muslim</button>
+        <button class="phone-tab-btn" data-trad="sikh">☬ Sikh</button>
+        <button class="phone-tab-btn" data-trad="royal">👑 Royal</button>
+        <button class="phone-tab-btn" data-trad="floral">🌸 Floral</button>
+      </div>
+
+      <div class="phone" id="phoneMockupMobile">
+        <div class="phone-notch"><span class="phone-camera"></span></div>
+        <div class="scr hero-phone-scr" id="heroPhoneContentMobile">
+          <!-- Live Preview Card renders here dynamically -->
+        </div>
+      </div>
+
+      <!-- Music Toggle Pill -->
+      <button class="audio-pill audio-pill-btn" aria-label="Play background wedding music">
+        <div class="audio-eq paused">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <span class="audio-label-text">♫ Preview Shehnai Music</span>
+      </button>
+
+      <a class="btn g full-demo-btn" href="#designs">Open Full Live Demo ✦</a>
+    </div>
+  </section>
+
+  <!-- Audio Element (Single Shared Instance) -->
+  <audio id="weddingAudio" src="./Invite/invitation.mp3" preload="none" loop></audio>
+
+  <!-- Beyond Weddings Section (Matches Screenshot 3) -->
   <section id="beyond-weddings" class="beyond-section">
     <div class="section-head">
       <h2>Beyond Weddings</h2>
       <div class="gold-hairline"></div>
-      <p>Weddings are where we begin. More family occasions are on their way.</p>
+      <p>We also create digital invites for all your special family occasions.</p>
     </div>
 
-    <div class="beyond-grid">
-      <!-- 1. Wedding -->
-      <div class="beyond-card">
-        <h3>Wedding</h3>
-        <p>Our digital wedding invitation collection is open now.</p>
-        <span class="beyond-pill pill-active">Available now</span>
+    <div class="beyond-pills-grid">
+      <!-- 1. Wedding (Active) -->
+      <div class="beyond-pill-item active">
+        <span class="beyond-ico">💑</span>
+        <div class="beyond-text">
+          <b>Wedding</b>
+          <span>Available now</span>
+        </div>
       </div>
 
-      <!-- 2. Rice Ceremony -->
-      <div class="beyond-card">
-        <h3>Rice Ceremony</h3>
-        <p>Invitations for a baby's first rice ceremony.</p>
-        <span class="beyond-pill pill-coming">Coming soon</span>
+      <!-- 2. Birthday -->
+      <div class="beyond-pill-item">
+        <span class="beyond-ico">🎂</span>
+        <div class="beyond-text">
+          <b>Birthday</b>
+          <span>Coming soon</span>
+        </div>
       </div>
 
-      <!-- 3. Aqeeqah -->
-      <div class="beyond-card">
-        <h3>Aqeeqah</h3>
-        <p>A warm invitation to welcome a newborn.</p>
-        <span class="beyond-pill pill-coming">Coming soon</span>
+      <!-- 3. Anniversary -->
+      <div class="beyond-pill-item">
+        <span class="beyond-ico">💍</span>
+        <div class="beyond-text">
+          <b>Anniversary</b>
+          <span>Coming soon</span>
+        </div>
       </div>
 
-      <!-- 4. Birthday -->
-      <div class="beyond-card">
-        <h3>Birthday</h3>
-        <p>Invite, share and celebrate with ease.</p>
-        <span class="beyond-pill pill-coming">Coming soon</span>
+      <!-- 4. Aqeeqah -->
+      <div class="beyond-pill-item">
+        <span class="beyond-ico">🍼</span>
+        <div class="beyond-text">
+          <b>Aqeeqah</b>
+          <span>Coming soon</span>
+        </div>
       </div>
 
-      <!-- 5. Musalmani -->
-      <div class="beyond-card">
-        <h3>Musalmani</h3>
-        <p>Invitations for this cherished family occasion.</p>
-        <span class="beyond-pill pill-coming">Coming soon</span>
-      </div>
-
-      <!-- 6. More occasions -->
-      <div class="beyond-card">
-        <h3>More occasions</h3>
-        <p>More celebrations, added over time.</p>
-        <span class="beyond-pill pill-coming">Coming soon</span>
+      <!-- 5. More Occasions -->
+      <div class="beyond-pill-item">
+        <span class="beyond-ico">👶</span>
+        <div class="beyond-text">
+          <b>More Occasions</b>
+          <span>Coming soon</span>
+        </div>
       </div>
     </div>
   </section>
@@ -3926,6 +4221,35 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Modern Split Comparison Card for Mobile (Replaces Clumsy Tables on Small Screens) -->
+    <div class="smart-compare-card">
+      <!-- Traditional Paper Card Column -->
+      <div class="split-col-paper">
+        <span class="split-col-badge badge-paper">Traditional Paper Cards</span>
+        <h3 class="split-col-title">The Old Clumsy Way</h3>
+        <ul class="split-list">
+          <li><span class="bullet-ico">✕</span> <span><strong>₹30,000+ Cost:</strong> Heavy expenses on printing, boxes, couriers and postage.</span></li>
+          <li><span class="bullet-ico">✕</span> <span><strong>2–3 Weeks Delay:</strong> Endless rounds of proofing, printing press visits and courier waiting.</span></li>
+          <li><span class="bullet-ico">✕</span> <span><strong>Manual Calling for RSVP:</strong> Calling every guest multiple times without accurate catering headcounts.</span></li>
+          <li><span class="bullet-ico">✕</span> <span><strong>Confusing Directions:</strong> Guests getting lost, repeatedly calling you while driving to the venue.</span></li>
+          <li><span class="bullet-ico">✕</span> <span><strong>Eco-Damage:</strong> 40+ trees cut down; cards thrown away into dustbins after the event.</span></li>
+        </ul>
+      </div>
+
+      <!-- Prime eCard Smart Digital Column -->
+      <div class="split-col-digital">
+        <span class="split-col-badge badge-digital">★ Prime eCard™ Smart Digital</span>
+        <h3 class="split-col-title">The Royal Modern Way</h3>
+        <ul class="split-list">
+          <li><span class="bullet-ico">✓</span> <span><strong>Starts Flat ₹799:</strong> One flat price for unlimited guests. Save ₹25,000+ instantly.</span></li>
+          <li><span class="bullet-ico">✓</span> <span><strong>60-Minute Turnaround:</strong> Live, shareable digital invitation delivered straight on WhatsApp.</span></li>
+          <li><span class="bullet-ico">✓</span> <span><strong>Auto RSVP Tracker:</strong> Live attendee headcount and dietary notes updated in real time.</span></li>
+          <li><span class="bullet-ico">✓</span> <span><strong>1-Click Google Maps GPS:</strong> Exact turn-by-turn navigation directly to your banquet gate.</span></li>
+          <li><span class="bullet-ico">✓</span> <span><strong>100% Eco-Friendly:</strong> Zero trees cut, zero paper waste, and cherished forever online.</span></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -4641,33 +4965,32 @@
       toast(`Switched to ${next === 'dark' ? 'Dark Mode 🌙' : 'Light Mode ☀️'}`);
     });
 
-    // Audio Player Toggle
-    const audioBtn = $('#audioToggleBtn');
+    // Audio Player Toggle (supports both desktop and mobile buttons)
     const audioEl = $('#weddingAudio');
-    const audioEq = $('#audioEq');
-    const audioLabel = $('#audioLabel');
-    audioBtn.addEventListener('click', () => {
+    function toggleWeddingAudio() {
+      if (!audioEl) return;
       if (audioEl.paused) {
         audioEl.play().then(() => {
-          audioEq.classList.remove('paused');
-          audioLabel.textContent = '♫ Playing Shehnai Music (Tap to Pause)';
+          $$('.audio-eq').forEach(eq => eq.classList.remove('paused'));
+          $$('.audio-label-text').forEach(lbl => lbl.textContent = '♫ Playing Shehnai Music (Tap to Pause)');
         }).catch(() => {
           toast('Tap anywhere to enable audio playback');
         });
       } else {
         audioEl.pause();
-        audioEq.classList.add('paused');
-        audioLabel.textContent = '♫ Preview Shehnai Music';
+        $$('.audio-eq').forEach(eq => eq.classList.add('paused'));
+        $$('.audio-label-text').forEach(lbl => lbl.textContent = '♫ Preview Shehnai Music');
       }
+    }
+    $$('.audio-pill-btn, .audio-pill, #audioToggleBtn').forEach(btn => {
+      btn.addEventListener('click', toggleWeddingAudio);
     });
 
-    // Render Hero Phone Screen
+    // Render Hero Phone Screen (supports both desktop hero phone and mobile live demo phone)
     function renderHeroPhone(key = 'hindu') {
       const data = HERO_PREVIEWS[key] || HERO_PREVIEWS.hindu;
-      const container = $('#heroPhoneContent');
-      container.style.background = data.bg;
       const toranSrc = isInsideInvite ? data.toran.replace('./Invite/', './') : data.toran;
-      container.innerHTML = `
+      const html = `
         <div class="hero-card-view" style="color:${data.textColor};">
           ${toranSrc ? `<img src="${toranSrc}" class="hero-card-toran" alt="Toran" />` : ''}
           <div class="hero-card-inscr">${data.inscr}</div>
@@ -4689,14 +5012,25 @@
           </button>
         </div>
       `;
+      $$('.hero-phone-scr').forEach(container => {
+        container.style.background = data.bg;
+        container.innerHTML = html;
+      });
+      const legacyEl = $('#heroPhoneContent');
+      if (legacyEl && !legacyEl.classList.contains('hero-phone-scr')) {
+        legacyEl.style.background = data.bg;
+        legacyEl.innerHTML = html;
+      }
     }
 
-    // Phone Tabs Switcher
+    // Phone Tabs Switcher (syncs desktop and mobile tabs)
     $$('.phone-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        $$('.phone-tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderHeroPhone(btn.dataset.trad);
+        const trad = btn.dataset.trad;
+        $$('.phone-tab-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.trad === trad);
+        });
+        renderHeroPhone(trad);
       });
     });
 
