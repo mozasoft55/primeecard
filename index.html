@@ -7,7 +7,7 @@
   <title>Prime eCard™ | Invites & Events Management Smartly</title>
   
   <!-- SEO & Social Media Marketing Meta Tags (Instagram, WhatsApp, Facebook, iMessage) -->
-  <meta name="description" content="Prime eCard: Invites & Events Management Smartly. Save time, effort & money with luxury digital invitations, individual guest name cards, live RSVP attendance tracking, Google Maps navigation, food menu, and expense planner in under 1 hour!">
+  <meta name="description" content="Prime eCard: Invites & Events Management Smartly. Save time, effort & money with luxury digital invitations, individual guest name cards, live RSVP attendance tracking, Google Maps navigation, food menu, and expense planner in under 10 minutes!">
   <meta name="keywords" content="prime ecard, digital wedding card, online wedding invitation, wedding invitation on whatsapp, indian wedding card, shadi card, guest tracking, rsvp management, paperless wedding invite">
   <meta name="author" content="Prime eCard">
   <link rel="canonical" href="https://primeecard.com/">
@@ -16,7 +16,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prime eCard">
   <meta property="og:title" content="Prime eCard™ | Invites & Events Management Smartly">
-  <meta property="og:description" content="Save time, effort & money! Send luxury interactive wedding invitations with individual guest names, live RSVP, Google Maps & background music directly on WhatsApp. Ready in under 1 hour!">
+  <meta property="og:description" content="Save time, effort & money! Send luxury interactive wedding invitations with individual guest names, live RSVP, Google Maps & background music directly on WhatsApp. Ready in under 10 minutes!">
   <meta property="og:image" content="./Invite/assets/template-06-card-art.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
   <!-- Twitter / X Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Prime eCard™ | Invites & Events Management Smartly">
-  <meta name="twitter:description" content="Manage your wedding invites & guests from A to Z on WhatsApp. Individual guest names, live RSVP & instant 1-hour delivery!">
+  <meta name="twitter:description" content="Manage your wedding invites & guests from A to Z on WhatsApp. Individual guest names, live RSVP & instant 10-minute delivery!">
   <meta name="twitter:image" content="./Invite/assets/template-06-card-art.jpg">
 
   <!-- Google Fonts Preconnect & Stylesheets -->
@@ -96,7 +96,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; width: 100%; max-width: 100vw; overflow-x: hidden; }
     body {
       background: var(--bg);
       color: var(--ink);
@@ -910,6 +910,7 @@
       max-width: 1220px;
       margin: 0 auto;
       box-sizing: border-box;
+      overflow: hidden;
     }
     .wiz-wrap {
       display: grid;
@@ -921,14 +922,24 @@
       max-width: 1220px;
       box-sizing: border-box;
     }
+    .wiz-wrap > div:first-child {
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
     @media (max-width: 900px) {
       .wiz-wrap {
-        grid-template-columns: 1fr !important;
-        gap: 24px !important;
-        max-width: 620px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        grid-template-columns: 100% !important;
+        gap: 20px !important;
+        max-width: 100% !important;
+        margin: 20px auto 0 !important;
         width: 100% !important;
+      }
+      .wiz-wrap > div:first-child {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
       }
       .wiz-preview-col {
         display: flex !important;
@@ -936,12 +947,15 @@
         align-items: center !important;
         justify-content: center !important;
         width: 100% !important;
-        margin-top: 18px !important;
+        max-width: 100% !important;
+        margin-top: 22px !important;
+        min-width: 0 !important;
       }
       .wiz-preview-col .phone {
-        width: min(290px, 86vw) !important;
-        height: 560px !important;
+        width: min(280px, 84vw) !important;
+        height: 540px !important;
         margin: 0 auto !important;
+        max-width: 100% !important;
       }
     }
     .steps-nav {
@@ -949,10 +963,13 @@
       gap: 6px;
       margin-bottom: 24px;
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     .step-item {
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 0;
       border-top: 3px solid var(--ln);
       padding-top: 8px;
       font-size: 13px;
@@ -960,6 +977,9 @@
       color: var(--mute);
       text-align: center;
       transition: border-color 0.3s, color 0.3s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .step-item.active { border-color: var(--gold); color: var(--wine); font-weight: 700; }
     .form-panel {
@@ -969,26 +989,31 @@
       padding: 28px;
       box-shadow: var(--shadow-sm);
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
-    .form-group { display: grid; gap: 14px; width: 100%; box-sizing: border-box; }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; box-sizing: border-box; }
+    .form-group { display: grid; gap: 14px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
     @media (max-width: 600px) {
-      .form-row-2 { grid-template-columns: 1fr; }
+      .form-row-2 { grid-template-columns: 100% !important; gap: 12px !important; }
       .form-panel {
         padding: 20px 14px !important;
         border-radius: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
       .steps-nav {
         gap: 4px !important;
         margin-bottom: 18px !important;
       }
       .step-item {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         padding-top: 6px !important;
+        letter-spacing: -0.02em !important;
       }
     }
-    .field { display: grid; gap: 6px; width: 100%; max-width: 100%; box-sizing: border-box; }
+    .field { display: grid; gap: 6px; width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
     .field label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
     .field input, .field select, .field textarea {
       padding: 12px 14px;
@@ -1001,6 +1026,7 @@
       outline: none;
       width: 100%;
       max-width: 100%;
+      min-width: 0;
       box-sizing: border-box;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
@@ -1020,6 +1046,7 @@
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     .custom-select-trigger {
       width: 100%;
@@ -1038,6 +1065,8 @@
       font: inherit;
       color: var(--ink);
       gap: 10px;
+      min-width: 0;
+      overflow: hidden;
     }
     .custom-select-trigger:focus,
     .custom-select-trigger.active {
@@ -1097,6 +1126,7 @@
       width: 100%;
       max-width: 100%;
       overflow: hidden;
+      min-width: 0;
     }
     .custom-select-opt:last-child {
       border-bottom: none;
@@ -1110,7 +1140,9 @@
     .opt-main {
       display: flex;
       flex-direction: column;
+      flex: 1 1 0%;
       min-width: 0;
+      width: 0;
       overflow: hidden;
       text-align: left;
     }
@@ -1121,6 +1153,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
     .opt-meta {
       font-size: 11px;
@@ -1128,6 +1162,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
     .opt-price {
       font-family: var(--display);
@@ -1146,7 +1182,9 @@
       gap: 12px;
       margin-top: 20px;
       width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+      min-width: 0;
     }
     @media (max-width: 600px) {
       .wiz-buttons-row {
@@ -1328,13 +1366,42 @@
       inset: 0;
       background: rgba(8, 14, 28, 0.85);
       backdrop-filter: blur(8px);
-      z-index: 100;
-      display: none;
+      z-index: 100000; display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .modal.on { display: flex; }
+    .modal.on,
+    .modal.active {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    .policy-mbox {
+      background: var(--surf) !important;
+      border: 1.5px solid var(--goldtx) !important;
+      border-radius: 24px !important;
+      max-width: 780px !important;
+      width: 100% !important;
+      max-height: 86vh !important;
+      overflow-y: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      padding: 36px 30px !important;
+      position: relative !important;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7), 0 0 40px rgba(201, 162, 75, 0.15) !important;
+      color: var(--ink) !important;
+      text-align: left !important;
+      z-index: 100001 !important;
+    }
+    @media (max-width: 600px) {
+      .policy-mbox {
+        padding: 24px 18px !important;
+        max-height: 90vh !important;
+        border-radius: 18px !important;
+      }
+    }
     .mbox {
       background: var(--bg);
       border: 1px solid var(--ln-strong);
@@ -2998,17 +3065,38 @@
       .contact-section,
       #traditions,
       #designs,
+      #customise,
       #compare,
       #packages,
-      #reviews,
       #faq {
         width: 100% !important;
         max-width: 100% !important;
-        padding: 34px 14px !important;
+        padding: 34px 16px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         box-sizing: border-box !important;
+        overflow: hidden !important;
       }
+    }
+    @media (max-width: 480px) {
+      section,
+      .features-section,
+      .beyond-section,
+      .about-section,
+      .contact-section,
+      #traditions,
+      #designs,
+      #customise,
+      #compare,
+      #packages,
+      #faq {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+      }
+      .form-panel {
+        padding: 18px 12px !important;
+      }
+    }
       .comp-table-wrap {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
@@ -3394,20 +3482,28 @@
       gap: 16px !important;
     }
     .footer-legal-inline {
-      display: flex !important;
+      display: inline-flex !important;
       align-items: center !important;
-      gap: 20px !important;
+      justify-content: flex-start !important;
+      gap: 22px !important;
+      flex-wrap: wrap !important;
     }
     .footer-legal-link, .footer-legal-btn {
-      background: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
       border: none !important;
       padding: 0 !important;
+      margin: 0 !important;
       font-size: 13.5px !important;
       font-weight: 600 !important;
+      line-height: 1.2 !important;
       color: var(--ink) !important;
       cursor: pointer !important;
       text-decoration: none !important;
-      transition: color 0.2s !important;
+      vertical-align: middle !important;
+      transition: color 0.2s ease !important;
       font-family: inherit !important;
     }
     .footer-legal-link:hover, .footer-legal-btn:hover {
@@ -3453,19 +3549,20 @@
       z-index: 0;
     }
     .mandala-watermark.top-left {
-      top: -30px;
-      left: -30px;
+      top: -20px;
+      left: 0px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
     }
     .mandala-watermark.top-right {
-      top: -30px;
-      right: -30px;
+      top: -20px;
+      right: 0px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23C5A059' d='M100 0 C120 40 160 40 200 100 C160 160 120 160 100 200 C80 160 40 160 0 100 C40 40 80 40 100 0 Z'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='%23C5A059' stroke-width='4'/%3E%3Ccircle cx='100' cy='100' r='75' fill='none' stroke='%23C5A059' stroke-width='2' stroke-dasharray='4 4'/%3E%3C/svg%3E");
     }
 
     /* Hero Refined Balanced Layout (1920x1080 Desktop Split & Mobile Stacked) */
     .hero {
       position: relative;
+      overflow: hidden;
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 48px;
@@ -3618,6 +3715,7 @@
     /* Mobile Live Demo Section (Matches Screenshot 3) */
     .mobile-live-demo-section {
       display: none;
+      overflow: hidden;
       padding: 40px 16px 20px;
       text-align: center;
       position: relative;
@@ -3783,6 +3881,108 @@
     .split-col-digital .bullet-ico { color: #2E7D32; font-size: 15px; }
 
   </style>
+  <!-- High-Intent Organic Technical SEO Schema Markup (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": "https://primeecard.com/#product",
+        "name": "Prime eCard Royal Digital Wedding Invitation Suite",
+        "image": "https://primeecard.com/og-royal-gate.webp",
+        "description": "Bespoke royal 3D digital wedding invitation with door entrance animation, Shehnai audio, live RSVP tracking, and Google Maps venue sync.",
+        "brand": {
+          "@type": "Brand",
+          "name": "Prime eCard"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://primeecard.com",
+          "priceCurrency": "INR",
+          "price": "1999",
+          "priceValidUntil": "2026-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Prime eCard Atelier"
+          }
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "380",
+          "reviewCount": "380"
+        }
+      },
+      {
+        "@type": ["LocalBusiness", "ProfessionalService"],
+        "@id": "https://primeecard.com/#business",
+        "name": "Prime eCard Luxury Wedding Atelier",
+        "url": "https://primeecard.com",
+        "logo": "https://primeecard.com/logo-gold.svg",
+        "image": "https://primeecard.com/og-royal-gate.webp",
+        "telephone": "+919477929927",
+        "priceRange": "₹1,999 - ₹4,999",
+        "areaServed": [
+          { "@type": "City", "name": "Kolkata" },
+          { "@type": "City", "name": "New Delhi" },
+          { "@type": "City", "name": "Mumbai" },
+          { "@type": "City", "name": "Bengaluru" },
+          { "@type": "City", "name": "Dubai" },
+          { "@type": "City", "name": "London" }
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kolkata",
+          "addressRegion": "West Bengal",
+          "addressCountry": "IN"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://primeecard.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How quickly is my royal digital wedding invitation delivered?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Your custom digital invitation draft is delivered directly to your WhatsApp in under 10 minutes after you submit your couple and ceremony details."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is included in the flat ₹1,999 pricing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The flat ₹1,999 package includes the 3D royal opening gate animation, personalised guest names, background Shehnai/Sitar music, real-time RSVP tracking, 1-tap Google Maps directions, and 1 year of cloud hosting for unlimited guests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I customize the background music and language?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can select classical Shehnai, sitar melodies, Vedic chants, Sufi instrumental, or upload your own favorite audio track in Hindi, Bengali, Urdu, English, Tamil, or Telugu."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can dates and venues be updated after the card is delivered?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Unlike paper cards that cost tens of thousands to reprint, Prime eCard allows instantaneous cloud updates for dates, venue locations, or muhurat timings in seconds."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -3836,8 +4036,11 @@
     <div class="mandala-watermark top-right" aria-hidden="true"></div>
 
     <div class="hero-left-col">
-      <div class="trust-pill">✦ Royal Digital Wedding Invitations ✦</div>
-      <h1>Your love story deserves an extraordinary invitation.</h1>
+      <div class="trust-pill">✦ ROYAL BESPOKE DIGITAL ATELIER ✦</div>
+      <h1>India’s Most Royal Digital Wedding Invitations — Delivered on WhatsApp in 10 Minutes</h1>
+      <p style="color:var(--mute);font-size:1.05rem;line-height:1.6;max-width:58ch;margin:12px auto 0;">
+        Replace wasteful paper invites with interactive heirloom experiences. Handcrafted 3D royal gates, bespoke background melodies, live WhatsApp RSVPs, and 1-tap Google Maps venue directions.
+      </p>
 
       <!-- Royal Diamond Divider -->
       <div class="royal-divider" aria-hidden="true">
@@ -3848,7 +4051,7 @@
 
       <!-- 1-Line Trust Badge Strip -->
       <div class="hero-trust-badge">
-        <span class="trust-item"><span class="trust-ico">⚡</span> 1-Hour Delivery</span>
+        <span class="trust-item"><span class="trust-ico">⚡</span> 10-Minute Delivery</span>
         <span class="trust-sep">|</span>
         <span class="trust-item"><span class="trust-ico">📍</span> Google Maps GPS</span>
         <span class="trust-sep">|</span>
@@ -3856,7 +4059,7 @@
       </div>
 
       <div class="cta">
-        <a class="btn g hero-btn-explore" href="#designs">✦ Explore 10 Royal Designs ↓</a>
+        <a class="btn g hero-btn-explore" href="#designs">✦ Explore Royal Designs ↓</a>
         <a class="btn wa-btn" id="heroWaBtn" href="#" target="_blank">Direct WhatsApp Order 💬</a>
         <a class="btn o" href="./Invite/studio.html" target="_blank">Open Studio Builder ↗</a>
       </div>
@@ -3895,16 +4098,6 @@
     </div>
   </section>
 
-  <!-- Key Figures Bar (4-Metric Counter Strip) -->
-  <div class="stats-wrap">
-    <div class="stats">
-      <div class="stat-col"><b>2,500+</b><span class="stat-label">Invitations Sent</span></div>
-      <div class="stat-col"><b>4.9 / 5.0</b><span class="stat-label">Couple Rating</span></div>
-      <div class="stat-col"><b>₹25,000+</b><span class="stat-label">Saved on Paper</span></div>
-      <div class="stat-col"><b>60 Mins</b><span class="stat-label">Average Delivery</span></div>
-    </div>
-  </div>
-
   <!-- Compact "Inside the Invitation" Features (4-Card Row on Desktop, 2x2 Grid on Mobile) -->
   <section id="features" class="features-section">
     <div class="section-head">
@@ -3939,7 +4132,7 @@
       <div class="compact-feat-card">
         <div class="compact-feat-badge">⚡</div>
         <h3 class="compact-feat-title">Fast Delivery</h3>
-        <p class="compact-feat-desc">Get your live shareable link delivered in under 60 mins.</p>
+        <p class="compact-feat-desc">Get your live shareable link delivered in under 10 mins.</p>
       </div>
     </div>
   </section>
@@ -4051,12 +4244,12 @@
       <button class="col-card active" data-filter="all">
         <div class="col-glyph">✨</div>
         <b>All Collections</b>
-        <span>10 Complete Designs</span>
+        <span>Master Royal Suites</span>
       </button>
       <button class="col-card" data-filter="Hindu">
         <div class="col-glyph">🕉️</div>
         <b>Vedic &amp; Bengali Hindu</b>
-        <span>5 Suites · Shubho Bibaho</span>
+        <span>Template 05 &amp; 06 · Shubho Bibaho</span>
       </button>
       <button class="col-card" data-filter="Muslim">
         <div class="col-glyph">☪️</div>
@@ -4085,7 +4278,7 @@
   <section id="designs">
     <div class="section-head">
       <h2>The Royal Wedding Card Showcase</h2>
-      <p>Browse our curated collection including 5 distinct Bengali Hindu master suites. Click "Live Demo" to test animations, music, and interactive RSVP.</p>
+      <p>Browse our curated royal collection featuring Template 05 &amp; Template 06 master suites. Click "Live Demo" to test animations, music, and interactive RSVP.</p>
     </div>
 
     <!-- Filter & Search Controls -->
@@ -4115,7 +4308,7 @@
 
     <!-- Cards Grid -->
     <div class="grid" id="cardsGrid">
-      <!-- Dynamic render of all 10 templates -->
+      <!-- Dynamic render of royal templates -->
     </div>
   </section>
 
@@ -4123,7 +4316,7 @@
   <section id="customise">
     <div class="section-head">
       <h2>Instant Personalization &amp; WhatsApp Quote</h2>
-      <p>Fill your celebration details below. Review live on the right and order in 1 click!</p>
+      <p>Fill your celebration details below to review live and order in 1 click!</p>
     </div>
 
     <div class="wiz-wrap">
@@ -4186,7 +4379,7 @@
           </tr>
           <tr>
             <td><strong>Delivery Speed</strong></td>
-            <td class="vivaah">Under 1 Hour (Instant Live Link)</td>
+            <td class="vivaah">Under 10 Minutes (Instant Live Link)</td>
             <td class="paper">2 to 3 Weeks (Printing, proofing &amp; courier delays)</td>
           </tr>
           <tr>
@@ -4230,7 +4423,7 @@
         <span class="split-col-badge badge-paper">Traditional Paper Cards</span>
         <h3 class="split-col-title">The Old Clumsy Way</h3>
         <ul class="split-list">
-          <li><span class="bullet-ico">✕</span> <span><strong>₹30,000+ Cost:</strong> Heavy expenses on printing, boxes, couriers and postage.</span></li>
+          <li><span class="bullet-ico">✕</span> <span><strong>₹45,000+ Cost:</strong> Heavy expenses on printing, boxes, couriers and postage.</span></li>
           <li><span class="bullet-ico">✕</span> <span><strong>2–3 Weeks Delay:</strong> Endless rounds of proofing, printing press visits and courier waiting.</span></li>
           <li><span class="bullet-ico">✕</span> <span><strong>Manual Calling for RSVP:</strong> Calling every guest multiple times without accurate catering headcounts.</span></li>
           <li><span class="bullet-ico">✕</span> <span><strong>Confusing Directions:</strong> Guests getting lost, repeatedly calling you while driving to the venue.</span></li>
@@ -4243,7 +4436,7 @@
         <span class="split-col-badge badge-digital">★ Prime eCard™ Smart Digital</span>
         <h3 class="split-col-title">The Royal Modern Way</h3>
         <ul class="split-list">
-          <li><span class="bullet-ico">✓</span> <span><strong>Starts Flat ₹799:</strong> One flat price for unlimited guests. Save ₹25,000+ instantly.</span></li>
+          <li><span class="bullet-ico">✓</span> <span><strong>Flat ₹1,999 Heirloom Suite:</strong> One flat price for unlimited guests. Save ₹25,000+ instantly.</span></li>
           <li><span class="bullet-ico">✓</span> <span><strong>60-Minute Turnaround:</strong> Live, shareable digital invitation delivered straight on WhatsApp.</span></li>
           <li><span class="bullet-ico">✓</span> <span><strong>Auto RSVP Tracker:</strong> Live attendee headcount and dietary notes updated in real time.</span></li>
           <li><span class="bullet-ico">✓</span> <span><strong>1-Click Google Maps GPS:</strong> Exact turn-by-turn navigation directly to your banquet gate.</span></li>
@@ -4269,7 +4462,7 @@
           <li>Bride &amp; Groom Details &amp; Monogram</li>
           <li>Wedding Date, Muhurat &amp; Venue</li>
           <li>100% WhatsApp &amp; Mobile Optimized</li>
-          <li>Delivered in under 1 hour</li>
+          <li>Delivered in under 10 minutes</li>
         </ul>
         <a class="btn o" href="#customise" onclick="selectPackage('Essential')">Choose Essential</a>
       </div>
@@ -4307,51 +4500,7 @@
     </div>
   </section>
 
-  <!-- Real Couples Reviews -->
-  <section id="reviews">
-    <div class="section-head">
-      <h2>Loved by Couples Across India &amp; Abroad</h2>
-      <p>Real stories from brides, grooms, and parents who celebrated with Prime eCard.</p>
-    </div>
-
-    <div class="reviews-grid">
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Prime eCard saved us so much time and effort! Our relatives in USA, UK, and Kolkata were amazed by the individual guest name personalization and Bengali Shubho Bibaho music. Over 95% of guests RSVP'd through the link directly."</p>
-        <div class="review-author">
-          <div class="author-avatar">P&amp;R</div>
-          <div>
-            <div class="author-name">Priya &amp; Rohan Mukherjee</div>
-            <div class="author-loc">Kolkata · Rajmahal Vedic Design</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"The Noor-e-Jannat Muslim template looked just like a royal Mughal palace invitation. Having our catering food menu and Google Maps GPS in the link made guest management completely effortless!"</p>
-        <div class="review-author">
-          <div class="author-avatar">S&amp;Z</div>
-          <div>
-            <div class="author-name">Sarah &amp; Zaid Khan</div>
-            <div class="author-loc">New Delhi · Noor-e-Jannat Design</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"The Anand Karaj card was pure royalty. The Google Maps venue button was a lifesaver — not a single relative got lost or called for directions on the wedding day!"</p>
-        <div class="review-author">
-          <div class="author-avatar">H&amp;S</div>
-          <div>
-            <div class="author-name">Harpreet &amp; Simran Singh</div>
-            <div class="author-loc">Chandigarh · Anand Karaj Design</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  
 
   <!-- Questions & FAQ -->
   
@@ -4373,12 +4522,12 @@
         
         <div class="about-stats-row">
           <div class="about-stat-item">
-            <span class="stat-big">1 hour</span>
+            <span class="stat-big">10 mins</span>
             <span class="stat-sub">Typical delivery</span>
           </div>
           <div class="about-stat-item">
-            <span class="stat-big">10</span>
-            <span class="stat-sub">Designs to choose from</span>
+            <span class="stat-big">Royale</span>
+            <span class="stat-sub">Curated Master Suites</span>
           </div>
           <div class="about-stat-item">
             <span class="stat-big">0 g</span>
@@ -4431,7 +4580,7 @@
       <div class="contact-card highlight">
         <div class="contact-icon">💬</div>
         <h3>WhatsApp VIP Concierge</h3>
-        <p>Chat directly with our senior invitation designer. Get instant sample previews, custom quotes, or instant 1-hour ordering.</p>
+        <p>Chat directly with our senior invitation designer. Get instant sample previews, custom quotes, or instant 10-minute ordering.</p>
         <div class="contact-meta"><strong>WhatsApp:</strong> +91 94779 29927 (9:00 AM – 11:00 PM IST)</div>
         <a class="btn wa-btn" id="contactWaBtn" href="https://wa.me/919477929927" target="_blank" style="margin-top:14px;width:100%;justify-content:center;">
           Chat on WhatsApp Now (9477929927)
@@ -4488,7 +4637,7 @@
       </details>
       <details>
         <summary>What is your turnaround time?</summary>
-        <p>Your draft is ready in 30 minutes, and your final live link is delivered in under 1 hour!</p>
+        <p>Your draft and final live link are delivered in under 10 minutes!</p>
       </details>
       <details>
         <summary>How long does my wedding invitation link remain active?</summary>
@@ -4543,9 +4692,9 @@
     <div class="footer-bottom-bar">
       <div class="footer-legal-inline">
         <a href="#about" class="footer-legal-link">About</a>
-        <button class="footer-legal-btn" id="termsBtn" type="button">Terms</button>
-        <button class="footer-legal-btn" id="privacyBtn" type="button">Privacy</button>
-        <button class="footer-legal-btn" id="refundsBtn" type="button">Refunds</button>
+        <button class="footer-legal-btn" id="termsBtn" type="button" onclick="showPolicyModal('terms')" aria-label="Open Terms of Service">Terms</button>
+        <button class="footer-legal-btn" id="privacyBtn" type="button" onclick="showPolicyModal('privacy')" aria-label="Open Privacy Policy">Privacy</button>
+        <button class="footer-legal-btn" id="refundsBtn" type="button" onclick="showPolicyModal('refunds')" aria-label="Open Refund Policy">Refunds</button>
       </div>
       <div class="footer-copyright">
         © 2026 Prime eCard. All rights reserved.
@@ -4566,8 +4715,8 @@
   
   <!-- Policy Modal for Terms, Privacy, Refunds -->
   <div class="modal" id="policyModal" role="dialog" aria-modal="true" aria-label="Legal & Policies">
-    <div class="mbox" style="max-width:620px;padding:32px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow-y:auto;">
-      <button class="modal-close" id="policyCloseBtn" aria-label="Close modal">×</button>
+    <div class="policy-mbox">
+      <button class="modal-close" id="policyCloseBtn" type="button" onclick="closePolicyModal()" aria-label="Close modal">×</button>
       <div id="policyModalContent"></div>
     </div>
   </div>
@@ -4603,7 +4752,7 @@
       email: 'primeecard@gmail.com',
       promoCode: 'WELCOME10',
       promoDiscountPercent: 10,
-      shareMessage: "Hey! Look at Prime eCard — Smart digital wedding invitations & event management 😍 Personalized with each guest name, live RSVP, Google Maps navigation, menu list & music. Delivered in under 1 hour! Use code WELCOME10 for 10% off: "
+      shareMessage: "Hey! Look at Prime eCard — Smart digital wedding invitations & event management 😍 Personalized with each guest name, live RSVP, Google Maps navigation, menu list & music. Delivered in under 10 minutes! Use code WELCOME10 for 10% off: "
     };
 
     // 10 Real Modular Templates Catalog
@@ -4611,7 +4760,7 @@
       {
         id: 'hindu-vedic-crimson',
         legacyId: 'template-06',
-        title: 'Shubho Bibaho Rajbari Heritage',
+        title: 'Shubho Bibaho Rajbari Heritage (Template 06)',
         community: 'Hindu',
         badge: 'Ultra Royal',
         price: 1499,
@@ -4619,25 +4768,38 @@
         tag: 'Bestseller',
         coverSvg: './Invite/assets/cover-hindu-vedic.svg',
         desc: 'Zamindari palace arch, banana tree entrance toran, auspicious Kolka, Shehnai musicians & floating flower petals.',
-        tags: ['Toran Arch', 'Shehnai', 'Kolka', 'Shubho Bibaho', 'Petal Cascade']
+        tags: ['Template 06', 'Toran Arch', 'Shehnai', 'Kolka', 'Shubho Bibaho']
       },
       {
-        id: 'hindu-bengali-alta',
-        legacyId: 'template-03',
-        title: 'Shubho Bibaho Alta & Folk Alpona',
+        id: 'hindu-bengali-kunjavan',
+        legacyId: 'template-05',
+        title: 'Kunjavan Tuberose & Shehnai (Template 05)',
         community: 'Hindu',
-        badge: 'Heritage',
-        price: 1499,
-        mrp: 2899,
-        tag: 'Trending',
-        coverSvg: './Invite/assets/cover-hindu-alta.svg',
-        desc: 'Terracotta rust & rotating sacred rice-paste alpona mandala, authentic Boran Dala / Kula, Shankha Pola & Subho Drishti.',
-        tags: ['Topor Mukut', 'Alta Red', 'Alpona', 'Paan Pata', 'Alpona Pulse']
+        badge: 'Botanical Grace',
+        price: 1399,
+        mrp: 2799,
+        tag: 'Featured',
+        coverSvg: './Invite/assets/cover-hindu-kunjavan.svg',
+        desc: 'Sandalwood ivory, cascading Rajnigandha & marigold garlands swaying in gentle breeze, serene riverfront palace & Gaye Holud.',
+        tags: ['Template 05', 'Tuberose Garland', 'Gaye Holud', 'Shehnai', 'Sandalwood']
+      },
+      {
+        id: 'muslim-emerald-noor',
+        legacyId: 'template-04',
+        title: 'Noor-e-Jannat Emerald Velvet (Template 04)',
+        community: 'Muslim',
+        badge: 'Royal Nikah',
+        price: 1299,
+        mrp: 2499,
+        tag: 'Bestseller',
+        coverSvg: './Invite/assets/cover-muslim-noor.svg',
+        desc: 'Indo-Islamic multi-foil arch, ornate Bismillah calligraphy, crescent star & repeating Mughal jaali screen.',
+        tags: ['Template 04', 'Mughal Jaali', 'Bismillah', 'Crescent', 'Nikah']
       },
       {
         id: 'hindu-bengali-banarasi',
         legacyId: 'template-01',
-        title: 'Banarasi Zari & Jharokha Darbar',
+        title: 'Banarasi Zari & Jharokha (Template 01)',
         community: 'Hindu',
         badge: 'Aristocrat Luxe',
         price: 1599,
@@ -4645,137 +4807,7 @@
         tag: 'Royal Darbar',
         coverSvg: './Invite/assets/cover-hindu-banarasi.svg',
         desc: 'Royal Jamdani indigo silk, heavy 24K gold zari foil with shimmering light sweep, North Kolkata Jharokha arch & Saat Paak.',
-        tags: ['Banarasi Zari', 'Jharokha', 'Saat Paak', '24K Gold Foil', 'Zari Gleam']
-      },
-      {
-        id: 'hindu-bengali-kunjavan',
-        legacyId: 'template-05',
-        title: 'Kunjavan Tuberose & Shehnai Utsav',
-        community: 'Hindu',
-        badge: 'Botanical Grace',
-        price: 1399,
-        mrp: 2799,
-        tag: 'Romantic',
-        coverSvg: './Invite/assets/cover-hindu-kunjavan.svg',
-        desc: 'Sandalwood ivory, cascading Rajnigandha & marigold garlands swaying in gentle breeze, serene riverfront palace & Gaye Holud.',
-        tags: ['Tuberose Garland', 'Gaye Holud', 'Shehnai', 'Sandalwood', 'Garland Breeze']
-      },
-      {
-        id: 'hindu-bengali-swarna',
-        legacyId: 'template-07',
-        title: 'Swarna Mukut & Topor Noir',
-        community: 'Hindu',
-        badge: 'Haute Couture',
-        price: 1699,
-        mrp: 3399,
-        tag: 'Haute Couture',
-        coverSvg: './Invite/assets/cover-hindu-swarna.svg',
-        desc: 'Obsidian noir, pure 24K gold leaf sholapith mukut-topor zenith crest, gold laser shimmer, sacred shloka & Boubhat celebration.',
-        tags: ['Swarna Mukut', 'Topor', 'Boubhat', '24K Gold Leaf', 'Laser Sweep']
-      },
-      {
-        id: 'muslim-emerald-noor',
-        legacyId: 'template-04',
-        title: 'Noor-e-Jannat Emerald Velvet',
-        community: 'Muslim',
-        badge: 'Foil Shimmer',
-        price: 1299,
-        mrp: 2499,
-        tag: 'Bestseller',
-        coverSvg: './Invite/assets/cover-muslim-noor.svg',
-        desc: 'Indo-Islamic multi-foil arch, ornate Bismillah calligraphy, crescent star & repeating Mughal jaali screen.',
-        tags: ['Mughal Jaali', 'Bismillah', 'Crescent', 'Nikah']
-      },
-      {
-        id: 'muslim-royal-ivory',
-        legacyId: 'template-02',
-        title: 'Mughal Jaali & Linen Ivory',
-        community: 'Muslim',
-        badge: 'Foil Shimmer',
-        price: 1199,
-        mrp: 2299,
-        tag: 'Popular',
-        coverSvg: './Invite/assets/cover-muslim-ivory.svg',
-        desc: 'Linen ivory parchment with antique gold jaali lattice, geometric arabesque arches & Walima layout.',
-        tags: ['Linen Ivory', 'Antique Gold', 'Walima', 'Arabesque']
-      },
-      {
-        id: 'sikh-anand-karaj',
-        legacyId: 'template-05',
-        title: 'Anand Karaj Sapphire Midnight',
-        community: 'Sikh',
-        badge: 'Ultra Royal',
-        price: 1299,
-        mrp: 2599,
-        tag: 'Sacred',
-        coverSvg: './Invite/assets/cover-sikh-anand.svg',
-        desc: 'Sapphire midnight backdrop, warm saffron gold foil, Ik Onkar blessing & royal Gurdwara ceremony layout.',
-        tags: ['Ik Onkar', 'Saffron Gold', 'Anand Karaj', 'Gurmukhi']
-      },
-      {
-        id: 'royal-darbar-noir',
-        legacyId: 'template-01',
-        title: 'Midnight Darbar Imperial Noir',
-        community: 'Royal Modern',
-        badge: 'Ultra Royal',
-        price: 1599,
-        mrp: 3199,
-        tag: 'Luxury',
-        coverSvg: './Invite/assets/cover-royal-darbar.svg',
-        desc: 'Deep royal velvet noir with brilliant 24K gold foil trim, imperial ampersand crest & regal typography.',
-        tags: ['24K Gold Foil', 'Imperial Noir', 'Monogram', 'Reception']
-      },
-      {
-        id: 'floral-envelope-arch',
-        legacyId: 'template-07',
-        title: 'Blush Editorial & Wax Seal',
-        community: 'Floral',
-        badge: 'Heritage',
-        price: 1099,
-        mrp: 2199,
-        tag: 'Trending',
-        coverSvg: './Invite/assets/cover-blush-envelope.svg',
-        desc: 'Soft blush stationery, interactive 3D wax seal unfolding reveal & romantic rose gold foil botanical sprigs.',
-        tags: ['3D Wax Seal', 'Rose Gold', 'Stationery', 'Blush']
-      },
-      {
-        id: 'royal-modern-minimal',
-        legacyId: 'template-08',
-        title: 'Amethyst Plum & Rose Champagne',
-        community: 'Royal Modern',
-        badge: 'Heritage',
-        price: 999,
-        mrp: 1999,
-        tag: 'Minimal',
-        coverSvg: './Invite/assets/cover-royal-minimal.svg',
-        desc: 'Contemporary minimalist luxury in deep plum with champagne rose metallic gradients & clean editorial styling.',
-        tags: ['Minimalist', 'Plum Wine', 'Rose Gold', 'Modern']
-      },
-      {
-        id: 'royal-celestial-palace',
-        legacyId: 'template-09',
-        title: 'Celestial Palace Royal 3D',
-        community: 'Royal Modern',
-        badge: 'Ultra Royal',
-        price: 1699,
-        mrp: 3499,
-        tag: '3D Palace',
-        coverSvg: './Invite/assets/cover-celestial-palace.svg',
-        desc: 'Grand 3D palace gates that part open to reveal the royal mandap, fireworks particles & celestial starry night.',
-        tags: ['3D Doors', 'Palace Gates', 'Fireworks', 'Burgundy']
-      },
-      {
-        id: 'floral-blush-botanical',
-        legacyId: 'template-10',
-        title: 'Jannat Bagh Botanical Garden',
-        community: 'Floral',
-        badge: 'Bespoke Floral',
-        price: 899,
-        mrp: 1799,
-        tag: 'Pastel',
-        coverSvg: './Invite/assets/cover-floral-blush.svg',
-        desc: 'Hand-painted English rose florals, fresh botanical vines, gold glitter accents & pastel garden aesthetics.',
-        tags: ['Botanical', 'Watercolour', 'Pastel Pink', 'Garden']
+        tags: ['Template 01', 'Banarasi Zari', 'Jharokha', 'Saat Paak', '24K Gold Foil']
       }
     ];
 
@@ -5078,7 +5110,7 @@
         grid.innerHTML = `
           <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--mute);background:var(--surf);border:1px dashed var(--ln);border-radius:var(--r-md);">
             <h3>No invitations found</h3>
-            <p>Try clearing filters or search terms to see all 10 royal wedding designs.</p>
+            <p>Try clearing filters or search terms to see our royal wedding designs.</p>
           </div>
         `;
         return;
@@ -5274,7 +5306,7 @@
                 </select>
               </div>
             </div>
-            <p style="font-size:13.5px;color:var(--mute);">Preview all 10 templates above or explore live in the Studio Builder.</p>
+            <p style="font-size:13.5px;color:var(--mute);">Preview templates above or explore live in the Studio Builder.</p>
           </div>
         `;
         nextBtn.textContent = 'Continue to Couple Details →';
@@ -5387,7 +5419,7 @@
 
             <div style="display:grid;gap:10px;margin-top:16px;">
               <button type="button" class="btn wa-btn" id="confirmWaOrderBtn" style="width:100%;">
-                <span>💬 Order Now on WhatsApp (Delivered &lt; 1 Hour) →</span>
+                <span>💬 Order Now on WhatsApp (Delivered &lt; 10 Mins) →</span>
               </button>
               <a href="${isInsideInvite ? './onboard/index.html' : './Invite/onboard/index.html'}?template=${encodeURIComponent(activeTpl.legacyId || activeTpl.id)}&theme=${encodeURIComponent(activeTpl.id)}" class="btn o" target="_blank" style="width:100%;text-align:center;">
                 <span>Or Upload Photos &amp; Pay via UPI Form →</span>
@@ -5622,60 +5654,230 @@ _Please confirm my order and share the payment details!_`;
     // Policy Modal System (Terms, Privacy, Refunds)
     const POLICIES = {
       terms: {
-        title: "Terms of Service",
-        subtitle: "Prime eCard Client & Guest Agreement",
+        title: "Terms of Service | Prime eCard",
+        subtitle: "Official User Agreement & Client Guidelines",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Digital Invitation Service:</strong> Prime eCard provides complete digital wedding invitation suites, guest management portals, live RSVP tracking, and catering menu tools.</p>
-          <p style="margin-bottom:12px;"><strong>2. Turnaround &amp; Delivery:</strong> Standard express orders are delivered in under 1 hour following receipt of wedding details. Custom bespoke artwork requires 6 to 12 hours.</p>
-          <p style="margin-bottom:12px;"><strong>3. Hosting &amp; Validity:</strong> Your digital invitation link remains active for a minimum of 1 year from the wedding date, giving guests and family ample time to view photos and relive memories.</p>
-          <p style="margin-bottom:12px;"><strong>4. Intellectual Property:</strong> All cultural motifs, Kolka patterns, and template code are proprietary to Prime eCard.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. What Prime eCard Provides</h3>
+            <p>Prime eCard lets you create a digital wedding invitation from pre-made designs and share it using your own custom web link.</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>This is a <strong>100% digital product</strong>.</li>
+              <li>Nothing is printed, packed, or physically shipped to your address.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. Creating Your Invitation</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Free Preview:</strong> You can customize, test, and view your complete invitation with a watermark for free.</li>
+              <li><strong>Instant Activation:</strong> Paying the displayed price removes the watermark immediately and makes your link live for sharing.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. Your Details and Content</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Accuracy:</strong> You are responsible for double-checking all names, event dates, ceremony timings, venue addresses, and uploaded photos before making payment.</li>
+              <li><strong>Permissions:</strong> You must have the legal right or permission to use every photo and audio track you upload.</li>
+              <li><strong>Content Rules:</strong> Do not upload anything unlawful, offensive, or inappropriate. We reserve the right to remove such content immediately.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. Editing Policy</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>You can edit your invitation for up to <strong>3 days (72 hours)</strong> after payment using your private edit link.</li>
+              <li>Keep your private edit link safe. Anyone who has access to this link can change your event details.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. How Long Your Link Stays Live</h3>
+            <div style="overflow-x:auto;margin:12px 0 16px;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--ln);">
+                <thead>
+                  <tr style="background:rgba(201,162,75,0.1);border-bottom:1px solid var(--ln);text-align:left;">
+                    <th style="padding:10px 14px;">Card Status</th>
+                    <th style="padding:10px 14px;">Retention Period</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--ln);">
+                    <td style="padding:10px 14px;"><strong>Paid / Live Cards</strong></td>
+                    <td style="padding:10px 14px;">Your link stays active until <strong>30 days after your last function</strong>, after which all data is permanently deleted.</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 14px;"><strong>Unpaid Drafts</strong></td>
+                    <td style="padding:10px 14px;">Unpaid previews and draft designs are automatically removed <strong>7 days</strong> after the last save.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">6. Design Ownership and Personal Use</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All designs, layouts, visual themes, and code remain the intellectual property of <strong>Prime eCard</strong> or its licensors.</li>
+              <li>Your payment gives you a personal, single-use license to use the design for your own wedding or event only.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">7. Copyright Protection</h3>
+            <p>Everything on <strong>primeecard.in</strong> is protected by copyright law, including:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All invitation design templates, layout elements, and artwork.</li>
+              <li>Interactive animations, website code, visual styles, and written text.</li>
+              <li>All rights are strictly reserved by Prime eCard.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">8. No Copying or Reselling</h3>
+            <p>You may not copy, download, rebuild, scrape, resell, or distribute any part of this website or its designs without our explicit written permission. Using our designs to make invitations for commercial clients or hosting them on another app or site is strictly prohibited.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">9. No AI or Machine Learning Use</h3>
+            <p>You are not allowed to use any part of this website, its designs, templates, artwork, or code to train, fine-tune, or test any Artificial Intelligence (AI) or machine learning models. Automated bots, scrapers, and data-mining crawlers are strictly prohibited.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">10. Legal Action Against Theft</h3>
+            <p>Prime eCard takes design theft seriously. If our work is copied, scraped, or resold, we will take legal action, including:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>Submitting takedown notices to web hosts, domain registrars, and social platforms.</li>
+              <li>Pursuing civil and criminal legal action under the <strong>Copyright Act, 1957</strong> and the <strong>Information Technology Act, 2000</strong>.</li>
+              <li>To report an unauthorized copy of our templates or platform, please message our support team on WhatsApp.</li>
+            </ul>
+          </div>
         `
       },
       privacy: {
-        title: "Privacy Policy",
-        subtitle: "Zero-Data-Sharing Guarantee",
+        title: "Privacy Policy | Prime eCard",
+        subtitle: "How We Protect and Handle Your Information",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Strict Confidentiality:</strong> Your guest lists, phone numbers, RSVP responses, and ceremony details are encrypted and 100% confidential.</p>
-          <p style="margin-bottom:12px;"><strong>2. No Commercial Selling:</strong> We NEVER sell, rent, or monetize personal contact data to third-party telemarketers or advertisers.</p>
-          <p style="margin-bottom:12px;"><strong>3. Guest Access:</strong> Personalized guest links are uniquely keyed with randomized tokens to ensure only authorized guests can view their personalized card.</p>
-          <p style="margin-bottom:12px;"><strong>4. Data Removal:</strong> You may request complete deletion of your wedding data and guest list at any time after your celebrations.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. Information We Collect</h3>
+            <p>We only collect the details needed to create your invitation and process your order:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Event Details:</strong> Names of the couple, wedding dates, event timings, and venue locations.</li>
+              <li><strong>Uploaded Files:</strong> Photos and background music you upload for your card.</li>
+              <li><strong>Contact Information:</strong> Your mobile number and email address entered at checkout.</li>
+              <li><strong>Guest Responses (RSVP):</strong> Guest names, attendance status, and messages submitted through your invitation page.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. How We Use Your Information</h3>
+            <p>We use your data only to run our service:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>To build, host, and display your digital invitation web page.</li>
+              <li>To process payments and activate your live link instantly.</li>
+              <li>To collect guest RSVPs and show them in your private admin link.</li>
+              <li>To assist you when you contact our support team.</li>
+              <li><strong>We do not sell, rent, or share your personal data with third-party marketers.</strong></li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. Who Can See Your Information</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Your Invitation:</strong> Anyone who has your public link can view the card. Share your link only with people you want to invite.</li>
+              <li><strong>Your RSVP Replies:</strong> Guest responses and edit options are protected. They can only be viewed using your private management link. Keep this private link safe.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. Payments</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All transactions are processed securely through certified payment gateways (such as Cashfree Payments).</li>
+              <li><strong>Prime eCard does not see or store your card numbers, CVV, bank details, or UPI PINs.</strong></li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. Deleting Your Data</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Automatic Deletion:</strong> Your digital invitation, uploaded photos, audio files, and RSVP replies are permanently deleted <strong>30 days after your last event</strong>.</li>
+              <li><strong>Early Deletion:</strong> If you want your card and files removed earlier, send a message to our WhatsApp support team, and we will delete them within 24 hours.</li>
+            </ul>
+          </div>
         `
       },
       refunds: {
-        title: "100% Refund Policy",
-        subtitle: "Hassle-Free Satisfaction Guarantee",
+        title: "Refund & Cancellation Policy | Prime eCard",
+        subtitle: "Clear, Transparent Guarantees for Every Celebration",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Draft Review Guarantee:</strong> If you are not delighted with your invitation draft before final distribution, we will issue a 100% full refund with zero questions asked.</p>
-          <p style="margin-bottom:12px;"><strong>2. Free Unlimited Revisions:</strong> Minor text, date, venue, or timing corrections are made free of charge until your wedding day.</p>
-          <p style="margin-bottom:12px;"><strong>3. Processing Time:</strong> Approved refunds are credited directly back to your original payment method (UPI / Card / NetBanking) within 24 to 48 hours.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. Free Preview Before Payment</h3>
+            <p>You can customize and preview your entire invitation for free with a watermark before making any payment. This lets you check all details, animations, and photos to ensure you are completely satisfied before buying.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. After Payment</h3>
+            <p>Because this is an instant digital product:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>Your invitation goes live and the watermark is removed immediately after payment is confirmed.</li>
+              <li>Due to this instant activation, orders cannot be cancelled and payments cannot be refunded if you change your mind or your event plans change.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. If Something Goes Wrong</h3>
+            <p>We will gladly fix or refund any accidental billing issues:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Charged Twice:</strong> If your account was debited multiple times for the same card order.</li>
+              <li><strong>Link Not Activated:</strong> If payment was deducted from your bank but your card did not go live, and our technical team cannot activate it within 24 hours.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. How to Request a Refund</h3>
+            <ol style="padding-left:20px;margin:8px 0 14px;">
+              <li>Message our support team on WhatsApp with your payment reference or transaction ID and your invitation link.</li>
+              <li>Once verified, extra or failed charges will be refunded directly to your original payment method (bank account, card, or UPI).</li>
+              <li>Refunds typically take <strong>5 to 7 working days</strong> to reflect in your account.</li>
+            </ol>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. Delivery &amp; Shipping</h3>
+            <p>Prime eCard is a 100% digital web service.</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>No physical items are printed, packed, or shipped.</li>
+              <li>Your live card URL and private management access are delivered on your screen instantly once payment succeeds.</li>
+            </ul>
+          </div>
         `
       }
     };
 
-    function showPolicyModal(type) {
+    window.closePolicyModal = function() {
+      const modal = document.getElementById('policyModal');
+      if (modal) {
+        modal.classList.remove('active', 'on');
+      }
+    };
+
+    window.showPolicyModal = function(type) {
       const p = POLICIES[type];
       if (!p) return;
       const contentEl = document.getElementById('policyModalContent');
-      if (contentEl) {
+      const modal = document.getElementById('policyModal');
+      if (contentEl && modal) {
         contentEl.innerHTML = `
-          <span class="trust-pill">✦ Prime eCard Legal ✦</span>
-          <h2 style="text-align:left;margin:8px 0 4px;font-size:1.75rem;">${p.title}</h2>
-          <div style="font-size:13px;color:var(--mute);margin-bottom:14px;">${p.subtitle}</div>
-          <div style="font-size:14px;line-height:1.65;color:var(--ink);">${p.content}</div>
-          <button class="btn g" style="margin-top:16px;width:100%;" id="policyAcknowledgeBtn">Understood &amp; Close</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+            <span class="trust-pill" style="margin:0;">✦ Prime eCard Legal ✦</span>
+          </div>
+          <h2 style="text-align:left;margin:4px 0 6px;font-size:1.65rem;color:var(--wine);line-height:1.25;">${p.title}</h2>
+          <div style="font-size:13px;color:var(--mute);margin-bottom:18px;border-bottom:1px solid var(--ln);padding-bottom:12px;">${p.subtitle}</div>
+          <div style="font-size:14px;line-height:1.7;color:var(--ink);text-align:left;">${p.content}</div>
+          <button class="btn g" style="margin-top:24px;width:100%;font-size:14px;padding:12px;" onclick="closePolicyModal()">Understood &amp; Close</button>
         `;
-        document.getElementById('policyModal').classList.add('active');
-        document.getElementById('policyAcknowledgeBtn').onclick = () => {
-          document.getElementById('policyModal').classList.remove('active');
-        };
+        modal.classList.add('active', 'on');
+        const box = modal.querySelector('.policy-mbox');
+        if (box) box.scrollTop = 0;
       }
-    }
+    };
 
     document.getElementById('termsBtn')?.addEventListener('click', () => showPolicyModal('terms'));
     document.getElementById('privacyBtn')?.addEventListener('click', () => showPolicyModal('privacy'));
     document.getElementById('refundsBtn')?.addEventListener('click', () => showPolicyModal('refunds'));
-    document.getElementById('policyCloseBtn')?.addEventListener('click', () => {
-      document.getElementById('policyModal').classList.remove('active');
+    document.getElementById('policyCloseBtn')?.addEventListener('click', closePolicyModal);
+    document.getElementById('policyModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'policyModal') {
+        closePolicyModal();
+      }
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePolicyModal();
+      }
     });
 
     // Wire Contact WhatsApp button
