@@ -1328,13 +1328,42 @@
       inset: 0;
       background: rgba(8, 14, 28, 0.85);
       backdrop-filter: blur(8px);
-      z-index: 100;
-      display: none;
+      z-index: 100000; display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .modal.on { display: flex; }
+    .modal.on,
+    .modal.active {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    .policy-mbox {
+      background: var(--surf) !important;
+      border: 1.5px solid var(--goldtx) !important;
+      border-radius: 24px !important;
+      max-width: 780px !important;
+      width: 100% !important;
+      max-height: 86vh !important;
+      overflow-y: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      padding: 36px 30px !important;
+      position: relative !important;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7), 0 0 40px rgba(201, 162, 75, 0.15) !important;
+      color: var(--ink) !important;
+      text-align: left !important;
+      z-index: 100001 !important;
+    }
+    @media (max-width: 600px) {
+      .policy-mbox {
+        padding: 24px 18px !important;
+        max-height: 90vh !important;
+        border-radius: 18px !important;
+      }
+    }
     .mbox {
       background: var(--bg);
       border: 1px solid var(--ln-strong);
@@ -4648,9 +4677,9 @@
     <div class="footer-bottom-bar">
       <div class="footer-legal-inline">
         <a href="#about" class="footer-legal-link">About</a>
-        <button class="footer-legal-btn" id="termsBtn" type="button">Terms</button>
-        <button class="footer-legal-btn" id="privacyBtn" type="button">Privacy</button>
-        <button class="footer-legal-btn" id="refundsBtn" type="button">Refunds</button>
+        <button class="footer-legal-btn" id="termsBtn" type="button" onclick="showPolicyModal('terms')" aria-label="Open Terms of Service">Terms</button>
+        <button class="footer-legal-btn" id="privacyBtn" type="button" onclick="showPolicyModal('privacy')" aria-label="Open Privacy Policy">Privacy</button>
+        <button class="footer-legal-btn" id="refundsBtn" type="button" onclick="showPolicyModal('refunds')" aria-label="Open Refund Policy">Refunds</button>
       </div>
       <div class="footer-copyright">
         © 2026 Prime eCard. All rights reserved.
@@ -4671,8 +4700,8 @@
   
   <!-- Policy Modal for Terms, Privacy, Refunds -->
   <div class="modal" id="policyModal" role="dialog" aria-modal="true" aria-label="Legal & Policies">
-    <div class="mbox" style="max-width:720px;padding:32px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow-y:auto;">
-      <button class="modal-close" id="policyCloseBtn" aria-label="Close modal">×</button>
+    <div class="policy-mbox">
+      <button class="modal-close" id="policyCloseBtn" type="button" onclick="closePolicyModal()" aria-label="Close modal">×</button>
       <div id="policyModalContent"></div>
     </div>
   </div>
@@ -5910,30 +5939,47 @@ _Please confirm my order and share the payment details!_`;
       }
     };
 
-    function showPolicyModal(type) {
+    window.closePolicyModal = function() {
+      const modal = document.getElementById('policyModal');
+      if (modal) {
+        modal.classList.remove('active', 'on');
+      }
+    };
+
+    window.showPolicyModal = function(type) {
       const p = POLICIES[type];
       if (!p) return;
       const contentEl = document.getElementById('policyModalContent');
-      if (contentEl) {
+      const modal = document.getElementById('policyModal');
+      if (contentEl && modal) {
         contentEl.innerHTML = `
-          <span class="trust-pill">✦ Prime eCard Legal ✦</span>
-          <h2 style="text-align:left;margin:8px 0 4px;font-size:1.75rem;">${p.title}</h2>
-          <div style="font-size:13px;color:var(--mute);margin-bottom:14px;">${p.subtitle}</div>
-          <div style="font-size:14px;line-height:1.65;color:var(--ink);">${p.content}</div>
-          <button class="btn g" style="margin-top:16px;width:100%;" id="policyAcknowledgeBtn">Understood &amp; Close</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+            <span class="trust-pill" style="margin:0;">✦ Prime eCard Legal ✦</span>
+          </div>
+          <h2 style="text-align:left;margin:4px 0 6px;font-size:1.65rem;color:var(--wine);line-height:1.25;">${p.title}</h2>
+          <div style="font-size:13px;color:var(--mute);margin-bottom:18px;border-bottom:1px solid var(--ln);padding-bottom:12px;">${p.subtitle}</div>
+          <div style="font-size:14px;line-height:1.7;color:var(--ink);text-align:left;">${p.content}</div>
+          <button class="btn g" style="margin-top:24px;width:100%;font-size:14px;padding:12px;" onclick="closePolicyModal()">Understood &amp; Close</button>
         `;
-        document.getElementById('policyModal').classList.add('active');
-        document.getElementById('policyAcknowledgeBtn').onclick = () => {
-          document.getElementById('policyModal').classList.remove('active');
-        };
+        modal.classList.add('active', 'on');
+        const box = modal.querySelector('.policy-mbox');
+        if (box) box.scrollTop = 0;
       }
-    }
+    };
 
     document.getElementById('termsBtn')?.addEventListener('click', () => showPolicyModal('terms'));
     document.getElementById('privacyBtn')?.addEventListener('click', () => showPolicyModal('privacy'));
     document.getElementById('refundsBtn')?.addEventListener('click', () => showPolicyModal('refunds'));
-    document.getElementById('policyCloseBtn')?.addEventListener('click', () => {
-      document.getElementById('policyModal').classList.remove('active');
+    document.getElementById('policyCloseBtn')?.addEventListener('click', closePolicyModal);
+    document.getElementById('policyModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'policyModal') {
+        closePolicyModal();
+      }
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePolicyModal();
+      }
     });
 
     // Wire Contact WhatsApp button
