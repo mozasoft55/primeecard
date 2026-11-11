@@ -5,12 +5,14 @@ import Hero from '@/components/Hero';
 import CulturalTabs from '@/components/CulturalTabs';
 import ProofComparison from '@/components/ProofComparison';
 import VIPWaitlistModal from '@/components/VIPWaitlistModal';
+import LegalModal, { LegalDocType } from '@/components/LegalModal';
 import StickyMobileBar from '@/components/StickyMobileBar';
 import { Crown, Sparkles, HelpCircle, ChevronDown, MessageCircle } from 'lucide-react';
 import { buildWhatsAppOrderUrl } from '@/lib/whatsapp';
 
 export default function PrimeECardLandingPage() {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [legalModalType, setLegalModalType] = useState<LegalDocType>(null);
 
   const scrollToHeroGate = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,7 +142,7 @@ export default function PrimeECardLandingPage() {
       </section>
 
       {/* ========================================================
-          LUXURY FOOTER
+          LUXURY FOOTER WITH ACCESSIBLE LEGAL POLICIES
          ======================================================== */}
       <footer className="border-t border-gold-royal/20 bg-obsidian-900 py-12 text-center text-xs text-almond/60 space-y-4">
         <div className="flex items-center justify-center gap-2 text-pearl font-heading text-xl font-bold">
@@ -150,16 +152,46 @@ export default function PrimeECardLandingPage() {
         <p className="max-w-md mx-auto text-almond/70">
           India’s premier royal digital wedding atelier. Serving couples across Kolkata, Delhi, Mumbai, Bengaluru, Dubai, and London.
         </p>
+
+        {/* Primary Site Navigation Links */}
         <div className="flex justify-center gap-6 pt-2 text-almond/80">
-          <button type="button" onClick={() => setIsWaitlistOpen(true)} className="hover:text-gold-royal">
+          <button type="button" onClick={() => setIsWaitlistOpen(true)} className="hover:text-gold-royal transition-colors">
             Occasions Suite
           </button>
-          <a href="#traditions" className="hover:text-gold-royal">Cultural Collections</a>
-          <a href="#proof" className="hover:text-gold-royal">Pricing</a>
-          <a href="https://wa.me/919477929927" target="_blank" rel="noopener noreferrer" className="hover:text-gold-royal">
+          <a href="#traditions" className="hover:text-gold-royal transition-colors">Cultural Collections</a>
+          <a href="#proof" className="hover:text-gold-royal transition-colors">Pricing</a>
+          <a href="https://wa.me/919477929927" target="_blank" rel="noopener noreferrer" className="hover:text-gold-royal transition-colors">
             Concierge WhatsApp (+91 94779 29927)
           </a>
         </div>
+
+        {/* Dedicated Legal Policies Links */}
+        <div className="flex justify-center items-center gap-4 pt-1 text-almond/70 text-[11px]">
+          <button
+            type="button"
+            onClick={() => setLegalModalType('terms')}
+            className="hover:text-gold-champagne underline underline-offset-4 transition-colors"
+          >
+            Terms of Service
+          </button>
+          <span className="text-gold-royal/40">•</span>
+          <button
+            type="button"
+            onClick={() => setLegalModalType('privacy')}
+            className="hover:text-gold-champagne underline underline-offset-4 transition-colors"
+          >
+            Privacy Policy
+          </button>
+          <span className="text-gold-royal/40">•</span>
+          <button
+            type="button"
+            onClick={() => setLegalModalType('refunds')}
+            className="hover:text-gold-champagne underline underline-offset-4 transition-colors"
+          >
+            Refund &amp; Cancellation Policy
+          </button>
+        </div>
+
         <div className="text-[11px] text-almond/40 pt-4">
           © 2026 Prime eCard. All rights reserved. Crafted with 100% royalty.
         </div>
@@ -171,6 +203,11 @@ export default function PrimeECardLandingPage() {
       <VIPWaitlistModal
         isOpen={isWaitlistOpen}
         onClose={() => setIsWaitlistOpen(false)}
+      />
+
+      <LegalModal
+        type={legalModalType}
+        onClose={() => setLegalModalType(null)}
       />
 
       <StickyMobileBar onOpenGatePreview={scrollToHeroGate} />

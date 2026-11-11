@@ -4671,7 +4671,7 @@
   
   <!-- Policy Modal for Terms, Privacy, Refunds -->
   <div class="modal" id="policyModal" role="dialog" aria-modal="true" aria-label="Legal & Policies">
-    <div class="mbox" style="max-width:620px;padding:32px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow-y:auto;">
+    <div class="mbox" style="max-width:720px;padding:32px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow-y:auto;">
       <button class="modal-close" id="policyCloseBtn" aria-label="Close modal">×</button>
       <div id="policyModalContent"></div>
     </div>
@@ -5727,32 +5727,185 @@ _Please confirm my order and share the payment details!_`;
     // Policy Modal System (Terms, Privacy, Refunds)
     const POLICIES = {
       terms: {
-        title: "Terms of Service",
-        subtitle: "Prime eCard Client & Guest Agreement",
+        title: "Terms of Service | Prime eCard",
+        subtitle: "Official User Agreement & Client Guidelines",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Digital Invitation Service:</strong> Prime eCard provides complete digital wedding invitation suites, guest management portals, live RSVP tracking, and catering menu tools.</p>
-          <p style="margin-bottom:12px;"><strong>2. Turnaround &amp; Delivery:</strong> Standard express orders are delivered in under 1 hour following receipt of wedding details. Custom bespoke artwork requires 6 to 12 hours.</p>
-          <p style="margin-bottom:12px;"><strong>3. Hosting &amp; Validity:</strong> Your digital invitation link remains active for a minimum of 1 year from the wedding date, giving guests and family ample time to view photos and relive memories.</p>
-          <p style="margin-bottom:12px;"><strong>4. Intellectual Property:</strong> All cultural motifs, Kolka patterns, and template code are proprietary to Prime eCard.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. What Prime eCard Provides</h3>
+            <p>Prime eCard lets you create a digital wedding invitation from pre-made designs and share it using your own custom web link.</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>This is a <strong>100% digital product</strong>.</li>
+              <li>Nothing is printed, packed, or physically shipped to your address.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. Creating Your Invitation</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Free Preview:</strong> You can customize, test, and view your complete invitation with a watermark for free.</li>
+              <li><strong>Instant Activation:</strong> Paying the displayed price removes the watermark immediately and makes your link live for sharing.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. Your Details and Content</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Accuracy:</strong> You are responsible for double-checking all names, event dates, ceremony timings, venue addresses, and uploaded photos before making payment.</li>
+              <li><strong>Permissions:</strong> You must have the legal right or permission to use every photo and audio track you upload.</li>
+              <li><strong>Content Rules:</strong> Do not upload anything unlawful, offensive, or inappropriate. We reserve the right to remove such content immediately.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. Editing Policy</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>You can edit your invitation for up to <strong>3 days (72 hours)</strong> after payment using your private edit link.</li>
+              <li>Keep your private edit link safe. Anyone who has access to this link can change your event details.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. How Long Your Link Stays Live</h3>
+            <div style="overflow-x:auto;margin:12px 0 16px;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--ln);">
+                <thead>
+                  <tr style="background:rgba(201,162,75,0.1);border-bottom:1px solid var(--ln);text-align:left;">
+                    <th style="padding:10px 14px;">Card Status</th>
+                    <th style="padding:10px 14px;">Retention Period</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom:1px solid var(--ln);">
+                    <td style="padding:10px 14px;"><strong>Paid / Live Cards</strong></td>
+                    <td style="padding:10px 14px;">Your link stays active until <strong>30 days after your last function</strong>, after which all data is permanently deleted.</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 14px;"><strong>Unpaid Drafts</strong></td>
+                    <td style="padding:10px 14px;">Unpaid previews and draft designs are automatically removed <strong>7 days</strong> after the last save.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">6. Design Ownership and Personal Use</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All designs, layouts, visual themes, and code remain the intellectual property of <strong>Prime eCard</strong> or its licensors.</li>
+              <li>Your payment gives you a personal, single-use license to use the design for your own wedding or event only.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">7. Copyright Protection</h3>
+            <p>Everything on <strong>primeecard.in</strong> is protected by copyright law, including:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All invitation design templates, layout elements, and artwork.</li>
+              <li>Interactive animations, website code, visual styles, and written text.</li>
+              <li>All rights are strictly reserved by Prime eCard.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">8. No Copying or Reselling</h3>
+            <p>You may not copy, download, rebuild, scrape, resell, or distribute any part of this website or its designs without our explicit written permission. Using our designs to make invitations for commercial clients or hosting them on another app or site is strictly prohibited.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">9. No AI or Machine Learning Use</h3>
+            <p>You are not allowed to use any part of this website, its designs, templates, artwork, or code to train, fine-tune, or test any Artificial Intelligence (AI) or machine learning models. Automated bots, scrapers, and data-mining crawlers are strictly prohibited.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">10. Legal Action Against Theft</h3>
+            <p>Prime eCard takes design theft seriously. If our work is copied, scraped, or resold, we will take legal action, including:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>Submitting takedown notices to web hosts, domain registrars, and social platforms.</li>
+              <li>Pursuing civil and criminal legal action under the <strong>Copyright Act, 1957</strong> and the <strong>Information Technology Act, 2000</strong>.</li>
+              <li>To report an unauthorized copy of our templates or platform, please message our support team on WhatsApp.</li>
+            </ul>
+          </div>
         `
       },
       privacy: {
-        title: "Privacy Policy",
-        subtitle: "Zero-Data-Sharing Guarantee",
+        title: "Privacy Policy | Prime eCard",
+        subtitle: "How We Protect and Handle Your Information",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Strict Confidentiality:</strong> Your guest lists, phone numbers, RSVP responses, and ceremony details are encrypted and 100% confidential.</p>
-          <p style="margin-bottom:12px;"><strong>2. No Commercial Selling:</strong> We NEVER sell, rent, or monetize personal contact data to third-party telemarketers or advertisers.</p>
-          <p style="margin-bottom:12px;"><strong>3. Guest Access:</strong> Personalized guest links are uniquely keyed with randomized tokens to ensure only authorized guests can view their personalized card.</p>
-          <p style="margin-bottom:12px;"><strong>4. Data Removal:</strong> You may request complete deletion of your wedding data and guest list at any time after your celebrations.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. Information We Collect</h3>
+            <p>We only collect the details needed to create your invitation and process your order:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Event Details:</strong> Names of the couple, wedding dates, event timings, and venue locations.</li>
+              <li><strong>Uploaded Files:</strong> Photos and background music you upload for your card.</li>
+              <li><strong>Contact Information:</strong> Your mobile number and email address entered at checkout.</li>
+              <li><strong>Guest Responses (RSVP):</strong> Guest names, attendance status, and messages submitted through your invitation page.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. How We Use Your Information</h3>
+            <p>We use your data only to run our service:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>To build, host, and display your digital invitation web page.</li>
+              <li>To process payments and activate your live link instantly.</li>
+              <li>To collect guest RSVPs and show them in your private admin link.</li>
+              <li>To assist you when you contact our support team.</li>
+              <li><strong>We do not sell, rent, or share your personal data with third-party marketers.</strong></li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. Who Can See Your Information</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Your Invitation:</strong> Anyone who has your public link can view the card. Share your link only with people you want to invite.</li>
+              <li><strong>Your RSVP Replies:</strong> Guest responses and edit options are protected. They can only be viewed using your private management link. Keep this private link safe.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. Payments</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>All transactions are processed securely through certified payment gateways (such as Cashfree Payments).</li>
+              <li><strong>Prime eCard does not see or store your card numbers, CVV, bank details, or UPI PINs.</strong></li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. Deleting Your Data</h3>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Automatic Deletion:</strong> Your digital invitation, uploaded photos, audio files, and RSVP replies are permanently deleted <strong>30 days after your last event</strong>.</li>
+              <li><strong>Early Deletion:</strong> If you want your card and files removed earlier, send a message to our WhatsApp support team, and we will delete them within 24 hours.</li>
+            </ul>
+          </div>
         `
       },
       refunds: {
-        title: "100% Refund Policy",
-        subtitle: "Hassle-Free Satisfaction Guarantee",
+        title: "Refund & Cancellation Policy | Prime eCard",
+        subtitle: "Clear, Transparent Guarantees for Every Celebration",
         content: `
-          <p style="margin-bottom:12px;"><strong>1. Draft Review Guarantee:</strong> If you are not delighted with your invitation draft before final distribution, we will issue a 100% full refund with zero questions asked.</p>
-          <p style="margin-bottom:12px;"><strong>2. Free Unlimited Revisions:</strong> Minor text, date, venue, or timing corrections are made free of charge until your wedding day.</p>
-          <p style="margin-bottom:12px;"><strong>3. Processing Time:</strong> Approved refunds are credited directly back to your original payment method (UPI / Card / NetBanking) within 24 to 48 hours.</p>
+          <div class="legal-doc" style="text-align:left;">
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">1. Free Preview Before Payment</h3>
+            <p>You can customize and preview your entire invitation for free with a watermark before making any payment. This lets you check all details, animations, and photos to ensure you are completely satisfied before buying.</p>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">2. After Payment</h3>
+            <p>Because this is an instant digital product:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>Your invitation goes live and the watermark is removed immediately after payment is confirmed.</li>
+              <li>Due to this instant activation, orders cannot be cancelled and payments cannot be refunded if you change your mind or your event plans change.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">3. If Something Goes Wrong</h3>
+            <p>We will gladly fix or refund any accidental billing issues:</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li><strong>Charged Twice:</strong> If your account was debited multiple times for the same card order.</li>
+              <li><strong>Link Not Activated:</strong> If payment was deducted from your bank but your card did not go live, and our technical team cannot activate it within 24 hours.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">4. How to Request a Refund</h3>
+            <ol style="padding-left:20px;margin:8px 0 14px;">
+              <li>Message our support team on WhatsApp with your payment reference or transaction ID and your invitation link.</li>
+              <li>Once verified, extra or failed charges will be refunded directly to your original payment method (bank account, card, or UPI).</li>
+              <li>Refunds typically take <strong>5 to 7 working days</strong> to reflect in your account.</li>
+            </ol>
+            <hr style="border:none;border-top:1px solid var(--ln);margin:16px 0;" />
+
+            <h3 style="color:var(--goldtx);font-size:1.15rem;margin:18px 0 6px;">5. Delivery &amp; Shipping</h3>
+            <p>Prime eCard is a 100% digital web service.</p>
+            <ul style="padding-left:20px;margin:8px 0 14px;">
+              <li>No physical items are printed, packed, or shipped.</li>
+              <li>Your live card URL and private management access are delivered on your screen instantly once payment succeeds.</li>
+            </ul>
+          </div>
         `
       }
     };
