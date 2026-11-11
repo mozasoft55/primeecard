@@ -7,7 +7,7 @@
              on a canvas.
    Palette : Midnight Indigo · Lapis · Orchid Magenta · Peach Dawn ·
              Garden Teal · Lotus Pink · Pearl · Light Gold
-   Contract (same as your other templates):
+   Contract (same as your other templates):90
      export default function render({ guest, wedding, events }) -> html string
      export function mount(root, { guest, wedding, events }) -> cleanup()
    render() alone is a readable static invitation (no JS needed).
