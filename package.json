@@ -5,11 +5,9 @@
   "description": "India's Premier Royal Interactive Digital Wedding Invitation Atelier",
   "scripts": {
     "dev": "next dev",
-    "build": "opennextjs-cloudflare build",
-    "build:next": "next build",
-    "build:worker": "opennextjs-cloudflare build",
+    "build": "next build",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
-    "preview": "opennextjs-cloudflare build && wrangler preview",
+    "preview": "opennextjs-cloudflare preview",
     "start": "next start",
     "lint": "next lint",
     "test": "node --test Invite/tests/*.test.js"
