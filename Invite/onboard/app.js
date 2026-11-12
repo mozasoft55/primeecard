@@ -1380,16 +1380,36 @@ function initTrackOrderModal() {
           const res = await response.json();
           const dash = res.dashboard || res;
           if (res.success && dash) {
-            const serverPhone = normalizePhone10(dash.customer_phone || dash.phone || (dash.customer && dash.customer.phone) || '');
-            if ((serverPhone && serverPhone === candidatePhone) || (verifiedOrder && verifiedOrder.reference.toUpperCase() === candidateRef.toUpperCase())) {
+            const serverPhones = [
+              dash.customer_phone,
+              dash.phone,
+              dash.customer && dash.customer.phone,
+              dash.wedding && dash.wedding.phone,
+              ...(Array.isArray(dash.guests) ? dash.guests.map(g => g.phone) : [])
+            ].map(p => normalizePhone10(p)).filter(Boolean);
+
+            const phoneMatched = serverPhones.includes(candidatePhone) ||
+                                 (verifiedOrder && matchOrderCredentials(verifiedOrder, candidateRef, candidatePhone));
+
+            if (phoneMatched) {
               serverVerified = true;
+              const bride = (dash.wedding && dash.wedding.bride_name) ||
+                            dash.bride_name ||
+                            (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[0].trim() : '') ||
+                            (verifiedOrder ? verifiedOrder.bride_name : '');
+              const groom = (dash.wedding && dash.wedding.groom_name) ||
+                            dash.groom_name ||
+                            (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[1]?.trim() : '') ||
+                            (verifiedOrder ? verifiedOrder.groom_name : '');
+
               serverOrderData = {
                 reference: candidateRef,
-                token: dash.dashboard_token || (verifiedOrder ? verifiedOrder.token : 'demo-token'),
+                order_reference: candidateRef,
+                token: dash.dashboard_token || (verifiedOrder ? verifiedOrder.token : (dash.preview_guest_code || 'demo-token')),
                 phone: candidatePhone,
-                customer_name: dash.customer_name || (verifiedOrder ? verifiedOrder.customer_name : ''),
-                bride_name: dash.bride_name || (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[0].trim() : (verifiedOrder ? verifiedOrder.bride_name : '')),
-                groom_name: dash.groom_name || (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[1]?.trim() : (verifiedOrder ? verifiedOrder.groom_name : '')),
+                customer_name: dash.customer_name || (dash.guests && dash.guests[0]?.guest_name) || (verifiedOrder ? verifiedOrder.customer_name : ''),
+                bride_name: bride,
+                groom_name: groom,
                 payment_status: dash.payment_status || (verifiedOrder ? verifiedOrder.payment_status : 'Pending Verification'),
                 order_status: dash.order_status || (verifiedOrder ? verifiedOrder.order_status : 'draft'),
                 created_at: dash.created_at || new Date().toISOString()

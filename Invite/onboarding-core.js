@@ -367,6 +367,20 @@ export const OrderSecurityShield = {
   maxAttempts: 4,
   lockoutMs: 15 * 60 * 1000, // 15 minutes lockout
 
+  get MAX_ATTEMPTS() {
+    return this.maxAttempts;
+  },
+
+  get lockUntil() {
+    const rec = this.getRecord();
+    return rec.lockedUntil || 0;
+  },
+
+  get failedAttempts() {
+    const rec = this.getRecord();
+    return rec.attempts || 0;
+  },
+
   getRecord(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
     if (!storage) return { attempts: 0, firstAttemptAt: 0, lockedUntil: 0 };
     try {
@@ -387,6 +401,14 @@ export const OrderSecurityShield = {
       this.reset(storage);
     }
     return { isLocked: false, remainingMins: 0 };
+  },
+
+  isLocked(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    return this.checkIsLocked(storage).isLocked;
+  },
+
+  getLockRemainingMins(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    return this.checkIsLocked(storage).remainingMins;
   },
 
   recordFailedAttempt(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
@@ -415,6 +437,10 @@ export const OrderSecurityShield = {
     };
   },
 
+  recordFailure(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    return this.recordFailedAttempt(storage);
+  },
+
   recordSuccess(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
     this.reset(storage);
   },
@@ -434,20 +460,30 @@ export function matchOrderCredentials(orderRecord, candidateRef, candidatePhone)
 
   const targetRef = String(
     orderRecord.order_reference ||
+    orderRecord.reference ||
     orderRecord.request_reference ||
+    orderRecord.id ||
+    orderRecord.order_id ||
     ''
   ).trim().toUpperCase();
 
   if (targetRef !== inputRef) return false;
 
-  const targetPhone = normalizePhone10(
-    orderRecord.phone ||
-    orderRecord.whatsapp_phone ||
-    orderRecord.customer_phone ||
-    (orderRecord.wedding && orderRecord.wedding.phone) ||
-    (orderRecord.wedding && orderRecord.wedding.contacts && orderRecord.wedding.contacts[0]?.phone) ||
-    ''
-  );
+  const candidatePhones = [
+    orderRecord.phone,
+    orderRecord.whatsapp_phone,
+    orderRecord.customer_phone,
+    orderRecord.mobile,
+    (orderRecord.customer && orderRecord.customer.phone),
+    (orderRecord.wedding && orderRecord.wedding.phone),
+    (orderRecord.wedding && orderRecord.wedding.contacts && orderRecord.wedding.contacts[0]?.phone)
+  ];
 
-  return targetPhone === inputPhone;
+  if (Array.isArray(orderRecord.guests)) {
+    for (const g of orderRecord.guests) {
+      if (g && g.phone) candidatePhones.push(g.phone);
+    }
+  }
+
+  return candidatePhones.some(p => Boolean(p) && normalizePhone10(p) === inputPhone);
 }

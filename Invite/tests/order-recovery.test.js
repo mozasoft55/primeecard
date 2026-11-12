@@ -55,6 +55,17 @@ test('matchOrderCredentials strictly enforces dual-factor reference and phone co
   assert.equal(matchOrderCredentials(sampleOrder, 'ORD-20261112-ABCD', '9477929927'), true);
   assert.equal(matchOrderCredentials(sampleOrder, 'ord-20261112-abcd', '+91 94779 29927'), true); // case-insensitive
 
+  // Order with .reference and guests array phone
+  const guestOrder = {
+    reference: 'ORD-A1E64E20',
+    guests: [
+      { guest_name: 'Software Tester', phone: '9876543210' }
+    ]
+  };
+  assert.equal(matchOrderCredentials(guestOrder, 'ORD-A1E64E20', '9876543210'), true);
+  assert.equal(matchOrderCredentials(guestOrder, 'ord-a1e64e20', '+91 98765 43210'), true);
+  assert.equal(matchOrderCredentials(guestOrder, 'ORD-A1E64E20', '9123456780'), false);
+
   // Reference mismatch
   assert.equal(matchOrderCredentials(sampleOrder, 'ORD-WRONG-REF', '9477929927'), false);
 
@@ -72,33 +83,38 @@ test('OrderSecurityShield enforces rate limiting and 4-attempt lockout against b
 
   // Initially unlocked
   assert.equal(OrderSecurityShield.checkIsLocked(mockStorage).isLocked, false);
+  assert.equal(OrderSecurityShield.isLocked(mockStorage), false);
+  assert.equal(OrderSecurityShield.MAX_ATTEMPTS, 4);
 
   // 1st failed attempt
-  let status = OrderSecurityShield.recordFailedAttempt(mockStorage);
+  let status = OrderSecurityShield.recordFailure(mockStorage);
   assert.equal(status.isLocked, false);
   assert.equal(status.attemptsRemaining, 3);
+  assert.equal(OrderSecurityShield.isLocked(mockStorage), false);
 
   // 2nd failed attempt
-  status = OrderSecurityShield.recordFailedAttempt(mockStorage);
+  status = OrderSecurityShield.recordFailure(mockStorage);
   assert.equal(status.isLocked, false);
   assert.equal(status.attemptsRemaining, 2);
 
   // 3rd failed attempt
-  status = OrderSecurityShield.recordFailedAttempt(mockStorage);
+  status = OrderSecurityShield.recordFailure(mockStorage);
   assert.equal(status.isLocked, false);
   assert.equal(status.attemptsRemaining, 1);
 
   // 4th failed attempt: LOCKOUT TRIGGERED!
-  status = OrderSecurityShield.recordFailedAttempt(mockStorage);
+  status = OrderSecurityShield.recordFailure(mockStorage);
   assert.equal(status.isLocked, true);
   assert.equal(status.attemptsRemaining, 0);
 
   // Next check confirms lockout is active
   const check = OrderSecurityShield.checkIsLocked(mockStorage);
   assert.equal(check.isLocked, true);
+  assert.equal(OrderSecurityShield.isLocked(mockStorage), true);
   assert.ok(check.remainingMins > 0);
 
   // Success resets the shield
   OrderSecurityShield.recordSuccess(mockStorage);
   assert.equal(OrderSecurityShield.checkIsLocked(mockStorage).isLocked, false);
+  assert.equal(OrderSecurityShield.isLocked(mockStorage), false);
 });

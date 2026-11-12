@@ -947,10 +947,21 @@ $('dashboard-auth-form')?.addEventListener('submit', async event => {
       });
       const dash = result.dashboard || result;
       if (result.success && dash) {
-        const serverPhone = normalizePhone10(dash.customer_phone || dash.phone || (dash.customer && dash.customer.phone) || '');
-        if ((serverPhone && serverPhone === candidatePhone) || (matchedOrder && matchedOrder.reference.toUpperCase() === candidateRef.toUpperCase())) {
+        const serverPhones = [
+          dash.customer_phone,
+          dash.phone,
+          dash.customer && dash.customer.phone,
+          dash.wedding && dash.wedding.phone,
+          ...(Array.isArray(dash.guests) ? dash.guests.map(g => g.phone) : [])
+        ].map(p => normalizePhone10(p)).filter(Boolean);
+
+        const phoneMatched = serverPhones.includes(candidatePhone) ||
+                             (matchedOrder && matchOrderCredentials(matchedOrder, candidateRef, candidatePhone));
+
+        if (phoneMatched) {
           verified = true;
           if (dash.dashboard_token) token = dash.dashboard_token;
+          else if (dash.preview_guest_code) token = dash.preview_guest_code;
         }
       }
     } catch (e) {

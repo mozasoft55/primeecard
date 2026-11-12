@@ -17,7 +17,12 @@
 <body>
   <header class="topbar">
     <a class="brand" href="../"><span class="brand-mark" aria-hidden="true">✦</span><span>Prime eCard<small>INVITES &amp; EVENTS MANAGEMENT SMARTLY</small></span></a>
-    <span class="secure-note"><span aria-hidden="true">◆</span> Need Help? WhatsApp / Call: <a href="https://wa.me/919477929927" target="_blank" style="color:#f8e3b0;text-decoration:none;font-weight:600;">+91 94779 29927</a> | <a href="mailto:primeecard@gmail.com" style="color:#f8e3b0;text-decoration:none;">primeecard@gmail.com</a></span>
+    <div class="topbar-right">
+      <button type="button" class="button button-small button-outline track-order-nav-btn" id="open-track-modal-btn">
+        <span aria-hidden="true">🔍</span> Track / Resume Order
+      </button>
+      <span class="secure-note"><span aria-hidden="true">◆</span> Need Help? WhatsApp: <a href="https://wa.me/919477929927" target="_blank" style="color:#f8e3b0;text-decoration:none;font-weight:600;">+91 94779 29927</a></span>
+    </div>
   </header>
 
   <main class="layout">
@@ -35,6 +40,36 @@
     </aside>
 
     <section class="wizard-card" aria-labelledby="page-title">
+      <!-- Active Order Detected Banner (Device-Level Auto-Resume) -->
+      <div id="active-order-banner" class="active-order-banner" hidden>
+        <div class="aob-left">
+          <span class="aob-icon">💍</span>
+          <div>
+            <strong id="aob-title">Active Order in Progress</strong>
+            <p id="aob-desc">Ref: <code id="aob-ref">ORD-...</code> · <span id="aob-status">Status loading...</span></p>
+          </div>
+        </div>
+        <div class="aob-actions">
+          <button type="button" class="button button-gold button-small" id="aob-resume-btn">Open My Order / Dashboard ➔</button>
+          <button type="button" class="aob-dismiss-btn" id="aob-dismiss-btn" title="Create a new card instead">Start New</button>
+        </div>
+      </div>
+
+      <!-- Unsaved Draft Banner -->
+      <div id="draft-resume-banner" class="draft-resume-banner" hidden>
+        <div class="drb-left">
+          <span class="drb-icon">📝</span>
+          <div>
+            <strong id="drb-title">Unsaved Draft Found</strong>
+            <p id="drb-desc">Would you like to resume your celebration details?</p>
+          </div>
+        </div>
+        <div class="drb-actions">
+          <button type="button" class="button button-gold button-small" id="drb-resume-btn">Resume Draft ➔</button>
+          <button type="button" class="aob-dismiss-btn" id="drb-discard-btn">Discard</button>
+        </div>
+      </div>
+
       <div id="form-view">
         <div class="wizard-head">
           <div>
@@ -225,14 +260,24 @@
         <h2 id="success-heading">Your celebration has a home.</h2>
         <p id="success-message"></p>
         <dl class="success-details">
-          <div><dt>Order reference</dt><dd id="success-order"></dd></div>
+          <div>
+            <dt>Order reference</dt>
+            <dd>
+              <span id="success-order"></span>
+              <button type="button" class="button button-outline button-small copy-ref-btn" id="copy-ref-btn" style="margin-left:8px;min-height:28px;padding:2px 10px;font-size:11px;" title="Copy Order Reference ID">Copy ID</button>
+            </dd>
+          </div>
           <div><dt>Payment status</dt><dd id="success-payment"></dd></div>
         </dl>
         <div class="dashboard-action-card">
-          <div class="dashboard-btn-container">
+          <div class="dashboard-btn-container" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
             <a id="dashboard-link" class="button button-primary success-link is-disabled" href="javascript:void(0)" aria-disabled="true" role="button">
               <span id="dashboard-link-icon" class="btn-icon" aria-hidden="true">🔒</span>
               <span id="dashboard-link-text">Open Secure Dashboard</span>
+            </a>
+            <a id="preview-invitation-link" class="button button-gold success-link is-disabled" href="javascript:void(0)" aria-disabled="true" role="button" hidden target="_blank" rel="noopener">
+              <span class="btn-icon" aria-hidden="true">👁</span>
+              <span>Preview Live Card</span>
             </a>
           </div>
 
@@ -243,6 +288,15 @@
             </button>
           </div>
           <p id="refresh-status-msg" class="refresh-status-msg" aria-live="polite">Verification in progress. Click &ldquo;Refresh Status&rdquo; to check if your card has been activated.</p>
+        </div>
+
+        <!-- Safe Exit & Re-open Guidance Note -->
+        <div class="safe-exit-card">
+          <div class="sec-icon" aria-hidden="true">💡</div>
+          <div class="sec-text">
+            <strong>Did you close this page? No worries!</strong>
+            <p>You can re-open your order status and dashboard anytime using your <strong>Order Reference ID</strong> and <strong>10-digit registered mobile number</strong> by tapping the <em>&ldquo;Track / Resume Order&rdquo;</em> button at the top.</p>
+          </div>
         </div>
 
         <div id="payment-pending-notice" class="payment-pending-notice">
@@ -262,6 +316,48 @@
       </section>
     </section>
   </main>
+
+  <!-- Secure Order Tracking & Recovery Modal (Protected against brute-force) -->
+  <div id="track-order-modal" class="recovery-modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="track-modal-title">
+    <div class="recovery-modal-card">
+      <button type="button" class="recovery-modal-close" id="close-track-modal-btn" aria-label="Close modal">×</button>
+      
+      <div class="recovery-modal-head">
+        <span class="recovery-badge">🔒 Privacy-Protected Verification</span>
+        <h3 id="track-modal-title">Track &amp; Resume Your Wedding Order</h3>
+        <p>If you exited the page or paid earlier, enter your <strong>Order Reference ID</strong> and matching <strong>10-digit registered phone number</strong> to resume and open your dashboard.</p>
+      </div>
+
+      <form id="track-order-form" novalidate>
+        <div class="recovery-fields">
+          <label class="field">
+            <span>Order Reference ID</span>
+            <input type="text" id="track-ref-input" name="order_reference" placeholder="e.g. ORD-20261112-ABCD or REF-..." autocomplete="off" required maxlength="60">
+          </label>
+
+          <label class="field">
+            <span>Registered Mobile / WhatsApp (10 digits)</span>
+            <input type="tel" id="track-phone-input" name="phone" placeholder="e.g. 9876543210" autocomplete="tel" required maxlength="20">
+          </label>
+        </div>
+
+        <div class="privacy-guarantee-box">
+          <span class="pgb-icon">🛡️</span>
+          <p><strong>Anti-Snooping Security:</strong> Both your Reference ID and registered phone number must match. Automated random key attempts are strictly rate-limited and locked out.</p>
+        </div>
+
+        <div id="track-error-box" class="form-error" hidden role="alert"></div>
+
+        <div class="recovery-actions">
+          <button type="button" class="button button-muted" id="track-cancel-btn">Cancel</button>
+          <button type="submit" class="button button-gold" id="track-submit-btn">
+            <span class="track-btn-label">Verify &amp; Open Order ➔</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <footer class="footer"><span>Royal Wedding Cards</span><span>Thoughtfully made for your most meaningful day</span></footer>
   <script type="module" src="./app.js"></script>
 </body>

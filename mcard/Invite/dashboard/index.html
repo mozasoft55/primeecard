@@ -19,13 +19,35 @@
       <h1>Open your private dashboard</h1>
       <p id="error-message" role="status"></p>
       <button id="error-retry-button" class="button button-primary" type="button" style="margin-bottom: 1rem;" hidden>Retry loading dashboard</button>
-      <form id="dashboard-link-form" class="access-form">
-        <label for="dashboard-link-input">Paste the full secure dashboard link from your order email</label>
-        <input id="dashboard-link-input" type="url" autocomplete="url" placeholder="https://your-site.example/dashboard/?order=…&amp;token=…" required>
-        <button class="button button-primary" type="submit">Open dashboard securely</button>
-      </form>
-      <p class="helper">An order reference by itself cannot unlock private order, guest, or RSVP data. If the email link expired, contact the business to request a new one.</p>
-      <a href="../" class="button button-outline">Return to invitation site</a>
+
+      <div id="dashboard-auth-container" class="dashboard-auth-container">
+        <!-- Dual Factor Authentication: Order Reference + Registered Mobile -->
+        <form id="dashboard-auth-form" class="access-form">
+          <label for="dash-ref-input">Order Reference ID</label>
+          <input id="dash-ref-input" type="text" placeholder="e.g. ORD-20261112-ABCD or REF-..." required maxlength="60" autocomplete="off">
+          
+          <label for="dash-phone-input">Registered Mobile / WhatsApp (10 digits)</label>
+          <input id="dash-phone-input" type="tel" placeholder="e.g. 9876543210" required maxlength="20" autocomplete="tel">
+          
+          <div id="dash-auth-error" class="form-error" style="color:#b30000;font-size:0.85rem;background:#fff1f0;padding:8px 12px;border-radius:6px;border:1px solid #ffa39e;display:none;"></div>
+          <button class="button button-primary" type="submit" id="dash-auth-submit">Authenticate &amp; Open Dashboard ➔</button>
+        </form>
+
+        <details class="link-paste-details" style="margin-top:1rem;border-top:1px dashed #d8cfc4;padding-top:1rem;text-align:left;">
+          <summary style="cursor:pointer;font-size:0.85rem;color:#6e1429;font-weight:600;">Or paste direct dashboard email link</summary>
+          <form id="dashboard-link-form" class="access-form" style="margin-top:0.75rem;">
+            <label for="dashboard-link-input">Paste the full secure dashboard link from your order email</label>
+            <input id="dashboard-link-input" type="url" autocomplete="url" placeholder="https://your-site.example/dashboard/?order=…&amp;token=…">
+            <button class="button button-outline button-small" type="submit">Open link</button>
+          </form>
+        </details>
+      </div>
+
+      <p class="helper" style="margin-top:1.2rem;">Dual-factor authentication (Reference ID + Registered Mobile Number) protects your guest list and RSVP responses from unauthorized access.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:1rem;flex-wrap:wrap;">
+        <a href="../onboard/" class="button button-outline">Track / Resume on Onboarding</a>
+        <a href="../" class="button button-outline">Return to invitation site</a>
+      </div>
     </section>
 
     <div id="dashboard-content" hidden>
