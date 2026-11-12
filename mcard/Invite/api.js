@@ -175,6 +175,50 @@ function normalizeInvitation(data, code = '') {
   };
 }
 
+function findLocalInvitation(code) {
+  if (typeof localStorage === 'undefined') return null;
+  const upperCode = code.toUpperCase();
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('customer-dashboard-guests-')) {
+      try {
+        const guests = JSON.parse(localStorage.getItem(key) || '[]');
+        const guest = guests.find(g => (g.invite_code && (g.invite_code === code || g.invite_code.toUpperCase() === upperCode)));
+        if (guest) {
+          const ref = key.replace('customer-dashboard-guests-', '');
+          const order = JSON.parse(localStorage.getItem('primeecard_order_' + ref) || localStorage.getItem('primeecard_last_order') || '{}');
+          const wedding = order.wedding || order || {
+            bride_name: 'Bride',
+            groom_name: 'Groom',
+            event_date: '2026-12-05',
+            ceremony_title: 'Shubho Bibaho',
+            venue: 'Wedding Celebration Venue'
+          };
+          const capacity = Number(guest.family_members || guest.persons || (guest.with_family ? 4 : 1));
+          return {
+            guest: {
+              id: guest.id,
+              name: guest.guest_name || guest.name || 'Respected Guest',
+              phone: guest.phone || '',
+              city: guest.city_address || guest.city || '',
+              address: guest.city_address || guest.address || '',
+              category: guest.category || (guest.with_family ? 'Family' : 'Person'),
+              invite_code: guest.invite_code || code,
+              persons: capacity,
+              person_display: String(capacity),
+              with_family: guest.with_family === true || String(guest.category || '').toLowerCase() === 'family',
+              family_display: guest.with_family === true || String(guest.category || '').toLowerCase() === 'family' ? '✓' : '✕'
+            },
+            wedding,
+            events: order.events || wedding.events || []
+          };
+        }
+      } catch (_) {}
+    }
+  }
+  return null;
+}
+
 export async function fetchInvitationByCode(inviteCode) {
   const code = String(inviteCode || '').trim();
   if (!code || code.length > 120) {
@@ -191,10 +235,23 @@ export async function fetchInvitationByCode(inviteCode) {
     if (err.message && err.message.includes('cancelled or withdrawn')) throw err;
   }
 
-  const data = await supabaseRequest('rpc/lookup_invitation', {
-    method: 'POST',
-    body: { p_invite_code: code }
-  });
+  let data;
+  try {
+    data = await supabaseRequest('rpc/lookup_invitation', {
+      method: 'POST',
+      body: { p_invite_code: code }
+    });
+  } catch (err) {
+    const localMatch = findLocalInvitation(code);
+    if (localMatch) return localMatch;
+    throw err;
+  }
+
+  if (!data || !data.guest || !data.wedding) {
+    const localMatch = findLocalInvitation(code);
+    if (localMatch) return localMatch;
+  }
+
   return normalizeInvitation(data, code);
 }
 

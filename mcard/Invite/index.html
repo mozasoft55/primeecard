@@ -380,25 +380,6 @@
       });
       updateCountVisibility();
     }
-        try {
-          const result = await submitRsvp({
-            inviteCode,
-            response: answerSelect.value,
-            attendees: Number(countSelect.value),
-            wishesMessage: wishesInput.value,
-            capacity: guest.persons
-          });
-          status.textContent = translateText(result.message || 'Your RSVP has been saved.', language);
-          isSaved = true;
-        } catch (error) {
-          status.textContent = translateText(error.message || 'Your RSVP could not be saved. Please try again.', language);
-        } finally {
-          submit.disabled = isSaved;
-          submit.textContent = isSaved ? translateText('RSVP sent', language) : submitText;
-        }
-      });
-      updateCountVisibility();
-    }
 
     async function bootstrap() {
       const p = new URLSearchParams(window.location.search);
