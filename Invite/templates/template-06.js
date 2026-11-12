@@ -1525,13 +1525,14 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   try { const s = win.localStorage?.getItem('t9-lang'); if (!host.dataset.lang && (s === 'bn' || s === 'en')) lang = s; } catch { /* ignore */ }
   const bn = () => lang === 'bn';
   const num = n => (bn() ? toBn(n) : String(n));
+  const updateCount = () => {};
   const applyLang = l => {
     lang = l; host.dataset.lang = l;
     try { win.localStorage?.setItem('t9-lang', l); } catch { /* ignore */ }
     $$('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setlang === l)));
     if (doc.documentElement) doc.documentElement.setAttribute('lang', l === 'bn' ? 'bn' : 'en');
     if (typeof updateAllCountdowns === 'function') updateAllCountdowns();
-    updateCount();
+    if (typeof updateCount === 'function') updateCount();
   };
   $$('[data-setlang]').forEach(b => on(b, 'click', () => applyLang(b.dataset.setlang)));
 
