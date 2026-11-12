@@ -1,10 +1,42 @@
 import { ONBOARDING_CONFIG } from '../onboarding-config.js';
-import { formatINR, parseGuestCsv } from '../onboarding-core.js';
+import {
+  formatINR,
+  parseGuestCsv,
+  normalizePhone10,
+  OrderSecurityShield,
+  matchOrderCredentials
+} from '../onboarding-core.js';
 import { computeStats, STATUS_ORDER } from './rsvp-stats.js';
 
 const params = new URLSearchParams(location.search);
-let orderReference = params.get('order') || sessionStorage.getItem('customer-dashboard-order') || '';
-if (orderReference) sessionStorage.setItem('customer-dashboard-order', orderReference);
+let orderReference = params.get('order')
+  || sessionStorage.getItem('customer-dashboard-order')
+  || localStorage.getItem('customer-dashboard-order')
+  || '';
+
+let dashboardToken = params.get('token')
+  || sessionStorage.getItem('customer-dashboard-token')
+  || localStorage.getItem('customer-dashboard-token')
+  || '';
+
+if (!orderReference) {
+  try {
+    const lastOrder = JSON.parse(localStorage.getItem('primeecard_last_order') || '{}');
+    if (lastOrder && lastOrder.reference) {
+      orderReference = lastOrder.reference;
+      if (!dashboardToken && lastOrder.token) dashboardToken = lastOrder.token;
+    }
+  } catch (_) {}
+}
+
+if (orderReference) {
+  sessionStorage.setItem('customer-dashboard-order', orderReference);
+  try { localStorage.setItem('customer-dashboard-order', orderReference); } catch (_) {}
+}
+if (dashboardToken) {
+  sessionStorage.setItem('customer-dashboard-token', dashboardToken);
+  try { localStorage.setItem('customer-dashboard-token', dashboardToken); } catch (_) {}
+}
 
 const $ = id => document.getElementById(id);
 const loading = $('loading-state');
@@ -846,6 +878,118 @@ $('error-retry-button')?.addEventListener('click', async () => {
   if (loading) loading.hidden = false;
   if (errorState) errorState.hidden = true;
   await refreshDashboard();
+});
+
+$('dashboard-auth-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const refInput = $('dash-ref-input');
+  const phoneInput = $('dash-phone-input');
+  const errEl = $('dash-auth-error');
+  const submitBtn = $('dash-auth-submit');
+
+  const showAuthError = msg => {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.hidden = !msg;
+    errEl.style.display = msg ? 'block' : 'none';
+  };
+
+  showAuthError('');
+
+  if (OrderSecurityShield.isLocked()) {
+    const waitMins = Math.ceil((OrderSecurityShield.lockUntil - Date.now()) / 60000);
+    showAuthError(`Security lockout: Too many failed attempts. Please wait ${waitMins} minute(s) before trying again.`);
+    return;
+  }
+
+  const candidateRef = (refInput ? refInput.value : '').trim();
+  const rawPhone = (phoneInput ? phoneInput.value : '').trim();
+  const candidatePhone = normalizePhone10(rawPhone);
+
+  if (!candidateRef) {
+    showAuthError('Please enter your Order Reference ID.');
+    refInput?.focus();
+    return;
+  }
+  if (!candidatePhone || candidatePhone.length !== 10) {
+    showAuthError('Please enter a valid 10-digit registered mobile number.');
+    phoneInput?.focus();
+    return;
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verifying credentials…';
+  }
+
+  // Synthetic delay to mitigate automated high-speed timing attacks
+  await new Promise(r => setTimeout(r, 850));
+
+  try {
+    let matchedOrder = null;
+    const cached = localStorage.getItem('primeecard_order_' + candidateRef) || localStorage.getItem('primeecard_last_order');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (matchOrderCredentials(parsed, candidateRef, candidatePhone)) {
+          matchedOrder = parsed;
+        }
+      } catch (_) {}
+    }
+
+    let verified = false;
+    let token = matchedOrder ? matchedOrder.token : 'demo-token';
+
+    try {
+      const result = await callRpc('manage_customer_dashboard', {
+        p_order_reference: candidateRef,
+        p_action: 'load'
+      });
+      const dash = result.dashboard || result;
+      if (result.success && dash) {
+        const serverPhone = normalizePhone10(dash.customer_phone || dash.phone || (dash.customer && dash.customer.phone) || '');
+        if ((serverPhone && serverPhone === candidatePhone) || (matchedOrder && matchedOrder.reference.toUpperCase() === candidateRef.toUpperCase())) {
+          verified = true;
+          if (dash.dashboard_token) token = dash.dashboard_token;
+        }
+      }
+    } catch (e) {
+      if (matchedOrder) verified = true;
+    }
+
+    if (!verified && !matchedOrder) {
+      OrderSecurityShield.recordFailure();
+      if (OrderSecurityShield.isLocked()) {
+        const waitMins = Math.ceil((OrderSecurityShield.lockUntil - Date.now()) / 60000);
+        showAuthError(`Security lockout: Too many failed attempts. For your data safety, please wait ${waitMins} minute(s).`);
+      } else {
+        const remaining = OrderSecurityShield.MAX_ATTEMPTS - OrderSecurityShield.failedAttempts;
+        showAuthError(`No matching order found for this Reference ID and Mobile combination. (${remaining} attempt${remaining === 1 ? '' : 's'} remaining)`);
+      }
+      return;
+    }
+
+    OrderSecurityShield.reset();
+
+    orderReference = candidateRef;
+    sessionStorage.setItem('customer-dashboard-order', candidateRef);
+    sessionStorage.setItem('customer-dashboard-token', token);
+    try {
+      localStorage.setItem('customer-dashboard-order', candidateRef);
+      localStorage.setItem('customer-dashboard-token', token);
+    } catch (_) {}
+
+    const newUrl = new URL(location.href);
+    newUrl.searchParams.set('order', candidateRef);
+    if (token) newUrl.searchParams.set('token', token);
+    location.href = newUrl.href;
+
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Authenticate & Open Dashboard ➔';
+    }
+  }
 });
 
 $('dashboard-link-form')?.addEventListener('submit', event => {

@@ -342,3 +342,112 @@ function parseCsvRows(text) {
   if (row.some(value => value.trim())) rows.push(row);
   return rows;
 }
+
+/* ── Order Recovery & Security Shield ────────────────────────────────── */
+
+export function normalizePhone10(phone) {
+  const digits = String(phone || '').replace(/\D/g, '');
+  return digits.length >= 10 ? digits.slice(-10) : '';
+}
+
+export function maskOrderCouple(brideName, groomName) {
+  const mask = name => {
+    const s = String(name || '').trim();
+    if (!s) return '***';
+    if (s.length <= 2) return s[0] + '*';
+    return s[0] + '****' + s.slice(-1);
+  };
+  const b = mask(brideName);
+  const g = mask(groomName);
+  return `${b} & ${g}`;
+}
+
+export const OrderSecurityShield = {
+  storageKey: 'primeecard_order_lookup_shield',
+  maxAttempts: 4,
+  lockoutMs: 15 * 60 * 1000, // 15 minutes lockout
+
+  getRecord(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    if (!storage) return { attempts: 0, firstAttemptAt: 0, lockedUntil: 0 };
+    try {
+      const raw = storage.getItem(this.storageKey);
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return { attempts: 0, firstAttemptAt: 0, lockedUntil: 0 };
+  },
+
+  checkIsLocked(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    const rec = this.getRecord(storage);
+    const now = Date.now();
+    if (rec.lockedUntil && now < rec.lockedUntil) {
+      const remainingMins = Math.ceil((rec.lockedUntil - now) / 60000);
+      return { isLocked: true, remainingMins };
+    }
+    if (rec.lockedUntil && now >= rec.lockedUntil) {
+      this.reset(storage);
+    }
+    return { isLocked: false, remainingMins: 0 };
+  },
+
+  recordFailedAttempt(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    const rec = this.getRecord(storage);
+    const now = Date.now();
+    if (!rec.firstAttemptAt || (now - rec.firstAttemptAt > this.lockoutMs)) {
+      rec.attempts = 1;
+      rec.firstAttemptAt = now;
+      rec.lockedUntil = 0;
+    } else {
+      rec.attempts += 1;
+    }
+
+    if (rec.attempts >= this.maxAttempts) {
+      rec.lockedUntil = now + this.lockoutMs;
+    }
+
+    if (storage) {
+      try { storage.setItem(this.storageKey, JSON.stringify(rec)); } catch (_) {}
+    }
+
+    return {
+      isLocked: rec.attempts >= this.maxAttempts,
+      attemptsRemaining: Math.max(0, this.maxAttempts - rec.attempts),
+      remainingMins: Math.ceil(this.lockoutMs / 60000)
+    };
+  },
+
+  recordSuccess(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    this.reset(storage);
+  },
+
+  reset(storage = (typeof localStorage !== 'undefined' ? localStorage : null)) {
+    if (storage) {
+      try { storage.removeItem(this.storageKey); } catch (_) {}
+    }
+  }
+};
+
+export function matchOrderCredentials(orderRecord, candidateRef, candidatePhone) {
+  if (!orderRecord || typeof orderRecord !== 'object') return false;
+  const inputRef = String(candidateRef || '').trim().toUpperCase();
+  const inputPhone = normalizePhone10(candidatePhone);
+  if (!inputRef || !inputPhone) return false;
+
+  const targetRef = String(
+    orderRecord.order_reference ||
+    orderRecord.request_reference ||
+    ''
+  ).trim().toUpperCase();
+
+  if (targetRef !== inputRef) return false;
+
+  const targetPhone = normalizePhone10(
+    orderRecord.phone ||
+    orderRecord.whatsapp_phone ||
+    orderRecord.customer_phone ||
+    (orderRecord.wedding && orderRecord.wedding.phone) ||
+    (orderRecord.wedding && orderRecord.wedding.contacts && orderRecord.wedding.contacts[0]?.phone) ||
+    ''
+  );
+
+  return targetPhone === inputPhone;
+}

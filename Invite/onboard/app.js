@@ -10,7 +10,11 @@ import {
   buildUpiUri,
   formatINR,
   validateCashRequest,
-  validateOnboarding
+  validateOnboarding,
+  normalizePhone10,
+  maskOrderCouple,
+  OrderSecurityShield,
+  matchOrderCredentials
 } from '../onboarding-core.js';
 
 const form = document.getElementById('onboarding-form');
@@ -198,6 +202,7 @@ function applyPaymentStatusState(paymentStatus, advanceVerifiedPaise = 0, orderS
   const isVerified = checkIsPaymentVerified(paymentStatus, advanceVerifiedPaise, orderStatus);
   const paymentEl = document.getElementById('success-payment');
   const dashboardLink = document.getElementById('dashboard-link');
+  const previewLink = document.getElementById('preview-invitation-link');
   const linkIcon = document.getElementById('dashboard-link-icon');
   const linkText = document.getElementById('dashboard-link-text');
   const pendingNotice = document.getElementById('payment-pending-notice');
@@ -219,6 +224,12 @@ function applyPaymentStatusState(paymentStatus, advanceVerifiedPaise = 0, orderS
       dashboardLink.setAttribute('aria-disabled', 'false');
       dashboardLink.href = '../dashboard/?order=' + encodeURIComponent(currentOrderReference) + '&token=' + encodeURIComponent(currentDashboardToken);
     }
+    if (previewLink) {
+      previewLink.hidden = false;
+      previewLink.classList.remove('is-disabled');
+      previewLink.setAttribute('aria-disabled', 'false');
+      previewLink.href = '../share.html?order=' + encodeURIComponent(currentOrderReference);
+    }
     if (linkIcon) linkIcon.textContent = '➔';
     if (linkText) linkText.textContent = 'Open Secure Dashboard';
     if (pendingNotice) pendingNotice.hidden = true;
@@ -229,6 +240,12 @@ function applyPaymentStatusState(paymentStatus, advanceVerifiedPaise = 0, orderS
       dashboardLink.classList.add('is-disabled');
       dashboardLink.setAttribute('aria-disabled', 'true');
       dashboardLink.href = 'javascript:void(0)';
+    }
+    if (previewLink) {
+      previewLink.hidden = true;
+      previewLink.classList.add('is-disabled');
+      previewLink.setAttribute('aria-disabled', 'true');
+      previewLink.href = 'javascript:void(0)';
     }
     if (linkIcon) linkIcon.textContent = '🔒';
     if (linkText) linkText.textContent = 'Open Secure Dashboard (Pending Verification)';
@@ -978,6 +995,28 @@ form.addEventListener('submit', async event => {
     sessionStorage.setItem('customer-dashboard-order', currentOrderReference);
     sessionStorage.setItem('customer-dashboard-token', currentDashboardToken);
 
+    // Persist complete order credentials and metadata for recovery and anti-loss
+    const orderMetadata = {
+      reference: currentOrderReference,
+      token: currentDashboardToken,
+      phone: normalizePhone10(rawFormData.phone || ''),
+      customer_name: rawFormData.customer_name || '',
+      bride_name: rawFormData.bride_name || '',
+      groom_name: rawFormData.groom_name || '',
+      payment_status: result.payment_status || 'Pending Verification',
+      order_status: result.order_status || 'draft',
+      created_at: new Date().toISOString()
+    };
+    try {
+      localStorage.setItem('customer-dashboard-order', currentOrderReference);
+      localStorage.setItem('customer-dashboard-token', currentDashboardToken);
+      localStorage.setItem('primeecard_last_order', JSON.stringify(orderMetadata));
+      localStorage.setItem('primeecard_order_' + currentOrderReference, JSON.stringify(orderMetadata));
+      localStorage.removeItem('primeecard_onboard_draft'); // clear draft since order is completed
+    } catch (e) {
+      console.warn('[Onboard] Could not persist order in localStorage:', e);
+    }
+
     // Persist photo URLs into storage for instant access across dashboard, studio, and guest preview
     if (groomPhoto) {
       try {
@@ -1076,6 +1115,19 @@ if (refreshStatusBtn) {
 
       applyPaymentStatusState(latestPaymentStatus, advanceVerified, orderStatus);
 
+      if (currentOrderReference) {
+        try {
+          const raw = localStorage.getItem('primeecard_order_' + currentOrderReference);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            parsed.payment_status = latestPaymentStatus;
+            parsed.order_status = orderStatus || parsed.order_status;
+            localStorage.setItem('primeecard_order_' + currentOrderReference, JSON.stringify(parsed));
+            localStorage.setItem('primeecard_last_order', JSON.stringify(parsed));
+          }
+        } catch (_) {}
+      }
+
       if (checkIsPaymentVerified(latestPaymentStatus, advanceVerified, orderStatus)) {
         if (refreshMsg) {
           refreshMsg.className = 'refresh-status-msg msg-success';
@@ -1116,3 +1168,344 @@ if (dashboardLinkEl) {
     }
   });
 }
+
+// ── Copy Reference Button ─────────────────────────────────────────────
+function setupCopyRefButton() {
+  const copyRefBtn = document.getElementById('copy-ref-btn');
+  if (!copyRefBtn) return;
+  copyRefBtn.addEventListener('click', async () => {
+    if (!currentOrderReference) return;
+    try {
+      await navigator.clipboard.writeText(currentOrderReference);
+      const prevText = copyRefBtn.textContent;
+      copyRefBtn.textContent = '✓ Copied';
+      setTimeout(() => { copyRefBtn.textContent = prevText; }, 2500);
+    } catch {
+      showError('Could not copy order reference.');
+    }
+  });
+}
+
+// ── Device-Level Active Order Auto-Detection & Resumption ─────────────
+function resumeOrderView(savedOrder) {
+  if (!savedOrder || !savedOrder.reference) return;
+  currentOrderReference = savedOrder.reference;
+  currentDashboardToken = savedOrder.token || 'demo-token';
+
+  sessionStorage.setItem('customer-dashboard-order', currentOrderReference);
+  sessionStorage.setItem('customer-dashboard-token', currentDashboardToken);
+  try {
+    localStorage.setItem('customer-dashboard-order', currentOrderReference);
+    localStorage.setItem('customer-dashboard-token', currentDashboardToken);
+  } catch (_) {}
+
+  const formView = document.getElementById('form-view');
+  const successView = document.getElementById('success-view');
+  if (formView) formView.hidden = true;
+  if (successView) successView.hidden = false;
+
+  const successOrderEl = document.getElementById('success-order');
+  const successMsgEl = document.getElementById('success-message');
+  if (successOrderEl) successOrderEl.textContent = currentOrderReference;
+  if (successMsgEl) {
+    successMsgEl.textContent = 'Welcome back! Here is your saved celebration order and real-time verification status.';
+  }
+
+  applyPaymentStatusState(savedOrder.payment_status || 'Pending Verification', 0, savedOrder.order_status || '');
+
+  // Automatically refresh status from server
+  const refreshBtn = document.getElementById('refresh-status-btn');
+  if (refreshBtn) refreshBtn.click();
+}
+
+function initActiveOrderDetection() {
+  const banner = document.getElementById('active-order-banner');
+  if (!banner) return;
+
+  const rawLastOrder = localStorage.getItem('primeecard_last_order');
+  if (!rawLastOrder) return;
+
+  try {
+    const savedOrder = JSON.parse(rawLastOrder);
+    if (!savedOrder || !savedOrder.reference) return;
+
+    const refEl = document.getElementById('aob-ref');
+    const statusEl = document.getElementById('aob-status');
+    const resumeBtn = document.getElementById('aob-resume-btn');
+    const dismissBtn = document.getElementById('aob-dismiss-btn');
+
+    if (refEl) refEl.textContent = savedOrder.reference;
+    if (statusEl) {
+      const masked = maskOrderCouple(savedOrder.bride_name, savedOrder.groom_name);
+      statusEl.textContent = `${masked ? masked + ' · ' : ''}${savedOrder.payment_status || 'Pending Verification'}`;
+    }
+
+    banner.hidden = false;
+
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', () => {
+        banner.hidden = true;
+        resumeOrderView(savedOrder);
+      });
+    }
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => {
+        banner.hidden = true;
+      });
+    }
+  } catch (err) {
+    console.warn('[Onboard] Failed parsing saved order:', err);
+  }
+}
+
+// ── Secure Order Tracking & Recovery Modal (Dual-Factor & Anti-Snoop) ─
+function initTrackOrderModal() {
+  const modal = document.getElementById('track-order-modal');
+  const openBtn = document.getElementById('open-track-modal-btn');
+  const closeBtn = document.getElementById('close-track-modal-btn');
+  const cancelBtn = document.getElementById('track-cancel-btn');
+  const trackForm = document.getElementById('track-order-form');
+  const errBox = document.getElementById('track-error-box');
+  const submitBtn = document.getElementById('track-submit-btn');
+  const refInput = document.getElementById('track-ref-input');
+  const phoneInput = document.getElementById('track-phone-input');
+
+  if (!modal || !trackForm) return;
+
+  const showTrackError = (msg) => {
+    if (!errBox) return;
+    errBox.textContent = msg;
+    errBox.hidden = !msg;
+  };
+
+  const closeModal = () => {
+    modal.hidden = true;
+    showTrackError('');
+  };
+
+  const openModal = () => {
+    modal.hidden = false;
+    showTrackError('');
+    if (OrderSecurityShield.isLocked()) {
+      const waitMins = Math.ceil((OrderSecurityShield.lockUntil - Date.now()) / 60000);
+      showTrackError(`Security lockout: Too many failed attempts. Please wait ${waitMins} minute(s) before trying again.`);
+      if (submitBtn) submitBtn.disabled = true;
+    } else {
+      if (submitBtn) submitBtn.disabled = false;
+      setTimeout(() => refInput?.focus(), 100);
+    }
+  };
+
+  if (openBtn) openBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  trackForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showTrackError('');
+
+    if (OrderSecurityShield.isLocked()) {
+      const waitMins = Math.ceil((OrderSecurityShield.lockUntil - Date.now()) / 60000);
+      showTrackError(`Security lockout: Too many failed attempts. Please wait ${waitMins} minute(s) before trying again.`);
+      return;
+    }
+
+    const candidateRef = (refInput?.value || '').trim();
+    const rawPhone = (phoneInput?.value || '').trim();
+    const candidatePhone = normalizePhone10(rawPhone);
+
+    if (!candidateRef) {
+      showTrackError('Please enter your Order Reference ID.');
+      refInput?.focus();
+      return;
+    }
+
+    if (!candidatePhone || candidatePhone.length !== 10) {
+      showTrackError('Please enter a valid 10-digit registered mobile number.');
+      phoneInput?.focus();
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      const label = submitBtn.querySelector('.track-btn-label');
+      if (label) label.textContent = 'Verifying credentials…';
+    }
+
+    // Synthetic delay to mitigate automated high-speed timing attacks
+    await new Promise(res => setTimeout(res, 850));
+
+    try {
+      // 1. Check local order cache
+      let verifiedOrder = null;
+      const cached = localStorage.getItem('primeecard_order_' + candidateRef) || localStorage.getItem('primeecard_last_order');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (matchOrderCredentials(parsed, candidateRef, candidatePhone)) {
+            verifiedOrder = parsed;
+          }
+        } catch (_) {}
+      }
+
+      // 2. Query server RPC to verify and retrieve fresh status
+      const supabaseBase = ONBOARDING_CONFIG.supabaseUrl 
+        || (ONBOARDING_CONFIG.dashboardEndpoint ? ONBOARDING_CONFIG.dashboardEndpoint.split('/functions/')[0] : 'https://skpcxbdrmsnwmggjodkz.supabase.co');
+      const rpcUrl = `${supabaseBase}/rest/v1/rpc/manage_customer_dashboard`;
+
+      let serverVerified = false;
+      let serverOrderData = null;
+
+      try {
+        const response = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: {
+            'apikey': ONBOARDING_CONFIG.publishableKey,
+            'Authorization': 'Bearer ' + ONBOARDING_CONFIG.publishableKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            p_order_reference: candidateRef,
+            p_action: 'load'
+          }),
+          cache: 'no-store'
+        });
+
+        if (response.ok) {
+          const res = await response.json();
+          const dash = res.dashboard || res;
+          if (res.success && dash) {
+            const serverPhone = normalizePhone10(dash.customer_phone || dash.phone || (dash.customer && dash.customer.phone) || '');
+            if ((serverPhone && serverPhone === candidatePhone) || (verifiedOrder && verifiedOrder.reference.toUpperCase() === candidateRef.toUpperCase())) {
+              serverVerified = true;
+              serverOrderData = {
+                reference: candidateRef,
+                token: dash.dashboard_token || (verifiedOrder ? verifiedOrder.token : 'demo-token'),
+                phone: candidatePhone,
+                customer_name: dash.customer_name || (verifiedOrder ? verifiedOrder.customer_name : ''),
+                bride_name: dash.bride_name || (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[0].trim() : (verifiedOrder ? verifiedOrder.bride_name : '')),
+                groom_name: dash.groom_name || (dash.wedding && dash.wedding.couple_name ? dash.wedding.couple_name.split('&')[1]?.trim() : (verifiedOrder ? verifiedOrder.groom_name : '')),
+                payment_status: dash.payment_status || (verifiedOrder ? verifiedOrder.payment_status : 'Pending Verification'),
+                order_status: dash.order_status || (verifiedOrder ? verifiedOrder.order_status : 'draft'),
+                created_at: dash.created_at || new Date().toISOString()
+              };
+            }
+          }
+        }
+      } catch (networkErr) {
+        console.warn('[Onboard] Network check during tracking:', networkErr);
+      }
+
+      const finalOrder = serverOrderData || verifiedOrder;
+
+      if (!finalOrder) {
+        OrderSecurityShield.recordFailure();
+        if (OrderSecurityShield.isLocked()) {
+          const waitMins = Math.ceil((OrderSecurityShield.lockUntil - Date.now()) / 60000);
+          showTrackError(`Security lockout: Too many failed attempts. For your data safety, please wait ${waitMins} minute(s).`);
+        } else {
+          const remaining = OrderSecurityShield.MAX_ATTEMPTS - OrderSecurityShield.failedAttempts;
+          showTrackError(`No matching order found for this Reference ID and Mobile combination. (${remaining} attempt${remaining === 1 ? '' : 's'} remaining)`);
+        }
+        return;
+      }
+
+      // Success! Reset security shield
+      OrderSecurityShield.reset();
+
+      // Persist verified order into storage
+      try {
+        localStorage.setItem('customer-dashboard-order', finalOrder.reference);
+        localStorage.setItem('customer-dashboard-token', finalOrder.token || 'demo-token');
+        localStorage.setItem('primeecard_last_order', JSON.stringify(finalOrder));
+        localStorage.setItem('primeecard_order_' + finalOrder.reference, JSON.stringify(finalOrder));
+      } catch (_) {}
+
+      closeModal();
+      resumeOrderView(finalOrder);
+
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        const label = submitBtn.querySelector('.track-btn-label');
+        if (label) label.textContent = 'Verify & Open Order ➔';
+      }
+    }
+  });
+}
+
+// ── Form Draft Persistence (Auto-Save & Resume Unsaved Work) ──────────
+function initFormDraftPersistence() {
+  const draftBanner = document.getElementById('draft-resume-banner');
+  const resumeDraftBtn = document.getElementById('drb-resume-btn');
+  const discardDraftBtn = document.getElementById('drb-discard-btn');
+
+  // Check if draft exists and no active submitted order is on screen
+  const rawDraft = localStorage.getItem('primeecard_onboard_draft');
+  if (rawDraft && !localStorage.getItem('primeecard_last_order')) {
+    try {
+      const draft = JSON.parse(rawDraft);
+      if (draft && (draft.customer_name || draft.bride_name || draft.groom_name)) {
+        if (draftBanner) draftBanner.hidden = false;
+      }
+    } catch (_) {}
+  }
+
+  if (resumeDraftBtn) {
+    resumeDraftBtn.addEventListener('click', () => {
+      try {
+        const draft = JSON.parse(localStorage.getItem('primeecard_onboard_draft') || '{}');
+        for (const [key, val] of Object.entries(draft)) {
+          if (form.elements[key] && val !== undefined && val !== null) {
+            form.elements[key].value = val;
+          }
+        }
+        if (draft.events && Array.isArray(draft.events) && draft.events.length) {
+          eventRows = draft.events;
+          renderEvents();
+        }
+        if (draftBanner) draftBanner.hidden = true;
+      } catch (e) {
+        console.warn('[Onboard] Failed restoring draft:', e);
+      }
+    });
+  }
+
+  if (discardDraftBtn) {
+    discardDraftBtn.addEventListener('click', () => {
+      localStorage.removeItem('primeecard_onboard_draft');
+      if (draftBanner) draftBanner.hidden = true;
+    });
+  }
+
+  let saveTimer = null;
+  const autoSaveDraft = () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if (!document.getElementById('success-view').hidden) return;
+      try {
+        const formData = Object.fromEntries(new FormData(form).entries());
+        delete formData.proof;
+        delete formData.consent;
+        formData.events = eventRows;
+        if (formData.customer_name || formData.bride_name || formData.groom_name || formData.phone) {
+          localStorage.setItem('primeecard_onboard_draft', JSON.stringify(formData));
+        }
+      } catch (_) {}
+    }, 1000);
+  };
+
+  form.addEventListener('input', autoSaveDraft);
+  form.addEventListener('change', autoSaveDraft);
+}
+
+// Initialize recovery, banners, and listeners
+setupCopyRefButton();
+initActiveOrderDetection();
+initTrackOrderModal();
+initFormDraftPersistence();

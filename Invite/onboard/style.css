@@ -289,3 +289,172 @@ button,a{-webkit-tap-highlight-color:transparent}
 .event-custom-input{width:100%;min-height:36px;padding:6px 9px;border:1px solid #c9a24a;border-radius:6px;background:#fefbf6;color:var(--ink);font-size:13.5px}
 .event-thumb-preview{width:42px;height:42px;border-radius:6px;overflow:hidden;border:1px solid #c9a24a;flex:none;box-shadow:0 2px 6px rgba(0,0,0,0.1);background:#fbf8f0}
 .event-thumb-img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ── Order Tracking Topbar & Modal System ──────────────────────────── */
+.topbar-right{display:flex;align-items:center;gap:14px}
+.track-order-nav-btn{
+  background:#fffdf7;
+  color:var(--wine);
+  border-color:#d5b060;
+  box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  white-space:nowrap;
+  font-weight:700;
+}
+.track-order-nav-btn:hover{
+  background:#f9edd3;
+  border-color:var(--wine);
+  color:var(--wine);
+}
+
+/* ── Active Order & Draft Auto-Resume Banners ──────────────────────── */
+.active-order-banner,
+.draft-resume-banner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 18px;
+  border-radius:12px;
+  margin-bottom:22px;
+  animation:slideDownBanner .25s ease-out;
+}
+@keyframes slideDownBanner{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.active-order-banner{
+  background:linear-gradient(135deg, #fff7eb, #fae9c9);
+  border:1.5px solid #d4a74a;
+  box-shadow:0 4px 14px rgba(212,167,74,0.2);
+}
+.draft-resume-banner{
+  background:linear-gradient(135deg, #f3f6fa, #e6ecf5);
+  border:1.5px solid #a3b8d4;
+  box-shadow:0 4px 12px rgba(163,184,212,0.2);
+}
+.aob-left, .drb-left{display:flex;align-items:center;gap:12px}
+.aob-icon, .drb-icon{font-size:26px;line-height:1}
+.aob-left strong, .drb-left strong{display:block;color:var(--wine);font-size:16px;font-family:"Playfair Display",serif}
+.aob-left p, .drb-left p{margin:2px 0 0;font:12.5px Arial,sans-serif;color:#594447}
+.aob-left code{background:#fff8ea;padding:1px 6px;border-radius:4px;border:1px solid #dcc290;font-weight:700}
+.aob-actions, .drb-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.aob-dismiss-btn{
+  background:transparent;
+  border:none;
+  color:#736063;
+  font:12px Arial,sans-serif;
+  text-decoration:underline;
+  cursor:pointer;
+  padding:6px;
+}
+.aob-dismiss-btn:hover{color:var(--wine)}
+
+/* ── Safe Exit Guidance Card ───────────────────────────────────────── */
+.safe-exit-card{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  background:#fffdf8;
+  border:1px dashed #d5ba80;
+  border-radius:12px;
+  padding:16px 18px;
+  margin:18px 0;
+  text-align:left;
+}
+.sec-icon{font-size:24px;line-height:1;flex-shrink:0;margin-top:2px}
+.sec-text strong{display:block;color:var(--wine);font-size:15px;margin-bottom:3px}
+.sec-text p{margin:0;font:13px/1.45 Arial,sans-serif;color:#605154}
+
+/* ── Secure Order Recovery Modal ───────────────────────────────────── */
+.recovery-modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:rgba(20,6,12,0.72);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.recovery-modal-card{
+  background:#fffdf9;
+  border:1.5px solid #c9a456;
+  border-radius:18px;
+  padding:clamp(22px,4vw,36px);
+  max-width:480px;
+  width:100%;
+  position:relative;
+  box-shadow:0 24px 60px rgba(0,0,0,0.45);
+  animation:popModal .22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popModal{
+  from{opacity:0;transform:scale(0.92)}
+  to{opacity:1;transform:scale(1)}
+}
+.recovery-modal-close{
+  position:absolute;
+  top:14px;
+  right:16px;
+  background:transparent;
+  border:none;
+  font-size:26px;
+  line-height:1;
+  color:#736063;
+  cursor:pointer;
+  padding:4px 8px;
+}
+.recovery-modal-close:hover{color:var(--wine)}
+.recovery-modal-head{text-align:center;margin-bottom:20px}
+.recovery-badge{
+  display:inline-block;
+  padding:4px 10px;
+  background:#f9edd3;
+  color:#754d12;
+  border:1px solid #d9be85;
+  border-radius:999px;
+  font:700 11px Arial,sans-serif;
+  letter-spacing:.04em;
+  margin-bottom:10px;
+}
+.recovery-modal-head h3{
+  margin:0 0 8px;
+  font:600 24px "Playfair Display",Georgia,serif;
+  color:var(--wine);
+}
+.recovery-modal-head p{
+  margin:0;
+  font:13.5px/1.45 Arial,sans-serif;
+  color:#635256;
+}
+.recovery-fields{display:grid;gap:14px}
+.privacy-guarantee-box{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  background:#f9faf6;
+  border:1px solid #c6d9c6;
+  border-radius:8px;
+  padding:12px;
+  margin-top:14px;
+}
+.pgb-icon{font-size:18px;line-height:1;flex-shrink:0}
+.privacy-guarantee-box p{
+  margin:0;
+  font:11.5px/1.4 Arial,sans-serif;
+  color:#2f5431;
+}
+.recovery-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+}
+
+@media(max-width:600px){
+  .topbar-right{flex-direction:column;align-items:flex-end;gap:4px}
+  .active-order-banner, .draft-resume-banner{flex-direction:column;align-items:flex-start}
+  .aob-actions, .drb-actions{width:100%;justify-content:space-between}
+  .recovery-modal-card{padding:20px 16px}
+}
