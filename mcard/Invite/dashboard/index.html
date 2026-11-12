@@ -82,6 +82,7 @@
         <div class="panel-head">
           <div><p class="eyebrow">Guest list</p><h2 id="guests-title">People you’re inviting</h2><p class="helper" id="guest-summary-line"></p></div>
           <div class="head-actions">
+            <button id="refresh-guests-btn" class="button button-outline button-small" type="button" title="Refresh Guest List">↻ Refresh</button>
             <button id="open-add-guest" class="button button-primary button-small" type="button">＋ Add guest</button>
             <details class="menu" id="more-menu">
               <summary class="button button-outline button-small">More ▾</summary>
@@ -133,6 +134,7 @@
     <div id="reply-dialog-body" style="display: grid; gap: 12px; margin: 16px 0;">
       <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Status</small><p id="reply-dialog-status" style="margin: 2px 0 0; font-weight: 700;"></p></div>
       <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">People Attending</small><p id="reply-dialog-attending" style="margin: 2px 0 0; font-size: 18px; font-weight: 600;"></p></div>
+      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Events / Ceremonies Attending</small><p id="reply-dialog-events" style="margin: 2px 0 0; font-size: 14px; font-weight: 600; color: #7a1426;"></p></div>
       <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Wishes / Message</small><blockquote id="reply-dialog-message" style="margin: 6px 0 0; padding: 12px 14px; background: #fff8eb; border-left: 3px solid var(--gold); border-radius: 6px; font: italic 16px/1.45 Georgia, serif; color: #5a3825; white-space: pre-wrap;"></blockquote></div>
       <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Submitted</small><p id="reply-dialog-time" style="margin: 2px 0 0; color: var(--muted); font-size: 13px;"></p></div>
     </div>
@@ -153,22 +155,6 @@
         <button class="button button-primary" id="import-guests" type="button" disabled>Import guests</button>
       </div>
     </form>
-  </dialog>
-
-  
-
-  <!-- View reply message -->
-  <dialog id="reply-dialog" class="edit-dialog">
-    <h2 id="reply-dialog-name">Guest Response</h2>
-    <div id="reply-dialog-body" style="display: grid; gap: 12px; margin: 16px 0;">
-      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Status</small><p id="reply-dialog-status" style="margin: 2px 0 0; font-weight: 700;"></p></div>
-      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">People Attending</small><p id="reply-dialog-attending" style="margin: 2px 0 0; font-size: 18px; font-weight: 600;"></p></div>
-      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Wishes / Message</small><blockquote id="reply-dialog-message" style="margin: 6px 0 0; padding: 12px 14px; background: #fff8eb; border-left: 3px solid var(--gold); border-radius: 6px; font: italic 16px/1.45 Georgia, serif; color: #5a3825; white-space: pre-wrap;"></blockquote></div>
-      <div><small style="color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em;">Submitted</small><p id="reply-dialog-time" style="margin: 2px 0 0; color: var(--muted); font-size: 13px;"></p></div>
-    </div>
-    <div class="dialog-actions">
-      <button class="button button-outline" id="close-reply-dialog" type="button">Close</button>
-    </div>
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>

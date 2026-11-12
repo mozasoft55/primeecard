@@ -181,6 +181,8 @@ const TXT = {
   note: ['A note for the couple & family (optional)', 'বর-কনে ও পরিবারের জন্য বার্তা (ঐচ্ছিক)'],
   send: ['Send RSVP on WhatsApp', 'হোয়াটসঅ্যাপে উত্তর পাঠান'],
   cap: ['WhatsApp opens with your reply filled in. Just press send.', 'আপনার উত্তর লেখা অবস্থায় হোয়াটসঅ্যাপ খুলবে। শুধু সেন্ড চাপুন।'],
+  rsvpBtn: ['Respond to Invitation · RSVP', 'উপস্থিতির সম্মতি জানান · RSVP'],
+  tapToRespond: ['Click to RSVP & choose ceremonies', 'ক্লিক করে সম্মতি ও অনুষ্ঠান নির্বাচন করুন'],
   endEy: ['Forever begins', 'নতুন জীবনের শুরু'],
   endBless: ['With love & blessings', 'ভালোবাসা ও আশীর্বাদসহ'],
   s1: ['How We Met', 'প্রথম শুভদৃষ্টি'],
@@ -742,6 +744,32 @@ section[data-sec="story"]{background:radial-gradient(ellipse 70% 30% at 50% 0%,r
 
 /* RSVP */
 .t9-sec-rsvp{background:${DIAMOND_BG},linear-gradient(180deg,#f3ded8,#edd5cd);padding-bottom:70px}
+.t9-rsvp-action-wrap{display:flex;justify-content:center;margin:28px 0 10px}
+.t9-rsvp-launch-btn{display:inline-flex;align-items:center;gap:16px;min-height:68px;padding:12px 32px;border-radius:38px;background:linear-gradient(135deg,var(--p),var(--p-dark));color:#fff;border:2px solid var(--gold);box-shadow:0 16px 36px rgba(var(--p-rgb),.4),0 0 0 4px rgba(201,162,74,.25);cursor:pointer;font-family:inherit;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.t9-rsvp-launch-btn:hover{transform:translateY(-3px);box-shadow:0 22px 48px rgba(var(--p-rgb),.5),0 0 0 6px rgba(201,162,74,.35)}
+.t9-rsvp-launch-btn:active{transform:scale(.98)}
+.t9-launch-icon{font-size:28px}
+.t9-launch-content{display:flex;flex-direction:column;text-align:left}
+.t9-launch-title{font:700 22px var(--f-head);letter-spacing:.02em;color:#fff}
+.t9-launch-hint{font:500 13px var(--f-body);color:#fcecd2;opacity:.9}
+.t9-launch-arrow{font-size:20px;color:var(--gold);margin-left:6px;transition:transform .3s var(--ease)}
+.t9-rsvp-launch-btn:hover .t9-launch-arrow{transform:translateX(5px)}
+
+/* RSVP Modal Dialog */
+.t9-rsvp-modal{position:fixed;inset:0;width:100vw;height:100vh;max-width:100vw;max-height:100vh;margin:0;padding:20px 14px;border:0;background:rgba(20,1,5,.84);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99999;box-sizing:border-box}
+.t9-rsvp-modal:not([open]){display:none}
+.t9-rsvp-modal[open]{display:grid;place-items:center}
+.t9-modal-card{position:relative;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:32px 24px 28px;border-radius:28px;background:linear-gradient(180deg,#fffdfa,#fff6ee);border:1.8px solid var(--gold);box-shadow:0 30px 70px rgba(0,0,0,.6);box-sizing:border-box}
+.t9-modal-close{position:absolute;top:16px;right:18px;width:38px;height:38px;border-radius:50%;border:1px solid #d9c4b2;background:#fff;color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s;z-index:10}
+.t9-modal-close:hover{background:var(--p);color:#fff;border-color:var(--p)}
+.t9-modal-head{text-align:center;margin-bottom:20px}
+.t9-modal-head h3{font:700 26px var(--f-head);color:var(--ink);margin:4px 0 6px}
+.t9-modal-note{font:500 14px/1.5 var(--f-body);color:var(--muted);margin:0}
+.t9-input-readonly{background:#f4ece6!important;color:#6b5855!important;cursor:not-allowed!important;border-color:#dacac0!important}
+.t9-select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238e1a34' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.t9-hint{display:block;font:500 12.5px var(--f-body);color:#9e5a32;margin-top:6px}
+.t9-vcomment{font:italic 500 15px/1.5 var(--f-body);color:var(--p);background:rgba(var(--p-rgb),.07);border-left:3px solid var(--gold);padding:8px 12px;border-radius:0 8px 8px 0;margin:12px 0 8px}
+
 .t9-rsvp{position:relative;max-width:440px;margin:0 auto;padding:36px 22px 22px;border-radius:30px;background:linear-gradient(180deg,#fffaf6,#fff6ef);border:1px solid #ecd7bf;box-shadow:0 26px 60px rgba(120,50,50,.22)}
 .t9-rsvp:before{content:"";position:absolute;inset:7px;border:1px solid rgba(201,162,74,.38);border-radius:24px;pointer-events:none}
 .t9-stamp{position:absolute;top:-22px;right:14px;width:66px;height:auto;transform:rotate(6deg);filter:drop-shadow(0 6px 8px rgba(0,0,0,.25));z-index:3;transition:transform .4s var(--ease)}
@@ -866,25 +894,33 @@ export default function render({ guest, wedding, events = [] } = {}) {
     || getStoredPhoto('banquet_photo');
   const assetBase = clean(w.asset_base) || './assets/';
 
+  const hallBanquet = clean(w.venue_title) || clean(w.hall) || clean(w.banquet) || clean(w.comment) || '';
+  const dynamicVenue = hallBanquet || clean(w.venue) || 'Wedding Celebration Venue';
+  const dynamicVenueBn = clean(w.venue_title_bn) || clean(w.hall_bn) || clean(w.banquet_bn) || clean(w.venue_bn) || dynamicVenue;
+
   const defaultBengaliEvents = [
-    { event_name: 'Aashirbad & Blessings', event_name_bn: 'আশীর্বাদ অনুষ্ঠান', event_date: clean(w.date) || '2026-12-03', event_time: '11:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Elderly blessings with dhan-durba, gold ornaments and traditional sweets.', description_bn: 'ধান-দূর্বা, সোনার গয়না ও ঐতিহ্যবাহী মিষ্টি সহযোগে গুরুজনদের শুভ আশীর্বাদ।' },
-    { event_name: 'Gaye Holud & Mehendi', event_name_bn: 'গায়ে হলুদ ও মেহেন্দি', event_date: clean(w.date) || '2026-12-04', event_time: '17:00', venue: clean(w.venue) || 'Banquet Courtyard', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'ব্যাঙ্কোয়েট কোর্টইয়ার্ড', description: 'Traditional turmeric ceremony, vibrant alpana, music and blessings.', description_bn: 'ঐতিহ্যবাহী গায়ে হলুদ, আলপনা, সঙ্গীত ও মেহেন্দি উৎসব।' },
-    { event_name: 'Shubho Bibaho & Saat Paak', event_name_bn: 'শুভ বিবাহ ও সাতপাক', event_date: clean(w.date) || '2026-12-05', event_time: clean(w.time) || '19:00', venue: clean(w.venue) || 'Royal Mandap Grounds', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'রয়্যাল মণ্ডপ প্রাঙ্গণ', description: 'Sacred Vedic wedding vows, Shubho Drishti, Mala Badal and Saat Paak.', description_bn: 'শুভদৃষ্টি, মালাবদল, সম্প্রদান এবং পবিত্র সাতপাক।' },
-    { event_name: 'Bou Bhaat & Reception', event_name_bn: 'বৌভাত ও প্রীতিভোজ', event_date: clean(w.date) || '2026-12-06', event_time: '19:30', venue: clean(w.venue) || 'Grand Imperial Palace', venue_bn: clean(w.venue_bn) || clean(w.venue) || 'গ্র্যান্ড ইম্পেরিয়াল প্যালেস', description: 'Grand dinner, royal feast, musical evening and heartfelt celebration.', description_bn: 'ভাত-কাপড়ের অনুষ্ঠান, রাজকীয় প্রীতিভোজ ও আনন্দ সম্মিলন।' }
+    { event_name: 'Aashirbad & Blessings', event_name_bn: 'আশীর্বাদ অনুষ্ঠান', event_date: clean(w.date) || '2026-12-03', event_time: '11:00', venue: dynamicVenue, venue_bn: dynamicVenueBn, description: clean(w.comment) || 'Elderly blessings with dhan-durba, gold ornaments and traditional sweets.', description_bn: 'ধান-দূর্বা, সোনার গয়না ও ঐতিহ্যবাহী মিষ্টি সহযোগে গুরুজনদের শুভ আশীর্বাদ।' },
+    { event_name: 'Gaye Holud & Mehendi', event_name_bn: 'গায়ে হলুদ ও মেহেন্দি', event_date: clean(w.date) || '2026-12-04', event_time: '17:00', venue: dynamicVenue, venue_bn: dynamicVenueBn, description: clean(w.comment) || 'Traditional turmeric ceremony, vibrant alpana, music and blessings.', description_bn: 'ঐতিহ্যবাহী গায়ে হলুদ, আলপনা, সঙ্গীত ও মেহেন্দি উৎসব।' },
+    { event_name: 'Shubho Bibaho & Saat Paak', event_name_bn: 'শুভ বিবাহ ও সাতপাক', event_date: clean(w.date) || '2026-12-05', event_time: clean(w.time) || '19:00', venue: dynamicVenue, venue_bn: dynamicVenueBn, description: clean(w.comment) || 'Sacred Vedic wedding vows, Shubho Drishti, Mala Badal and Saat Paak.', description_bn: 'শুভদৃষ্টি, মালাবদল, সম্প্রদান এবং পবিত্র সাতপাক।' },
+    { event_name: 'Bou Bhaat & Reception', event_name_bn: 'বৌভাত ও প্রীতিভোজ', event_date: clean(w.date) || '2026-12-06', event_time: '19:30', venue: dynamicVenue, venue_bn: dynamicVenueBn, description: clean(w.comment) || 'Grand dinner, royal feast, musical evening and heartfelt celebration.', description_bn: 'ভাত-কাপড়ের অনুষ্ঠান, রাজকীয় প্রীতিভোজ ও আনন্দ সম্মিলন।' }
   ];
 
   const rawList = (Array.isArray(events) && events.length) ? events : defaultBengaliEvents;
-  const evs = rawList.map((e, idx) => ({
-    ...e,
-    event_name: clean(e.event_name) || clean(e.name) || clean(e.title) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_name,
-    event_name_bn: clean(e.event_name_bn) || clean(e.name_bn) || clean(e.title_bn) || clean(e.event_name) || clean(e.name) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_name_bn,
-    event_date: clean(e.event_date) || clean(e.date) || clean(w.date) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_date,
-    event_time: clean(e.event_time) || clean(e.time) || defaultBengaliEvents[idx % defaultBengaliEvents.length].event_time,
-    venue: clean(e.venue) || clean(e.address) || clean(w.venue) || defaultBengaliEvents[idx % defaultBengaliEvents.length].venue,
-    venue_bn: clean(e.venue_bn) || clean(e.address_bn) || clean(e.venue) || clean(w.venue_bn) || clean(w.venue) || defaultBengaliEvents[idx % defaultBengaliEvents.length].venue_bn,
-    description: clean(e.description) || defaultBengaliEvents[idx % defaultBengaliEvents.length].description,
-    description_bn: clean(e.description_bn) || clean(e.description) || defaultBengaliEvents[idx % defaultBengaliEvents.length].description_bn
-  }));
+  const evs = rawList.map((e, idx) => {
+    const rawNote = clean(e.note) || clean(e.comment) || clean(e.description);
+    const def = defaultBengaliEvents[idx % defaultBengaliEvents.length];
+    return {
+      ...e,
+      event_name: clean(e.event_name) || clean(e.name) || clean(e.title) || def.event_name,
+      event_name_bn: clean(e.event_name_bn) || clean(e.name_bn) || clean(e.title_bn) || clean(e.event_name) || clean(e.name) || def.event_name_bn,
+      event_date: clean(e.event_date) || clean(e.date) || clean(w.date) || def.event_date,
+      event_time: clean(e.event_time) || clean(e.time) || def.event_time,
+      venue: clean(e.venue) || clean(e.venue_title) || clean(e.address) || dynamicVenue,
+      venue_bn: clean(e.venue_bn) || clean(e.address_bn) || clean(e.venue) || dynamicVenueBn,
+      description: rawNote || clean(w.comment) || def.description,
+      description_bn: clean(e.description_bn) || clean(e.note_bn) || rawNote || clean(w.comment) || def.description_bn
+    };
+  });
   const offset = clean(w.timezone_offset) || '+05:30';
   const lang0 = clean(w.lang || w.language).toLowerCase() || 'en';
 
@@ -918,7 +954,10 @@ export default function render({ guest, wedding, events = [] } = {}) {
   const ceremonyTitle = fld('ceremony_title', TXT.title[0], TXT.title[1]);
   const invocation = fld('invocation', TXT.invocDef[0], TXT.invocDef[1]);
   const inviteText = fld('invite_text', TXT.inviteDef[0], TXT.inviteDef[1]);
-  const venue = fld('venue', 'Wedding Venue', 'বিবাহ স্থান');
+  const venueTitleText = hallBanquet || clean(w.venue) || 'Wedding Venue';
+  const venueTitleBn = clean(w.venue_title_bn) || clean(w.hall_bn) || clean(w.banquet_bn) || venueTitleText;
+  const venue = fld('venue', venueTitleText, venueTitleBn);
+  const venueComment = clean(w.comment) || clean(w.venue_comment) || clean(w.note) || '';
   const address = fld('address', '', '');
   const hasAddr = !!(raw('address') || raw('address_bn'));
   const city = fld('city', '', '');
@@ -1104,7 +1143,7 @@ export default function render({ guest, wedding, events = [] } = {}) {
 <link href="${FONT_HREF}" rel="stylesheet" data-t9-fonts>
 <style>${STYLE}</style>
 <noscript><style>.t9-entry{display:none!important}.t9.t9-locked{height:auto!important;max-height:none!important;overflow:visible!important}.t9-rv{opacity:1!important;transform:none!important}.t9 img.t9-fi{opacity:1!important}.t9-alp path.t9-draw-path,.t9-alp circle.t9-draw-path{stroke-dashoffset:0!important}</style></noscript>
-<div class="t9 t9-js t9-locked t9-boot" data-lang="${lang0}" style="${esc(themeStyle)}" data-when="${esc(String(activeWhen))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${safeUrl(w.music_url)}" data-names-en="${esc(`${fEn} & ${sEn}`)}" data-names-bn="${esc(`${fBn} ও ${sBn}`)}" data-venue="${esc(clean(w.venue))}" data-venue-bn="${esc(clean(w.venue_bn) || clean(w.venue))}">
+<div class="t9 t9-js t9-locked t9-boot" data-lang="${lang0}" style="${esc(themeStyle)}" data-when="${esc(String(activeWhen))}" data-wa="${esc(canRsvp ? wa : '')}" data-music="${safeUrl(w.music_url)}" data-names-en="${esc(`${fEn} & ${sEn}`)}" data-names-bn="${esc(`${fBn} ও ${sBn}`)}" data-venue="${esc(clean(w.venue))}" data-venue-bn="${esc(clean(w.venue_bn) || clean(w.venue))}" data-order-ref="${esc(clean(w.order_reference) || clean(w.ref))}">
   ${DEFS}
   <div class="t9-progress" aria-hidden="true"></div>
   <div class="t9-petals" aria-hidden="true"></div>
@@ -1309,7 +1348,8 @@ export default function render({ guest, wedding, events = [] } = {}) {
           <div class="t9-rv">
             <div class="t9-vcard">
               <div class="t9-eyebrow">${t('venTag')}</div>
-              <h3>${venue}</h3>
+              <h3>${venue}${hallBanquet && hallBanquet !== clean(w.venue) ? `<br><small style="font-size:0.68em;opacity:0.92;font-weight:600;display:inline-block;margin-top:4px;">(${esc(hallBanquet)})</small>` : ''}</h3>
+              ${venueComment ? `<div class="t9-vcomment"><strong>${L('Note / Comment', 'বিশেষ দ্রষ্টব্য')}:</strong> ${esc(venueComment)}</div>` : ''}
               <p>${(hasAddr || hasCity) ? `${hasAddr ? address : ''}${hasAddr && hasCity ? ', ' : ''}${hasCity ? city : ''}<br>` : ''}${day ? `${dayName}, ${dateLong}${timeL ? ' · ' + timeL : ''}` : ''}</p>
               <div class="t9-vbtns">
                 ${mapUrl ? `<a class="t9-btn" href="${mapUrl}" target="_blank" rel="noopener noreferrer">⌖ &nbsp;${t('directions')}</a>` : ''}
@@ -1325,24 +1365,94 @@ export default function render({ guest, wedding, events = [] } = {}) {
     <!-- Interactive WhatsApp RSVP -->
     <section class="t9-sec-rsvp" data-sec="rsvp">
       <div class="t9-wrap">
-        <div class="t9-head t9-rv"><div class="t9-eyebrow">${t('rsvpEy')}</div><h2>${t('rsvpH')}</h2></div>
-        <div class="t9-rv"><form class="t9-rsvp" data-rsvp novalidate>
-          ${postEl}${stampEl}
-          ${canRsvp ? `
-          <div class="t9-fld"><label class="t9-lab" for="t9-name">${t('yourName')}</label><input class="t9-input" id="t9-name" name="name" type="text" autocomplete="name" value="${guestName ? esc(guestName) : ''}" required></div>
-          <div class="t9-fld" role="group" aria-label="Attendance">
-            <button type="button" class="t9-opt" data-att="yes" aria-pressed="true"><span class="t9-rd">${CHECK}</span><span>${t('yes')}</span></button>
-            <button type="button" class="t9-opt" data-att="no" aria-pressed="false" style="margin-bottom:0"><span class="t9-rd">${CHECK}</span><span>${t('no')}</span></button>
-          </div>
-          <div class="t9-fld" data-guests><span class="t9-lab">${t('howMany')}</span><div class="t9-step"><button type="button" data-step="-1" aria-label="Fewer">−</button><output data-count aria-live="polite">${guest?.with_family ? 2 : 1} <small>${t('people')}</small></output><button type="button" data-step="1" aria-label="More">+</button></div></div>
-          ${fchips ? `<div class="t9-fld" data-fns><span class="t9-lab">${t('which')}</span><div class="t9-chips-row">${fchips}</div></div>` : ''}
-          <div class="t9-fld"><label class="t9-lab" for="t9-note">${t('note')}</label><textarea class="t9-input" id="t9-note" name="note" rows="3"></textarea></div>
-          <button class="t9-send" type="submit">${WHATSAPP}<span>${t('send')}</span></button>
-          <p class="t9-status" role="status" aria-live="polite"></p>
-          <p class="t9-cap">${t('cap')}</p>` : ''}
-          ${contacts.length ? `<div class="t9-contacts">${contacts.map(c => `<a class="t9-contact" href="tel:${esc(c.replace(/[^\d+]/g, ''))}">${esc(c)}</a>`).join('')}</div>` : ''}
-        </form></div>
+        <div class="t9-head t9-rv">
+          <div class="t9-eyebrow">${t('rsvpEy')}</div>
+          <h2>${t('rsvpH')}</h2>
+          <p>${L('Your presence is our present — Kindly RSVP to celebrate with us.', 'আপনার শুভাগমন আমাদের পরম প্রাপ্তি — অনুগ্রহ করে উপস্থিতির সম্মতি জানান।')}</p>
+        </div>
+        <div class="t9-rsvp-action-wrap t9-rv">
+          <button type="button" class="t9-rsvp-launch-btn" id="open-rsvp-modal-btn" aria-haspopup="dialog" aria-controls="t9-rsvp-dialog">
+            <span class="t9-launch-icon">💌</span>
+            <span class="t9-launch-content">
+              <span class="t9-launch-title">${t('rsvpBtn')}</span>
+              <span class="t9-launch-hint">${guestName ? `${esc(guestDisplayNameEn)} · ${t('tapToRespond')}` : t('tapToRespond')}</span>
+            </span>
+            <span class="t9-launch-arrow">➔</span>
+          </button>
+        </div>
+        ${contacts.length ? `<div class="t9-contacts t9-rv" style="margin-top:22px;justify-content:center;">${contacts.map(c => `<a class="t9-contact" href="tel:${esc(c.replace(/[^\d+]/g, ''))}">📞 ${esc(c)}</a>`).join('')}</div>` : ''}
       </div>
+
+      <!-- Royal RSVP Modal Dialog -->
+      <dialog id="t9-rsvp-dialog" class="t9-rsvp-modal" aria-labelledby="t9-rsvp-modal-title">
+        <div class="t9-modal-card">
+          <button type="button" class="t9-modal-close" id="close-rsvp-modal-btn" aria-label="Close RSVP form">&times;</button>
+          <div class="t9-modal-head">
+            <div class="t9-eyebrow">${t('rsvpEy')}</div>
+            <h3 id="t9-rsvp-modal-title">${t('rsvpH')}</h3>
+            <p class="t9-modal-note">${L('Kindly confirm your presence to help us celebrate together.', 'অনুগ্রহ করে অনুষ্ঠানে আপনার উপস্থিতি নিশ্চিত করুন।')}</p>
+          </div>
+          <form class="t9-rsvp" data-rsvp novalidate>
+            ${postEl}${stampEl}
+            ${canRsvp ? `
+            <!-- 1. Guest Name (read-only) -->
+            <div class="t9-fld">
+              <label class="t9-lab" for="t9-name">${t('yourName')}</label>
+              <input class="t9-input t9-input-readonly" id="t9-name" name="name" type="text" value="${esc(guestName || 'Respected Guest')}" readonly disabled aria-readonly="true">
+            </div>
+
+            <!-- 2. Category Dropdown: Person / Family (default: Person) -->
+            <div class="t9-fld">
+              <label class="t9-lab" for="t9-category">${L('Category', 'ক্যাটাগরি')}</label>
+              <select class="t9-input t9-select" id="t9-category" name="category">
+                <option value="Person" ${!hasFamily ? 'selected' : ''}>${L('Person', 'ব্যক্তিগত / Person')}</option>
+                <option value="Family" ${hasFamily ? 'selected' : ''}>${L('Family', 'পরিবার সহ / Family')}</option>
+              </select>
+            </div>
+
+            <!-- 3. Guest Count Dropdown: 1 to 5 (default: 1; disabled when Family is selected) -->
+            <div class="t9-fld" id="t9-guest-count-wrap">
+              <label class="t9-lab" for="t9-guest-count">${t('howMany')} (1 - 5)</label>
+              <select class="t9-input t9-select" id="t9-guest-count" name="guest_count" ${hasFamily ? 'disabled' : ''}>
+                <option value="1" ${guest?.persons === 1 || !guest?.persons ? 'selected' : ''}>1</option>
+                <option value="2" ${guest?.persons === 2 ? 'selected' : ''}>2</option>
+                <option value="3" ${guest?.persons === 3 ? 'selected' : ''}>3</option>
+                <option value="4" ${guest?.persons === 4 ? 'selected' : ''}>4</option>
+                <option value="5" ${guest?.persons === 5 ? 'selected' : ''}>5</option>
+              </select>
+              <small class="t9-hint" id="t9-family-hint" style="${hasFamily ? 'display:block' : 'display:none'}">${L('Family category welcomes your whole family.', 'পরিবার ক্যাটাগরিতে সমগ্র পরিবারের সাদর আমন্ত্রণ।')}</small>
+            </div>
+
+            <!-- 4. Phone / WhatsApp -->
+            <div class="t9-fld">
+              <label class="t9-lab" for="t9-phone">${L('Phone / WhatsApp', 'ফোন / হোয়াটসঅ্যাপ')}</label>
+              <input class="t9-input" id="t9-phone" name="phone" type="tel" inputmode="tel" placeholder="e.g. 9876543210" value="${esc(guest?.phone || '')}" maxlength="20">
+            </div>
+
+            <!-- 5. City / Address -->
+            <div class="t9-fld">
+              <label class="t9-lab" for="t9-city">${L('City / Address', 'শহর / ঠিকানা')}</label>
+              <input class="t9-input" id="t9-city" name="city_address" type="text" placeholder="${L('Your city or address', 'আপনার শহর বা ঠিকানা')}" value="${esc(guest?.city || guest?.address || '')}" maxlength="120">
+            </div>
+
+            <!-- Attendance Toggle -->
+            <div class="t9-fld" role="group" aria-label="Attendance">
+              <button type="button" class="t9-opt" data-att="yes" aria-pressed="true"><span class="t9-rd">${CHECK}</span><span>${t('yes')}</span></button>
+              <button type="button" class="t9-opt" data-att="no" aria-pressed="false" style="margin-bottom:0"><span class="t9-rd">${CHECK}</span><span>${t('no')}</span></button>
+            </div>
+
+            <!-- Dynamic Event Selection (which events the guest will attend) -->
+            ${fchips ? `<div class="t9-fld" data-fns><span class="t9-lab">${t('which')} (${L('Select ceremonies attending', 'যে যে অনুষ্ঠানে উপস্থিত থাকবেন')})</span><div class="t9-chips-row">${fchips}</div></div>` : ''}
+
+            <!-- Wishes & Blessings -->
+            <div class="t9-fld"><label class="t9-lab" for="t9-note">${t('note')}</label><textarea class="t9-input" id="t9-note" name="note" rows="3" placeholder="${L('Heartfelt blessings or message for couple...', 'বর-কনের জন্য শুভেচ্ছা বা আশীর্বাদ বার্তা...')}" maxlength="500"></textarea></div>
+
+            <button class="t9-send" type="submit">${WHATSAPP}<span>${t('send')}</span></button>
+            <p class="t9-status" role="status" aria-live="polite"></p>
+            <p class="t9-cap">${t('cap')}</p>` : ''}
+          </form>
+        </div>
+      </dialog>
     </section>
 
     <!-- Finale -->
@@ -1759,55 +1869,152 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   /* RSVP Handling */
   const form = $('[data-rsvp]');
   const waNum = host.dataset.wa || '919477929927';
-  let count = 1;
-  const outEl = form && $('[data-count]', form);
-  function updateCount() {
-    if (!outEl) return;
-    outEl.firstChild.nodeValue = `${num(count)} `;
+  const rsvpModal = $('#t9-rsvp-dialog');
+  const openRsvpBtn = $('#open-rsvp-modal-btn');
+  const closeRsvpBtn = $('#close-rsvp-modal-btn');
+
+  const closeDialog = () => {
+    if (rsvpModal) {
+      if (typeof rsvpModal.close === 'function') rsvpModal.close();
+      else rsvpModal.removeAttribute('open');
+    }
+  };
+
+  if (openRsvpBtn && rsvpModal) {
+    on(openRsvpBtn, 'click', () => {
+      if (typeof rsvpModal.showModal === 'function') rsvpModal.showModal();
+      else rsvpModal.setAttribute('open', '');
+    });
   }
+  if (closeRsvpBtn) on(closeRsvpBtn, 'click', closeDialog);
+  if (rsvpModal) {
+    on(rsvpModal, 'click', e => {
+      if (e.target === rsvpModal) closeDialog();
+    });
+  }
+
   if (form && waNum) {
     let att = 'yes';
-    const guestsBox = $('[data-guests]', form), fnBox = $('[data-fns]', form);
-    count = Number(outEl?.textContent) || (guest?.with_family ? 2 : 1);
-    updateCount();
+    const categorySel = $('#t9-category', form);
+    const guestCountSel = $('#t9-guest-count', form);
+    const familyHint = $('#t9-family-hint', form);
+    const guestCountWrap = $('#t9-guest-count-wrap', form);
+    const fnBox = $('[data-fns]', form);
+
+    if (categorySel && guestCountSel) {
+      on(categorySel, 'change', () => {
+        const isFamily = categorySel.value === 'Family';
+        guestCountSel.disabled = isFamily;
+        if (familyHint) familyHint.style.display = isFamily ? 'block' : 'none';
+      });
+    }
+
     const opts = $$('[data-att]', form);
     opts.forEach(b => on(b, 'click', () => {
       att = b.dataset.att;
       opts.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
       const no = att === 'no';
-      if (guestsBox) guestsBox.classList.toggle('t9-hide', no);
+      if (guestCountWrap) guestCountWrap.classList.toggle('t9-hide', no);
       if (fnBox) fnBox.classList.toggle('t9-hide', no);
     }));
-    $$('[data-step]', form).forEach(b => on(b, 'click', () => {
-      count = clamp(count + Number(b.dataset.step), 1, 20);
-      updateCount();
+
+    $$('.t9-chip', form).forEach(c => on(c, 'click', () => {
+      const isPressed = c.getAttribute('aria-pressed') === 'true';
+      c.setAttribute('aria-pressed', String(!isPressed));
     }));
-    $$('.t9-chip', form).forEach(c => on(c, 'click', () => c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'))));
-    on(form, 'submit', e => {
+
+    on(form, 'submit', async e => {
       e.preventDefault();
-      const name = $('[name="name"]', form).value.trim();
-      const nt = $('[name="note"]', form).value.trim();
+      const name = $('[name="name"]', form)?.value?.trim() || clean(guest?.name) || 'Respected Guest';
+      const category = categorySel ? categorySel.value : (guest?.with_family ? 'Family' : 'Person');
+      const isFamily = category === 'Family';
+      const count = isFamily ? Math.max(Number(guest?.persons || 2), 2) : Number(guestCountSel?.value || 1);
+      const phone = $('[name="phone"]', form)?.value?.trim() || clean(guest?.phone) || '';
+      const city = $('[name="city_address"]', form)?.value?.trim() || clean(guest?.city) || clean(guest?.address) || '';
+      const nt = $('[name="note"]', form)?.value?.trim() || '';
       const status = $('.t9-status', form);
-      if (!name) {
-        status.textContent = bn() ? 'অনুগ্রহ করে আপনার নাম লিখুন।' : 'Please add your name.';
-        form.classList.remove('t9-shake'); void form.offsetWidth; form.classList.add('t9-shake');
-        return;
-      }
+
       const B = bn();
       const fns = att === 'yes' ? $$('.t9-chip[aria-pressed="true"]', form).map(c => `${B ? c.dataset.fnBn : c.dataset.fn}${(B ? c.dataset.fdBn : c.dataset.fd) ? ' (' + (B ? c.dataset.fdBn : c.dataset.fd) + ')' : ''}`) : [];
       const names = B ? host.dataset.namesBn : host.dataset.namesEn;
       const venueTxt = B ? host.dataset.venueBn : host.dataset.venue;
+
+      // Save RSVP to Dashboard under Guest List (localStorage + RPC)
+      const orderRef = host.dataset.orderRef || (typeof localStorage !== 'undefined' ? (localStorage.getItem('customer-dashboard-order-ref') || localStorage.getItem('onboard-order-reference')) : '') || 'default';
+      const inviteCode = guest?.invite_code || (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('code') : '') || '';
+
+      const rsvpData = {
+        id: 'rsvp-' + Date.now(),
+        guest_id: guest?.id,
+        invite_code: inviteCode,
+        guest_name: name,
+        category,
+        guest_count: count,
+        phone,
+        city_address: city,
+        status: att === 'yes' ? 'attending' : 'declined',
+        attending_people: att === 'yes' ? count : 0,
+        attending_events: fns,
+        wishes_message: nt,
+        submitted_at: new Date().toISOString()
+      };
+
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const rsvpsKey = 'customer-dashboard-rsvps-' + orderRef;
+          const currentRsvps = JSON.parse(localStorage.getItem(rsvpsKey) || '[]');
+          const rIdx = currentRsvps.findIndex(r => (inviteCode && r.invite_code === inviteCode) || (guest?.id && r.guest_id === guest.id));
+          if (rIdx >= 0) currentRsvps[rIdx] = { ...currentRsvps[rIdx], ...rsvpData };
+          else currentRsvps.push(rsvpData);
+          localStorage.setItem(rsvpsKey, JSON.stringify(currentRsvps));
+
+          const guestsKey = 'customer-dashboard-guests-' + orderRef;
+          const currentGuests = JSON.parse(localStorage.getItem(guestsKey) || '[]');
+          const gIdx = currentGuests.findIndex(g => (inviteCode && g.invite_code === inviteCode) || (guest?.id && String(g.id) === String(guest.id)));
+          if (gIdx >= 0) {
+            currentGuests[gIdx].category = category;
+            if (phone) currentGuests[gIdx].phone = phone;
+            if (city) currentGuests[gIdx].city_address = city;
+            currentGuests[gIdx].status = att === 'yes' ? 'attending' : 'declined';
+            currentGuests[gIdx].attending_count = count;
+            currentGuests[gIdx].wishes_message = nt;
+            currentGuests[gIdx].selected_events = fns;
+            localStorage.setItem(guestsKey, JSON.stringify(currentGuests));
+          }
+        }
+      } catch (err) {
+        console.warn('Local RSVP save notice:', err);
+      }
+
+      if (inviteCode && typeof window !== 'undefined') {
+        try {
+          const { submitRsvp } = await import('../api.js');
+          await submitRsvp({
+            inviteCode,
+            response: att === 'yes' ? 'attending' : 'declined',
+            attendees: att === 'yes' ? count : 0,
+            wishesMessage: [nt, fns.length ? `[Ceremonies: ${fns.join(', ')}]` : ''].filter(Boolean).join('\n'),
+            capacity: Math.max(Number(guest?.persons || 1), count)
+          });
+        } catch (_) {}
+      }
+
       const msg = [
-        `${B ? 'বিবাহ আমন্ত্রণ — উত্তর' : 'Wedding RSVP'} — ${names || ''}`,
-        `${B ? 'নাম' : 'Name'}: ${name}`,
+        `${B ? 'বিবাহ নিমন্ত্রণ — সম্মতি' : 'Wedding RSVP'} — ${names || ''}`,
+        `${B ? 'নাম' : 'Guest Name'}: ${name}`,
+        `${B ? 'ক্যাটাগরি' : 'Category'}: ${category}`,
         `${B ? 'উত্তর' : 'Response'}: ${att === 'yes' ? (B ? TXT.yes[1] : TXT.yes[0]) : (B ? TXT.no[1] : TXT.no[0])}`,
-        att === 'yes' && `${B ? 'অতিথি সংখ্যা' : 'Guests'}: ${num(count)}`,
-        fns.length && `${B ? 'অনুষ্ঠান' : 'Functions'}: ${fns.join(', ')}`,
-        nt && `${B ? 'বার্তা' : 'Note'}: ${nt}`,
+        att === 'yes' && `${B ? 'অতিথি সংখ্যা' : 'Guest Count'}: ${num(count)}`,
+        phone && `${B ? 'ফোন / হোয়াটসঅ্যাপ' : 'Phone / WhatsApp'}: ${phone}`,
+        city && `${B ? 'শহর / ঠিকানা' : 'City / Address'}: ${city}`,
+        fns.length && `${B ? 'অনুষ্ঠান' : 'Ceremonies Attending'}: ${fns.join(', ')}`,
+        nt && `${B ? 'বার্তা' : 'Wishes / Note'}: ${nt}`,
         venueTxt && `${B ? 'স্থান' : 'Venue'}: ${venueTxt}`
       ].filter(Boolean).join('\n');
+
       win.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
-      status.textContent = B ? 'ধন্যবাদ! হোয়াটসঅ্যাপ নতুন ট্যাবে খুলছে।' : 'Thank you! WhatsApp is opening in a new tab.';
+      status.textContent = B ? 'ধন্যবাদ! আপনার উত্তর সংরক্ষিত হয়েছে এবং হোয়াটসঅ্যাপ খুলছে।' : 'Thank you! Your RSVP is saved and WhatsApp is opening.';
+      later(closeDialog, 2000);
     });
   }
 

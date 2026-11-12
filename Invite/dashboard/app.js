@@ -209,6 +209,7 @@ async function loadTracking() {
 /* ───────────── local persistence (kept from the original dashboard) ───────────── */
 
 const guestsKey = ref => 'customer-dashboard-guests-' + (ref || 'default');
+const rsvpsKey = ref => 'customer-dashboard-rsvps-' + (ref || 'default');
 const goalKey = ref => 'customer-dashboard-goal-' + (ref || 'default');
 const templateKey = ref => 'customer-dashboard-template-' + (ref || 'default');
 
@@ -220,6 +221,12 @@ function saveLocalGuests(ref, guests) {
 function getStoredLocalGuests(ref) {
   if (!ref) return null;
   try { const raw = localStorage.getItem(guestsKey(ref)); if (raw) return JSON.parse(raw); }
+  catch (e) { console.warn('localStorage read failed:', e); }
+  return null;
+}
+function getStoredLocalRsvps(ref) {
+  if (!ref) return null;
+  try { const raw = localStorage.getItem(rsvpsKey(ref)); if (raw) return JSON.parse(raw); }
   catch (e) { console.warn('localStorage read failed:', e); }
   return null;
 }
@@ -565,6 +572,17 @@ async function refreshDashboard() {
     }
     goal = resolveGoal(data, tracking);
 
+    const localRsvps = getStoredLocalRsvps(orderReference);
+    if (Array.isArray(localRsvps) && localRsvps.length) {
+      data.rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+      const seen = new Set(data.rsvps.map(r => r.invite_code || r.guest_id));
+      for (const lr of localRsvps) {
+        if (!seen.has(lr.invite_code) && !seen.has(lr.guest_id)) {
+          data.rsvps.push(lr);
+        }
+      }
+    }
+
     renderDashboard(data);
 
     // A goal saved while the server was unreachable is retried quietly.
@@ -687,6 +705,18 @@ guestForm.addEventListener('submit', async event => {
 function deleteGuest(guestId) {
   const guest = (dashboard.guests || []).find(g => String(g.id) === String(guestId));
   if (!guest || !confirm('Delete ' + (guest.guest_name || 'this guest') + '?')) return;
+
+  // Invalidate the link token for this deleted guest so the link immediately disables
+  if (guest.invite_code) {
+    try {
+      const deletedCodes = JSON.parse(localStorage.getItem('primeecard_deleted_invite_codes') || '[]');
+      if (!deletedCodes.includes(guest.invite_code)) {
+        deletedCodes.push(guest.invite_code);
+        localStorage.setItem('primeecard_deleted_invite_codes', JSON.stringify(deletedCodes));
+      }
+    } catch (_) {}
+  }
+
   dashboard.guests = dashboard.guests.filter(g => String(g.id) !== String(guestId));
   saveLocalGuests(orderReference, dashboard.guests);
   renderAll();
@@ -769,6 +799,11 @@ function openReplyDialog(state) {
     attendingEl.textContent = state.status === 'attending'
       ? plural(state.attendingPeople, 'person', 'people') + ' attending (out of ' + state.invitedPeople + ' invited)'
       : (state.status === 'declined' ? '0 people (Declined)' : state.invitedPeople + ' people (Tentative)');
+  }
+  const eventsEl = $('reply-dialog-events');
+  if (eventsEl) {
+    const evs = reply.attending_events || reply.events || (Array.isArray(g.selected_events) ? g.selected_events : null);
+    eventsEl.textContent = Array.isArray(evs) && evs.length ? evs.join(', ') : (evs || 'All wedding celebrations');
   }
   if (messageEl) {
     messageEl.textContent = reply.wishes_message ? '“' + reply.wishes_message + '”' : 'No message was written with this reply.';
@@ -872,6 +907,21 @@ $('refresh-button')?.addEventListener('click', async event => {
   button.textContent = 'Refreshing…';
   try { await refreshDashboard(); }
   finally { button.disabled = false; button.textContent = 'Refresh'; }
+});
+
+$('refresh-guests-btn')?.addEventListener('click', async event => {
+  const button = event.currentTarget;
+  button.disabled = true;
+  button.textContent = '↻ Refreshing…';
+  try {
+    await refreshDashboard();
+    toast('Guest list refreshed');
+  } catch (err) {
+    toast('Could not refresh guest list');
+  } finally {
+    button.disabled = false;
+    button.textContent = '↻ Refresh';
+  }
 });
 
 $('error-retry-button')?.addEventListener('click', async () => {

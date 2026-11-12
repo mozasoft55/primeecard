@@ -149,11 +149,14 @@ function normalizeWeddingPayload(data) {
   };
 }
 
-function normalizeInvitation(data) {
+function normalizeInvitation(data, code = '') {
   if (!data || !data.guest || !data.wedding) {
     throw new Error('This invitation code was not found. Please check the link and try again.');
   }
   const guest = data.guest;
+  if (guest.is_deleted === true || guest.status === 'deleted' || guest.status === 'withdrawn' || guest.status === 'cancelled') {
+    throw new Error('Sorry, your invitation card is cancelled or withdrawn. Please confirm.');
+  }
   const capacity = Number(guest.family_members);
   if (!Number.isInteger(capacity) || capacity < 1 || capacity > 20) {
     throw new Error('This invitation has an invalid guest limit.');
@@ -177,11 +180,22 @@ export async function fetchInvitationByCode(inviteCode) {
   if (!code || code.length > 120) {
     throw new Error('Open your personalized invitation using its ?code= invite link.');
   }
+
+  // Check if guest link was explicitly deleted / withdrawn from dashboard
+  try {
+    const deletedCodes = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('primeecard_deleted_invite_codes') || '[]') : [];
+    if (deletedCodes.includes(code) || deletedCodes.includes(code.toUpperCase())) {
+      throw new Error('Sorry, your invitation card is cancelled or withdrawn. Please confirm.');
+    }
+  } catch (err) {
+    if (err.message && err.message.includes('cancelled or withdrawn')) throw err;
+  }
+
   const data = await supabaseRequest('rpc/lookup_invitation', {
     method: 'POST',
     body: { p_invite_code: code }
   });
-  return normalizeInvitation(data);
+  return normalizeInvitation(data, code);
 }
 
 export async function fetchWeddingById(id) {

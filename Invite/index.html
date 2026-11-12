@@ -189,19 +189,24 @@
 
     function showPageError(message) {
       const mount = document.getElementById('app-mount');
+      const isCancelled = (message && (message.includes('cancelled') || message.includes('withdrawn')));
+      const title = isCancelled ? 'Invitation Withdrawn' : 'Invitation unavailable';
+      const displayMsg = isCancelled
+        ? 'Sorry, your invitation card is cancelled or withdrawn. Please confirm.'
+        : message;
+
       mount.innerHTML = `
-        <section role="alert" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;color:#ECC880;background:#140105;font-family:Georgia,serif">
-          <h1 style="font-family:Georgia,serif">Invitation unavailable</h1>
-          <p></p>
-          <button type="button" style="padding:12px 22px;border:1px solid #D4AF37;border-radius:24px;background:#3a040d;color:#ECC880;font:inherit">Try again</button>
+        <section role="alert" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;color:#ECC880;background:radial-gradient(circle at center, #260710 0%, #120104 100%);font-family:Georgia,serif;z-index:99999;">
+          <div style="font-size:3rem;margin-bottom:12px;">${isCancelled ? '✉️🚫' : '⚜️'}</div>
+          <h1 style="font-family:Georgia,serif;font-size:1.6rem;color:#f3d692;margin-bottom:12px;">${title}</h1>
+          <p style="font-size:1.05rem;line-height:1.6;color:#fdf4dc;max-width:440px;margin-bottom:24px;">${displayMsg}</p>
+          <a href="../" style="display:inline-block;padding:12px 26px;border:1px solid #D4AF37;border-radius:24px;background:#3a040d;color:#ECC880;text-decoration:none;font:inherit;">Return to Home</a>
         </section>`;
-      mount.querySelector('p').textContent = message;
-      mount.querySelector('button').addEventListener('click', () => location.reload());
     }
 
     function mountRsvpWidget(mount, invitation, inviteCode, language) {
       const { guest, wedding } = invitation;
-      const capacity = guest.persons;
+      const capacity = Math.min(Math.max(Number(guest.persons || 1), 1), 5);
       const launcher = document.createElement('button');
       launcher.type = 'button';
       launcher.className = 'rsvp-launcher';
@@ -215,11 +220,76 @@
       const description = document.createElement('p');
       description.textContent = translateText('Please let the couple know whether you can attend.', language);
       const form = document.createElement('form');
-      const guestLabel = document.createElement('p');
-      guestLabel.textContent = `${translateText('Guest name', language)}:`;
-      const guestName = document.createElement('p');
-      guestName.textContent = guest.name;
 
+      // 1. Guest Name (read-only)
+      const nameLabel = document.createElement('label');
+      nameLabel.htmlFor = 'rsvp-guest-name';
+      nameLabel.textContent = translateText('Guest Name', language);
+      const nameInput = document.createElement('input');
+      nameInput.id = 'rsvp-guest-name';
+      nameInput.value = guest.name || 'Respected Guest';
+      nameInput.readOnly = true;
+      nameInput.disabled = true;
+
+      // 2. Category Dropdown (Person, Family - default: Person)
+      const catLabel = document.createElement('label');
+      catLabel.htmlFor = 'rsvp-category';
+      catLabel.textContent = translateText('Category', language);
+      const catSelect = document.createElement('select');
+      catSelect.id = 'rsvp-category';
+      catSelect.name = 'category';
+      [['Person', 'Person'], ['Family', 'Family']].forEach(([val, lbl]) => {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = translateText(lbl, language);
+        if (guest.with_family && val === 'Family') opt.selected = true;
+        catSelect.append(opt);
+      });
+
+      // 3. Guest Count Dropdown: 1 to 5 (default: 1; disabled when Family is selected)
+      const countLabel = document.createElement('label');
+      countLabel.htmlFor = 'rsvp-attendees';
+      countLabel.textContent = translateText('Guest Count (1 to 5)', language);
+      const countSelect = document.createElement('select');
+      countSelect.id = 'rsvp-attendees';
+      countSelect.name = 'attendees';
+      for (let count = 1; count <= 5; count++) {
+        const option = document.createElement('option');
+        option.value = String(count);
+        option.textContent = String(count);
+        if (count === (guest.persons || 1)) option.selected = true;
+        countSelect.append(option);
+      }
+      if (catSelect.value === 'Family') countSelect.disabled = true;
+
+      catSelect.addEventListener('change', () => {
+        const isFam = catSelect.value === 'Family';
+        countSelect.disabled = isFam;
+      });
+
+      // 4. Phone / WhatsApp
+      const phoneLabel = document.createElement('label');
+      phoneLabel.htmlFor = 'rsvp-phone';
+      phoneLabel.textContent = translateText('Phone / WhatsApp', language);
+      const phoneInput = document.createElement('input');
+      phoneInput.id = 'rsvp-phone';
+      phoneInput.name = 'phone';
+      phoneInput.type = 'tel';
+      phoneInput.placeholder = 'e.g. 9876543210';
+      if (guest.phone) phoneInput.value = guest.phone;
+
+      // 5. City / Address
+      const cityLabel = document.createElement('label');
+      cityLabel.htmlFor = 'rsvp-city';
+      cityLabel.textContent = translateText('City / Address', language);
+      const cityInput = document.createElement('input');
+      cityInput.id = 'rsvp-city';
+      cityInput.name = 'city_address';
+      cityInput.type = 'text';
+      cityInput.placeholder = 'City or address';
+      if (guest.city || guest.address) cityInput.value = guest.city || guest.address;
+
+      // Attendance Response
       const answerGroup = document.createElement('fieldset');
       const answerLegend = document.createElement('legend');
       answerLegend.textContent = translateText('Your response', language);
@@ -235,19 +305,6 @@
       });
       answerLabel.append(answerSelect);
       answerGroup.append(answerLegend, answerLabel);
-
-      const countLabel = document.createElement('label');
-      countLabel.htmlFor = 'rsvp-attendees';
-      countLabel.textContent = translateText(`Number attending (up to ${capacity})`, language);
-      const countSelect = document.createElement('select');
-      countSelect.id = 'rsvp-attendees';
-      countSelect.name = 'attendees';
-      for (let count = 1; count <= capacity; count++) {
-        const option = document.createElement('option');
-        option.value = String(count);
-        option.textContent = String(count);
-        countSelect.append(option);
-      }
 
       const wishesLabel = document.createElement('label');
       wishesLabel.htmlFor = 'rsvp-wishes';
@@ -271,7 +328,16 @@
       close.dataset.rsvpClose = '';
       close.textContent = translateText('Close', language);
       actions.append(submit, close);
-      form.append(guestLabel, guestName, answerGroup, countLabel, countSelect, wishesLabel, wishesInput, status, actions);
+      form.append(
+        nameLabel, nameInput,
+        catLabel, catSelect,
+        countLabel, countSelect,
+        phoneLabel, phoneInput,
+        cityLabel, cityInput,
+        answerGroup,
+        wishesLabel, wishesInput,
+        status, actions
+      );
       dialog.append(title, description, form);
       mount.append(launcher, dialog);
 
@@ -293,6 +359,27 @@
         submit.disabled = true;
         const submitText = submit.textContent;
         submit.textContent = translateText('Sending...', language);
+        try {
+          const isFam = catSelect.value === 'Family';
+          const count = isFam ? Math.max(Number(guest.persons || 2), 2) : Number(countSelect.value);
+          const result = await submitRsvp({
+            inviteCode,
+            response: answerSelect.value,
+            attendees: answerSelect.value === 'attending' ? count : 0,
+            wishesMessage: wishesInput.value,
+            capacity: Math.max(Number(guest.persons || 1), count)
+          });
+          status.textContent = translateText(result.message || 'Your RSVP has been saved.', language);
+          isSaved = true;
+        } catch (error) {
+          status.textContent = translateText(error.message || 'Your RSVP could not be saved. Please try again.', language);
+        } finally {
+          submit.disabled = isSaved;
+          submit.textContent = isSaved ? translateText('RSVP sent', language) : submitText;
+        }
+      });
+      updateCountVisibility();
+    }
         try {
           const result = await submitRsvp({
             inviteCode,
