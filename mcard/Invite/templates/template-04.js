@@ -218,7 +218,7 @@ const STYLE = `
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
 .t04-cover.t04-open {
@@ -244,7 +244,7 @@ const STYLE = `
   width: 50.1%;
   height: 100%;
   overflow: hidden;
-  transition: transform 1.6s cubic-bezier(0.7, 0, 0.2, 1);
+  transition: transform 1.9s cubic-bezier(0.65, 0, 0.25, 1);
   will-change: transform;
   z-index: 2;
   pointer-events: auto;
@@ -294,26 +294,41 @@ const STYLE = `
   }
 }
 
-/* Initial Lights Off / On Transition */
+/* Initial Lights Off: Dark, mysterious royal palace gates at night */
 .t04-unlit .t04-door {
-  filter: brightness(0.48) contrast(1.15) saturate(0.8);
-  transition: filter 1.4s ease;
+  filter: brightness(0.24) contrast(1.22) saturate(0.55);
+  transition: filter 1.0s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+.t04-unlit .t04-doors-portal:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.88) 100%);
+  pointer-events: none;
+  transition: opacity 1.0s ease;
+  z-index: 3;
+}
+
+/* Lights On: Radiant golden illumination */
 .t04-lit .t04-door {
-  filter: brightness(1.15) contrast(1.08) saturate(1.15) drop-shadow(0 0 24px rgba(245, 213, 128, 0.5));
-  transition: filter 1.4s ease;
+  filter: brightness(1.18) contrast(1.08) saturate(1.15) drop-shadow(0 0 28px rgba(245, 213, 128, 0.65));
+  transition: filter 1.0s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.t04-lit .t04-doors-portal:after {
+  opacity: 0;
 }
 
 /* Double Doors Sliding Apart (Matching Template 6) */
 .t04-open .t04-cl,
 .t04-door-open .t04-cl {
-  transform: translateX(-102%) skewX(-2deg);
+  transform: translateX(-104%) skewX(-2deg);
 }
 
 .t04-open .t04-cr,
 .t04-door-open .t04-cr {
-  transform: translateX(102%) skewX(2deg);
+  transform: translateX(104%) skewX(2deg);
 }
 
 .t04-open .t04-doors-portal,
@@ -333,21 +348,21 @@ const STYLE = `
   padding: clamp(10px, 2vh, 24px) 16px;
   overflow-y: auto;
   touch-action: pan-y;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.7s ease, transform 0.7s ease;
   pointer-events: auto;
 }
 
 .t04-open .t04-gate-in,
 .t04-door-open .t04-gate-in {
   opacity: 0;
-  transform: scale(1.06);
+  transform: scale(1.08);
   pointer-events: none;
 }
 
 .t04-gate-card {
   position: relative;
   z-index: 10;
-  background: rgba(2, 24, 18, 0.88);
+  background: rgba(2, 24, 18, 0.9);
   border: 1.5px solid var(--gold-shine);
   border-radius: 20px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85), inset 0 0 20px rgba(245, 213, 128, 0.2);
@@ -437,7 +452,7 @@ const STYLE = `
 }
 
 /* Ornate Wax Seal Button */
-.t04-bindi, .t04-wax-trigger {
+.t04-wax-trigger {
   position: relative;
   width: clamp(84px, 12vh, 98px);
   height: clamp(84px, 12vh, 98px);
@@ -460,12 +475,12 @@ const STYLE = `
   50% { transform: scale(1.06); }
 }
 
-.t04-bindi.t04-burst {
-  animation: t04-burst .5s ease-in forwards;
+.t04-wax-trigger.t04-burst {
+  animation: t04-burst .6s ease-in forwards;
 }
 
 @keyframes t04-burst {
-  45% { transform: scale(1.25); }
+  35% { transform: scale(1.25); }
   100% { transform: scale(0); opacity: 0; }
 }
 
@@ -534,7 +549,7 @@ const STYLE = `
 }
 
 /* Phuljhadi Fireworks / Sparklers Shooting in 360 Degrees */
-.t04-phuljhadi, .t04-sparks {
+.t04-sparks {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -1360,7 +1375,7 @@ export default function renderT04(data = {}) {
   const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image || (!w.groom_photo && couplePhoto ? couplePhoto : ''));
   const groomPhoto = safeUrl(w.groom_photo || w.groom_photo_url || w.groom_image);
 
-  const defaultSig = isFamily
+  const defaultSig = isFamily 
     ? (w.groom_parents ? `${w.groom_parents} & Family` : `${groomFull} & Family`)
     : (w.groom_parents || groomFull);
   const signature = clean(w.footer_text || w.signature || defaultSig);
@@ -1669,293 +1684,353 @@ export default function renderT04(data = {}) {
     ${screens.join('')}
   </div>
   <div class="t04-toast" role="status" aria-live="polite"></div>
-  <script>
-  (function() {
-    function autoInit() {
-      var root = document.querySelector('.t04');
-      if (!root || root._t04Bound) return;
-      root._t04Bound = true;
-
-      var cover = root.querySelector('.t04-cover');
-      var sparksContainer = root.querySelector('.t04-sparks');
-      var progressBar = root.querySelector('.t04-progress');
-      var doorIgnited = false;
-
-      function firePhuljhadi() {
-        if (!sparksContainer) return;
-        var colors = ['#f5d580', '#ffd700', '#ff9800', '#ff5722', '#ffffff', '#e91e63'];
-        for (var i = 0; i < 40; i++) {
-          var spark = document.createElement('span');
-          spark.className = 't04-spark';
-          var angle = (i / 40) * 360 + (Math.random() * 16 - 8);
-          var dist = 100 + Math.random() * 200;
-          spark.style.setProperty('--angle', angle + 'deg');
-          spark.style.setProperty('--dist', dist + 'px');
-          spark.style.setProperty('--col', colors[i % colors.length]);
-          spark.style.setProperty('--sz', (4 + Math.random() * 5) + 'px');
-          spark.style.setProperty('--dur', (1.0 + Math.random() * 0.6) + 's');
-          spark.style.setProperty('--del', (Math.random() * 0.15) + 's');
-          sparksContainer.appendChild(spark);
-          (function(s) { setTimeout(function() { if (s.parentNode) s.parentNode.removeChild(s); }, 2000); })(spark);
-        }
-        for (var j = 0; j < 20; j++) {
-          var star = document.createElement('span');
-          star.className = 't04-spark-star';
-          star.textContent = '✦';
-          var sAngle = (j / 20) * 360 + (Math.random() * 20 - 10);
-          var sDist = 80 + Math.random() * 160;
-          star.style.setProperty('--angle', sAngle + 'deg');
-          star.style.setProperty('--dist', sDist + 'px');
-          star.style.setProperty('--col', colors[j % colors.length]);
-          star.style.setProperty('--sz', (12 + Math.random() * 10) + 'px');
-          star.style.setProperty('--dur', (1.2 + Math.random() * 0.5) + 's');
-          star.style.setProperty('--del', (Math.random() * 0.2) + 's');
-          sparksContainer.appendChild(star);
-          (function(st) { setTimeout(function() { if (st.parentNode) st.parentNode.removeChild(st); }, 2000); })(star);
-        }
-      }
-
-      function openDoors() {
-        if (doorIgnited || !cover) return;
-        doorIgnited = true;
-
-        // 1. Softly illuminate lights
-        cover.classList.remove('t04-unlit');
-        cover.classList.add('t04-lit');
-
-        // 2. Burst wax seal
-        var bindi = root.querySelector('.t04-bindi');
-        if (bindi) bindi.classList.add('t04-burst');
-
-        // 3. Phuljhadi sparklers in 360 degrees
-        firePhuljhadi();
-
-        // 4. Slide double doors apart to left and right
-        cover.classList.add('t04-open');
-        cover.classList.add('t04-door-open');
-
-        try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (err) {}
-
-        // 5. Smoothly remove cover and scroll to hero landing stage
-        setTimeout(function() {
-          cover.style.display = 'none';
-          var s1 = root.querySelector('[data-screen="1"]');
-          if (s1) s1.scrollIntoView({ behavior: 'smooth' });
-        }, 1600);
-      }
-
-      function onScroll() {
-        if (!progressBar) return;
-        var total = document.documentElement.scrollHeight - window.innerHeight;
-        var p = total > 0 ? (window.scrollY / total) : 0;
-        progressBar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-
-      var clickHandler = function(e) {
-        var waxBtn = e.target.closest('.t04-wax-trigger') || e.target.closest('[data-open]');
-        var noteBtn = e.target.closest('.t04-gate-note');
-        var beginBtn = e.target.closest('[data-next]');
-        var prevBtn = e.target.closest('[data-prev]');
-        var restartBtn = e.target.closest('[data-restart]');
-
-        if (waxBtn || noteBtn) {
-          e.preventDefault();
-          openDoors();
-          return;
-        }
-
-        if (cover && !doorIgnited && e.target.closest('.t04-cover')) {
-          openDoors();
-          return;
-        }
-
-        if (restartBtn) {
-          e.preventDefault();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-
-        if (beginBtn) {
-          e.preventDefault();
-          var curSec = beginBtn.closest('[data-screen]');
-          var curIdx = curSec ? parseInt(curSec.getAttribute('data-screen'), 10) : 0;
-          if (curIdx === 0) {
-            openDoors();
-          } else {
-            var nextSec = root.querySelector('[data-screen="' + (curIdx + 1) + '"]');
-            if (nextSec) nextSec.scrollIntoView({ behavior: 'smooth' });
-          }
-          return;
-        }
-
-        if (prevBtn) {
-          e.preventDefault();
-          var pSec = prevBtn.closest('[data-screen]');
-          var pIdx = pSec ? parseInt(pSec.getAttribute('data-screen'), 10) : 1;
-          var prevTarget = root.querySelector('[data-screen="' + Math.max(1, pIdx - 1) + '"]');
-          if (prevTarget) prevTarget.scrollIntoView({ behavior: 'smooth' });
-          return;
-        }
-
-        var opt = e.target.closest('.t04-opt');
-        if (opt) {
-          e.preventDefault();
-          var type = opt.getAttribute('data-type');
-          var allOpts = root.querySelectorAll('.t04-opt');
-          for (var i = 0; i < allOpts.length; i++) {
-            var isCur = allOpts[i] === opt;
-            allOpts[i].classList.toggle('selected', isCur);
-            allOpts[i].setAttribute('aria-pressed', isCur ? 'true' : 'false');
-          }
-          var copy = root.querySelector('.t04-wording-copy');
-          if (copy) {
-            copy.textContent = type === 'family' ? copy.getAttribute('data-family') : copy.getAttribute('data-single');
-          }
-          var rsvpCat = root.querySelector('#t04-rsvp-cat');
-          var rsvpCount = root.querySelector('#t04-rsvp-count');
-          if (rsvpCat) rsvpCat.value = type === 'family' ? 'Family' : 'Person';
-          if (rsvpCount) rsvpCount.disabled = (type === 'family');
-          updateRsvpUrl();
-          return;
-        }
-
-        var revealBtn = e.target.closest('[data-reveal]');
-        if (revealBtn) {
-          e.preventDefault();
-          revealBtn.disabled = true;
-          revealBtn.textContent = 'Duas Revealed ✦';
-          var cv = root.querySelector('.t04-scratch-box canvas');
-          if (cv) cv.style.display = 'none';
-          return;
-        }
-      };
-
-      root.addEventListener('click', clickHandler);
-
-      // Wheel and touch triggers for entrance door opening
-      function onInteraction() {
-        if (!doorIgnited) openDoors();
-      }
-      if (cover) {
-        cover.addEventListener('wheel', onInteraction, { passive: true });
-        cover.addEventListener('touchmove', onInteraction, { passive: true });
-      }
-
-      // RSVP WhatsApp link sync
-      function updateRsvpUrl() {
-        var rsvpLink = root.querySelector('#t04-rsvp-btn');
-        if (!rsvpLink) return;
-        var cat = (root.querySelector('#t04-rsvp-cat') || {}).value || 'Person';
-        var count = (root.querySelector('#t04-rsvp-count') || {}).value || '1';
-        var phone = '${clean(w.phone || w.whatsapp || '')}'.replace(/[^0-9]/g, '');
-        var msg = 'Bismillah. RSVP for ${esc(personalized)}: ' + (cat === 'Family' ? 'Attending with Family' : 'Attending (' + count + ' person)') + ' for the wedding of ${esc(bride)} & ${esc(groom)}. Mubarak!';
-        rsvpLink.href = 'https://wa.me/' + (phone || '') + '?text=' + encodeURIComponent(msg);
-      }
-      var rsvpCatEl = root.querySelector('#t04-rsvp-cat');
-      var rsvpCountEl = root.querySelector('#t04-rsvp-count');
-      if (rsvpCatEl) {
-        rsvpCatEl.addEventListener('change', function() {
-          if (rsvpCountEl) rsvpCountEl.disabled = (this.value === 'Family');
-          updateRsvpUrl();
-        });
-      }
-      if (rsvpCountEl) {
-        rsvpCountEl.addEventListener('change', updateRsvpUrl);
-      }
-      updateRsvpUrl();
-
-      // Countdown Timer
-      var countdownEl = root.querySelector('[data-countdown]');
-      if (countdownEl && countdownEl.dataset.countdown) {
-        var targetTs = parseInt(countdownEl.dataset.countdown, 10);
-        if (!isNaN(targetTs)) {
-          var dEl = countdownEl.querySelector('[data-days]');
-          var hEl = countdownEl.querySelector('[data-hours]');
-          var mEl = countdownEl.querySelector('[data-minutes]');
-          var sEl = countdownEl.querySelector('[data-seconds]');
-          function tick() {
-            var diff = Math.max(0, targetTs - Date.now());
-            var s = Math.floor(diff / 1000);
-            var d = Math.floor(s / 86400); s %= 86400;
-            var h = Math.floor(s / 3600); s %= 3600;
-            var m = Math.floor(s / 60); s %= 60;
-            if (dEl) dEl.textContent = String(d).padStart(2, '0');
-            if (hEl) hEl.textContent = String(h).padStart(2, '0');
-            if (mEl) mEl.textContent = String(m).padStart(2, '0');
-            if (sEl) sEl.textContent = String(s).padStart(2, '0');
-          }
-          tick();
-          var cInt = setInterval(tick, 1000);
-          root._t04Countdown = cInt;
-        }
-      }
-
-      // Scratch Canvas setup
-      var canvas = root.querySelector('.t04-scratch-box canvas');
-      if (canvas) {
-        var ctx = canvas.getContext('2d');
-        if (ctx) {
-          canvas.width = canvas.offsetWidth || 220;
-          canvas.height = canvas.offsetHeight || 64;
-          var grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-          grad.addColorStop(0, '#d4a444');
-          grad.addColorStop(0.5, '#f5d580');
-          grad.addColorStop(1, '#9c7022');
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.font = 'bold 11px Cinzel, serif';
-          ctx.fillStyle = '#021812';
-          ctx.textAlign = 'center';
-          ctx.fillText('✦ Scratch to Reveal Dua ✦', canvas.width / 2, canvas.height / 2 + 4);
-
-          var isDrawing = false;
-          function scratch(e) {
-            if (!isDrawing) return;
-            var rect = canvas.getBoundingClientRect();
-            var clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            var clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            var x = clientX - rect.left;
-            var y = clientY - rect.top;
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 16, 0, Math.PI * 2);
-            ctx.fill();
-          }
-          canvas.addEventListener('mousedown', function(e) { isDrawing = true; scratch(e); });
-          window.addEventListener('mouseup', function() { isDrawing = false; });
-          canvas.addEventListener('mousemove', scratch);
-          canvas.addEventListener('touchstart', function(e) { isDrawing = true; scratch(e); }, { passive: true });
-          window.addEventListener('touchend', function() { isDrawing = false; });
-          canvas.addEventListener('touchmove', scratch, { passive: true });
-        }
-      }
-
-      // Google Calendar link
-      var calLink = root.querySelector('#t04-calendar');
-      if (calLink && ${hasCalendar ? 'true' : 'false'}) {
-        var startIso = '${weddingTarget ? new Date(weddingTarget).toISOString().replace(/-|:|\.\d+/g, '') : ''}';
-        var endIso = '${weddingTarget ? new Date(weddingTarget + 3 * 3600 * 1000).toISOString().replace(/-|:|\.\d+/g, '') : ''}';
-        var calTitle = encodeURIComponent('Wedding: ${esc(bride)} & ${esc(groom)}');
-        var calDetails = encodeURIComponent('Together with their families, you are cordially invited to celebrate the marriage of ${esc(bride)} and ${esc(groom)}.');
-        var calLoc = encodeURIComponent('${esc(w.venue || '')}${esc(w.address ? ', ' + w.address : '')}');
-        calLink.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&dates=' + startIso + '/' + endIso + '&details=' + calDetails + '&location=' + calLoc;
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', autoInit);
-    } else {
-      autoInit();
-    }
-  })();
-  </script>
 </main>`;
 }
 
+/* ==========================================================================
+   Interactive Mount Lifecycle (Directly Executed by Host & Self-Boot Fallback)
+   ========================================================================== */
 export function mount(root, data = {}) {
-  if (!root) return () => {};
-  return () => {
-    if (root._t04Countdown) clearInterval(root._t04Countdown);
+  const host = root?.classList?.contains('t04') ? root : (root?.querySelector ? root.querySelector('.t04') : null);
+  if (!host) return () => {};
+  if (host._t04Mounted) return host._t04Cleanup || (() => {});
+  host._t04Mounted = true;
+
+  const w = data?.wedding || {};
+  const guest = data?.guest || {};
+  const evs = Array.isArray(data?.events) ? data.events : [];
+  const weddingTarget = weddingWhen(w, evs);
+  const bride = clean(w.bride_name || 'Dulhan');
+  const groom = clean(w.groom_name || 'Dulha');
+  const personalized = clean(guest.name || 'Honoured Guest');
+
+  const doc = host.ownerDocument || (typeof document !== 'undefined' ? document : null);
+  const win = doc?.defaultView || (typeof window !== 'undefined' ? window : null);
+
+  const cover = host.querySelector ? host.querySelector('.t04-cover') : null;
+  const sparksContainer = host.querySelector ? host.querySelector('.t04-sparks') : null;
+  const progressBar = host.querySelector ? host.querySelector('.t04-progress') : null;
+  const bindi = host.querySelector ? host.querySelector('.t04-wax-trigger') : null;
+  const note = host.querySelector ? host.querySelector('.t04-gate-note') : null;
+
+  let doorIgnited = false;
+  let countdownTimerId = null;
+
+  function firePhuljhadi() {
+    if (!sparksContainer) return;
+    const colors = ['#f5d580', '#ffd700', '#ff9800', '#ff5722', '#ffffff', '#e91e63'];
+    for (let i = 0; i < 40; i++) {
+      const spark = document.createElement('span');
+      spark.className = 't04-spark';
+      const angle = (i / 40) * 360 + (Math.random() * 16 - 8);
+      const dist = 100 + Math.random() * 200;
+      spark.style.setProperty('--angle', angle + 'deg');
+      spark.style.setProperty('--dist', dist + 'px');
+      spark.style.setProperty('--col', colors[i % colors.length]);
+      spark.style.setProperty('--sz', (4 + Math.random() * 5) + 'px');
+      spark.style.setProperty('--dur', (1.0 + Math.random() * 0.6) + 's');
+      spark.style.setProperty('--del', (Math.random() * 0.15) + 's');
+      sparksContainer.appendChild(spark);
+      setTimeout(() => { if (spark.parentNode) spark.parentNode.removeChild(spark); }, 2200);
+    }
+    for (let j = 0; j < 20; j++) {
+      const star = document.createElement('span');
+      star.className = 't04-spark-star';
+      star.textContent = '✦';
+      const sAngle = (j / 20) * 360 + (Math.random() * 20 - 10);
+      const sDist = 80 + Math.random() * 160;
+      star.style.setProperty('--angle', sAngle + 'deg');
+      star.style.setProperty('--dist', sDist + 'px');
+      star.style.setProperty('--col', colors[j % colors.length]);
+      star.style.setProperty('--sz', (12 + Math.random() * 10) + 'px');
+      star.style.setProperty('--dur', (1.2 + Math.random() * 0.5) + 's');
+      star.style.setProperty('--del', (Math.random() * 0.2) + 's');
+      sparksContainer.appendChild(star);
+      setTimeout(() => { if (star.parentNode) star.parentNode.removeChild(star); }, 2200);
+    }
+  }
+
+  function openDoors() {
+    if (doorIgnited || !cover) return;
+    doorIgnited = true;
+
+    // 1. INSTANT LIGHTS ON: Warm royal golden luminescence flares up!
+    cover.classList.remove('t04-unlit');
+    cover.classList.add('t04-lit');
+
+    // 2. Pulse and burst wax seal
+    if (bindi) bindi.classList.add('t04-burst');
+
+    // 3. Phuljhadi fireworks and crackers shoot out in 360 degrees
+    firePhuljhadi();
+
+    try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (e) {}
+
+    // 4. Breathtaking 2-3 second sequence:
+    // After 0.85s of dramatic illumination, gently swing the doors apart over 1.9s (Total: 2.75s)
+    setTimeout(() => {
+      cover.classList.add('t04-open');
+      cover.classList.add('t04-door-open');
+    }, 850);
+
+    // 5. At 2.8s, smoothly dissolve the gate overlay and land gracefully on Screen 1
+    setTimeout(() => {
+      cover.style.transition = 'opacity 0.7s ease';
+      cover.style.opacity = '0';
+      cover.style.pointerEvents = 'none';
+      setTimeout(() => {
+        cover.style.display = 'none';
+        const s1 = host.querySelector('[data-screen="1"]');
+        if (s1 && typeof s1.scrollIntoView === 'function') {
+          s1.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 700);
+    }, 2800);
+  }
+
+  // Bind click on Wax Trigger Button
+  if (bindi) {
+    bindi.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      openDoors();
+    });
+  }
+
+  // Bind click on gate note subtext
+  if (note) {
+    note.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      openDoors();
+    });
+  }
+
+  // Direct cover tap/click trigger
+  if (cover) {
+    cover.addEventListener('click', e => {
+      if (doorIgnited) return;
+      if (e.target.closest('.t04-test-hooks')) return;
+      openDoors();
+    });
+    cover.addEventListener('wheel', () => { if (!doorIgnited) openDoors(); }, { passive: true });
+    cover.addEventListener('touchmove', () => { if (!doorIgnited) openDoors(); }, { passive: true });
+  }
+
+  // Global scroll progress
+  function onScroll() {
+    if (!progressBar || !win || !doc) return;
+    const dEl = doc.documentElement;
+    const total = (dEl?.scrollHeight || 0) - (win.innerHeight || 0);
+    const p = total > 0 ? ((win.scrollY || 0) / total) : 0;
+    progressBar.style.transform = `scaleX(${Math.min(1, Math.max(0, p))})`;
+  }
+  if (win && typeof win.addEventListener === 'function') {
+    win.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // Main host click dispatcher for navigation, options, scratch, and restart
+  const clickHandler = e => {
+    const beginBtn = e.target.closest('[data-next]');
+    const prevBtn = e.target.closest('[data-prev]');
+    const restartBtn = e.target.closest('[data-restart]');
+
+    if (restartBtn) {
+      e.preventDefault();
+      if (win && typeof win.scrollTo === 'function') {
+        win.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    if (beginBtn) {
+      e.preventDefault();
+      const curSec = beginBtn.closest('[data-screen]');
+      const curIdx = curSec ? parseInt(curSec.getAttribute('data-screen'), 10) : 0;
+      if (curIdx === 0) {
+        openDoors();
+      } else {
+        const nextSec = host.querySelector ? host.querySelector(`[data-screen="${curIdx + 1}"]`) : null;
+        if (nextSec && typeof nextSec.scrollIntoView === 'function') {
+          nextSec.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      return;
+    }
+
+    if (prevBtn) {
+      e.preventDefault();
+      const pSec = prevBtn.closest('[data-screen]');
+      const pIdx = pSec ? parseInt(pSec.getAttribute('data-screen'), 10) : 1;
+      const prevTarget = host.querySelector ? host.querySelector(`[data-screen="${Math.max(1, pIdx - 1)}"]`) : null;
+      if (prevTarget && typeof prevTarget.scrollIntoView === 'function') {
+        prevTarget.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+
+    // Category options switcher
+    const opt = e.target.closest('.t04-opt');
+    if (opt) {
+      e.preventDefault();
+      const type = opt.getAttribute('data-type');
+      const allOpts = host.querySelectorAll('.t04-opt');
+      allOpts.forEach(o => {
+        const isCur = o === opt;
+        o.classList.toggle('selected', isCur);
+        o.setAttribute('aria-pressed', isCur ? 'true' : 'false');
+      });
+      const copy = host.querySelector('.t04-wording-copy');
+      if (copy) {
+        copy.textContent = type === 'family' ? copy.getAttribute('data-family') : copy.getAttribute('data-single');
+      }
+      const rsvpCat = host.querySelector('#t04-rsvp-cat');
+      const rsvpCount = host.querySelector('#t04-rsvp-count');
+      if (rsvpCat) rsvpCat.value = type === 'family' ? 'Family' : 'Person';
+      if (rsvpCount) rsvpCount.disabled = (type === 'family');
+      updateRsvpUrl();
+      return;
+    }
+
+    // Scratch reveal button
+    const revealBtn = e.target.closest('[data-reveal]');
+    if (revealBtn) {
+      e.preventDefault();
+      revealBtn.disabled = true;
+      revealBtn.textContent = 'Duas Revealed ✦';
+      const cv = host.querySelector('.t04-scratch-box canvas');
+      if (cv) cv.style.display = 'none';
+      return;
+    }
   };
+
+  if (typeof host.addEventListener === 'function') {
+    host.addEventListener('click', clickHandler);
+  }
+
+  // RSVP WhatsApp url sync
+  function updateRsvpUrl() {
+    const rsvpLink = host.querySelector('#t04-rsvp-btn');
+    if (!rsvpLink) return;
+    const cat = (host.querySelector('#t04-rsvp-cat') || {}).value || 'Person';
+    const count = (host.querySelector('#t04-rsvp-count') || {}).value || '1';
+    const phone = clean(w.phone || w.whatsapp || '').replace(/[^0-9]/g, '');
+    const msg = `Bismillah. RSVP for ${personalized}: ` + (cat === 'Family' ? 'Attending with Family' : `Attending (${count} person)`) + ` for the wedding of ${bride} & ${groom}. Mubarak!`;
+    rsvpLink.href = `https://wa.me/${phone || ''}?text=${encodeURIComponent(msg)}`;
+  }
+  const rsvpCatEl = host.querySelector('#t04-rsvp-cat');
+  const rsvpCountEl = host.querySelector('#t04-rsvp-count');
+  if (rsvpCatEl) {
+    rsvpCatEl.addEventListener('change', function() {
+      if (rsvpCountEl) rsvpCountEl.disabled = (this.value === 'Family');
+      updateRsvpUrl();
+    });
+  }
+  if (rsvpCountEl) {
+    rsvpCountEl.addEventListener('change', updateRsvpUrl);
+  }
+  updateRsvpUrl();
+
+  // Countdown Timer
+  const countdownEl = host.querySelector('[data-countdown]');
+  if (countdownEl && countdownEl.dataset.countdown) {
+    const targetTs = parseInt(countdownEl.dataset.countdown, 10);
+    if (!isNaN(targetTs)) {
+      const dEl = countdownEl.querySelector('[data-days]');
+      const hEl = countdownEl.querySelector('[data-hours]');
+      const mEl = countdownEl.querySelector('[data-minutes]');
+      const sEl = countdownEl.querySelector('[data-seconds]');
+      function tick() {
+        const diff = Math.max(0, targetTs - Date.now());
+        let s = Math.floor(diff / 1000);
+        const d = Math.floor(s / 86400); s %= 86400;
+        const h = Math.floor(s / 3600); s %= 3600;
+        const m = Math.floor(s / 60); s %= 60;
+        if (dEl) dEl.textContent = String(d).padStart(2, '0');
+        if (hEl) hEl.textContent = String(h).padStart(2, '0');
+        if (mEl) mEl.textContent = String(m).padStart(2, '0');
+        if (sEl) sEl.textContent = String(s).padStart(2, '0');
+      }
+      tick();
+      countdownTimerId = setInterval(tick, 1000);
+    }
+  }
+
+  // Scratch Canvas setup
+  const canvas = host.querySelector('.t04-scratch-box canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      canvas.width = canvas.offsetWidth || 220;
+      canvas.height = canvas.offsetHeight || 64;
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, '#d4a444');
+      grad.addColorStop(0.5, '#f5d580');
+      grad.addColorStop(1, '#9c7022');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = 'bold 11px Cinzel, serif';
+      ctx.fillStyle = '#021812';
+      ctx.textAlign = 'center';
+      ctx.fillText('✦ Scratch to Reveal Dua ✦', canvas.width / 2, canvas.height / 2 + 4);
+
+      let isDrawing = false;
+      function scratch(e) {
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 16, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      canvas.addEventListener('mousedown', e => { isDrawing = true; scratch(e); });
+      if (win) win.addEventListener('mouseup', () => { isDrawing = false; });
+      canvas.addEventListener('mousemove', scratch);
+      canvas.addEventListener('touchstart', e => { isDrawing = true; scratch(e); }, { passive: true });
+      if (win) win.addEventListener('touchend', () => { isDrawing = false; });
+      canvas.addEventListener('touchmove', scratch, { passive: true });
+    }
+  }
+
+  // Google Calendar link
+  const calLink = host.querySelector ? host.querySelector('#t04-calendar') : null;
+  if (calLink && weddingTarget) {
+    const startIso = new Date(weddingTarget).toISOString().replace(/-|:|\.\d+/g, '');
+    const endIso = new Date(weddingTarget + 3 * 3600 * 1000).toISOString().replace(/-|:|\.\d+/g, '');
+    const calTitle = encodeURIComponent(`Wedding: ${bride} & ${groom}`);
+    const calDetails = encodeURIComponent(`Together with their families, you are cordially invited to celebrate the marriage of ${bride} and ${groom}.`);
+    const calLoc = encodeURIComponent(`${clean(w.venue || '')}${clean(w.address ? ', ' + w.address : '')}`);
+    calLink.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${startIso}/${endIso}&details=${calDetails}&location=${calLoc}`;
+  }
+
+  const cleanup = () => {
+    if (countdownTimerId) clearInterval(countdownTimerId);
+    if (win) win.removeEventListener('scroll', onScroll);
+    if (typeof host.removeEventListener === 'function') {
+      host.removeEventListener('click', clickHandler);
+    }
+    host._t04Mounted = false;
+  };
+
+  host._t04Cleanup = cleanup;
+  return cleanup;
+}
+
+/* Standalone auto-bind for direct embedding */
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  const autoInit = () => {
+    const el = document.querySelector('.t04');
+    if (el && !el._t04Mounted) {
+      mount(el);
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInit);
+  } else {
+    setTimeout(autoInit, 40);
+  }
 }
