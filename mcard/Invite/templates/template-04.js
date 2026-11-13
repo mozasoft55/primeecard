@@ -1,8 +1,7 @@
 /* ==========================================================================
    Template 04 — Royal Shadi Card (Emerald & Antique Gold)
    Authentic Mughal & Islamic Shadi Invitation Suite
-   Pure Vector SVG Design • Ultra Lightweight (~32 KB vs 1.17 MB)
-   Self-Booting + Programmatic Mount • Zero Image Bloat • 100% Reliable
+   Template 6 Master-Level Sliding Double Door & Responsive Layout
    ========================================================================== */
 
 const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -121,9 +120,7 @@ function weddingWhen(w, evs) {
   return parseWhen(w?.date || event?.event_date, w?.time || event?.event_time);
 }
 
-/* ==========================================================================
-   Crisp Pure Vector SVG Assets (Lightweight, Scalable, Zero Image Bloat)
-   ========================================================================== */
+/* Vector Icons */
 const ICONS = {
   person: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   family: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="3.5"/><circle cx="15" cy="8" r="2.8"/><path d="M22 21v-1.5a3 3 0 0 0-2-2.8"/></svg>',
@@ -133,15 +130,7 @@ const ICONS = {
   gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5" rx="1"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>'
 };
 
-// Intricate Bismillah Calligraphy in Pure Vector SVG
-const BISMILLAH_SVG = `<svg viewBox="0 0 360 84" class="t04-bismillah-svg" aria-label="Bismillah ar-Rahman ar-Rahim" role="img">
-  <path d="M180 8c-4.2 0-7.8 2.5-9.4 6.2-1.6-3.7-5.2-6.2-9.4-6.2-5.8 0-10.5 4.7-10.5 10.5 0 8.2 12.3 16.4 19.9 22.4 7.6-6 19.9-14.2 19.9-22.4 0-5.8-4.7-10.5-10.5-10.5z" fill="var(--gold-d)" opacity=".25"/>
-  <text x="180" y="52" text-anchor="middle" font-family="'Amiri','Cinzel',serif" font-size="34" font-weight="700" fill="var(--gold-shine)" letter-spacing="2">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</text>
-  <line x1="70" y1="70" x2="150" y2="70" stroke="var(--gold-d)" stroke-width="1.2" stroke-dasharray="3 3"/>
-  <circle cx="180" cy="70" r="3.5" fill="var(--gold-shine)"/>
-  <polygon points="180,63 184,70 180,77 176,70" fill="var(--gold-shine)"/>
-  <line x1="210" y1="70" x2="290" y2="70" stroke="var(--gold-d)" stroke-width="1.2" stroke-dasharray="3 3"/>
-</svg>`;
+const WHATSAPP = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 8 19.3z" stroke-linejoin="round"/><path d="M9 8.5c.2 3 3 5.8 6 6l1.2-1.4-2-1-.9.8c-.9-.4-1.7-1.2-2.1-2.1l.8-.9-1-2z" fill="currentColor" stroke="none"/></svg>';
 
 // Royal Mughal Star & Floral Corner Arabesque
 const CORNER_ARABESQUE = (pos = 'tl') => `<svg viewBox="0 0 60 60" class="t04-corner-svg ${pos}" aria-hidden="true">
@@ -154,11 +143,9 @@ const CORNER_ARABESQUE = (pos = 'tl') => `<svg viewBox="0 0 60 60" class="t04-co
 </svg>`;
 
 const T04_THEMES = {
-  emerald: { d: '#04241c', m: '#073f30', l: '#0e5b46', gs: '#e8c66e', gm: '#cf9f38', gd: '#956f1f', paper: '#fffdf9', cream: '#faf3e4', bgGrad: 'radial-gradient(circle at 50% 12%, #073f30 0%, #04241c 65%, #02120e 100%)' },
-  maroon: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 12%, #651122 0%, #2a070f 65%, #150307 100%)' },
-  royal: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 12%, #651122 0%, #2a070f 65%, #150307 100%)' },
-  navy: { d: '#061024', m: '#13264d', l: '#1f3d7a', gs: '#f5d98b', gm: '#d8ab48', gd: '#a37a28', paper: '#fcfdff', cream: '#eef2f9', bgGrad: 'radial-gradient(circle at 50% 12%, #13264d 0%, #061024 65%, #030814 100%)' },
-  rose: { d: '#2d0a17', m: '#661a37', l: '#9c2d58', gs: '#f8d48e', gm: '#d99f49', gd: '#9f6927', paper: '#fffbfa', cream: '#faebee', bgGrad: 'radial-gradient(circle at 50% 12%, #661a37 0%, #2d0a17 65%, #18050c 100%)' }
+  emerald: { d: '#021812', m: '#042b20', l: '#0e5b46', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 15%, #053326 0%, #021812 70%, #010d0a 100%)' },
+  maroon: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 15%, #651122 0%, #2a070f 70%, #150307 100%)' },
+  royal: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 15%, #651122 0%, #2a070f 70%, #150307 100%)' }
 };
 
 const JALI_DIVIDER = () => `<div class="t04-jali-div" aria-hidden="true">
@@ -167,360 +154,327 @@ const JALI_DIVIDER = () => `<div class="t04-jali-div" aria-hidden="true">
   <i></i>
 </div>`;
 
-/* ==========================================================================
-   CSS Stylesheet for Template 04 (Emerald & Antique Gold Shadi Card)
-   ========================================================================== */
+/* Master Stylesheet matching Template 6 Layout */
 const STYLE = `
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Great+Vibes&family=Noto+Serif+Bengali:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
-  --emerald-d: #04241c;
-  --emerald-m: #073f30;
+  --emerald-d: #021812;
+  --emerald-m: #042b20;
   --emerald-l: #0e5b46;
-  --gold-shine: #e8c66e;
-  --gold-mid: #cf9f38;
-  --gold-d: #956f1f;
-  --paper: #fffdf9;
-  --paper-cream: #faf3e4;
+  --gold-shine: #f5d580;
+  --gold-mid: #d4a444;
+  --gold-d: #9c7022;
+  --paper: #fffdfa;
+  --paper-cream: #faefe0;
   --paper-dark: #f0e1c2;
-  --text-dark: #1f2d27;
+  --text-dark: #1b2620;
   --text-muted: #53645b;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 .t04 {
-  position: absolute;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 25%, #0d4a39 0%, #062b20 60%, #031812 100%);
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--t04-bg, #021812);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   font-family: 'Cormorant Garamond', Georgia, serif;
   color: var(--text-dark);
-  padding: env(safe-area-inset-top, 8px) 8px env(safe-area-inset-bottom, 8px);
-}
-
-.t04-shell {
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  height: 100%;
-  max-height: 880px;
-  border-radius: 28px;
-  box-shadow: 0 25px 75px rgba(0, 0, 0, 0.8), 0 0 0 2px var(--gold-mid), 0 0 30px rgba(212, 175, 55, 0.25);
-  background: var(--paper);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.t04-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background-color: var(--paper);
-  background-image: 
-    radial-gradient(circle at 50% 50%, rgba(207, 159, 56, 0.04) 10%, transparent 11%),
-    radial-gradient(circle at 0% 0%, rgba(207, 159, 56, 0.04) 10%, transparent 11%),
-    radial-gradient(circle at 100% 0%, rgba(207, 159, 56, 0.04) 10%, transparent 11%);
-  background-size: 24px 24px;
-}
-
-/* Top Shadi Progress Tracker */
-.t04-top {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  right: 14px;
-  z-index: 25;
-  background: rgba(255, 253, 249, 0.92);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--gold-shine);
-  border-radius: 999px;
-  padding: 6px 14px;
-  box-shadow: 0 4px 15px rgba(3, 24, 18, 0.15);
-}
-.t04-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--emerald-m);
-}
-.t04-top-row em {
-  font-style: normal;
-  color: var(--gold-d);
-  font-weight: 600;
-  font-size: 10px;
-}
-.t04-track {
-  position: relative;
-  height: 4px;
-  background: rgba(207, 159, 56, 0.25);
-  border-radius: 99px;
-  margin: 4px 0 0;
-  overflow: visible;
-}
-.t04-track-fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: calc(var(--p, 0) * 100%);
-  background: linear-gradient(90deg, var(--gold-mid), var(--gold-shine));
-  border-radius: 99px;
-  transition: width 0.35s ease;
-}
-.t04-step {
-  position: absolute;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  margin: -7px 0 0 -7px;
-  border-radius: 50%;
-  border: 1px solid var(--gold-shine);
-  background: var(--paper);
-  left: calc(var(--i) * 25%);
-  cursor: pointer;
-  transition: all 0.25s ease;
+  overflow-x: hidden;
   padding: 0;
-  z-index: 30;
-}
-.t04-step.done {
-  background: var(--gold-mid);
-  border-color: var(--gold-shine);
-}
-.t04-step.active {
-  background: var(--emerald-l);
-  border-color: var(--gold-shine);
-  transform: scale(1.25);
-  box-shadow: 0 0 6px var(--gold-shine);
-}
-.t04-step span {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
+  margin: 0;
 }
 
-/* Individual Invitation Screens */
-.t04-screen {
-  display: none;
-  position: absolute;
-  inset: 0;
-  padding: 58px 16px 16px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  justify-content: flex-start;
-  z-index: 5;
-}
-.t04-screen.active {
-  display: flex !important;
-  animation: t04FadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-@keyframes t04FadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Scroll progress bar */
+.t04-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3.5px;
+  width: 100%;
+  z-index: 998;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--gold-shine), var(--gold-mid), var(--gold-d));
 }
 
 /* ==========================================================================
-   Screen 0 & Screen 1: Royal Palace Gate & Stage Architecture
+   Screen 0: Royal Sliding Double Doors Gate (Fixed Fullscreen Overlay)
    ========================================================================== */
-.t04-cover, .t04-s1 {
-  padding: 0 !important;
-  margin: 0 !important;
-  min-height: 100dvh;
-  height: 100dvh;
-  overflow: hidden;
-  background: #02120d !important;
+.t04-cover, .t04-entry {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100svh !important;
+  z-index: 900 !important;
+  overflow: hidden !important;
+  background: #000000 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
-.t04-mandap-wrap {
-  position: relative !important;
-  width: 100% !important;
-  aspect-ratio: 958/1024;
-  max-height: 100dvh;
+.t04-cover.t04-open {
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+/* Curtains / Double Doors Split (Matching Template 6) */
+.t04-doors-portal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  background: #02120d;
-  perspective: 1200px;
-}
-
-.t04-mandap-img {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center bottom !important;
-  display: block !important;
+  z-index: 2;
   pointer-events: none;
 }
 
-.t04-mandap-inner {
-  z-index: 1;
-}
-
-.t04-mandap-gate {
-  z-index: 2;
-}
-
-/* Doors portal: exact inner arch opening */
-.t04-doors-portal {
+.t04-cur {
   position: absolute;
-  left: 32.8%;
-  width: 34.4%;
-  top: 35.5%;
-  height: 55%;
-  z-index: 3;
-  perspective: 1200px;
-  cursor: pointer;
+  top: 0;
+  bottom: 0;
+  width: 50.1%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 1.6s cubic-bezier(0.7, 0, 0.2, 1);
+  will-change: transform;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.t04-cur.t04-cl {
+  left: 0;
+  border-right: 1.5px solid rgba(245, 213, 128, 0.85);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.65);
+}
+
+.t04-cur.t04-cr {
+  right: 0;
+  border-left: 1.5px solid rgba(245, 213, 128, 0.85);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.65);
+}
+
+.t04-door-panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.t04-door-left {
+  left: 0;
+}
+
+.t04-door-right {
+  left: -100%;
 }
 
 .t04-door {
-  position: absolute;
-  top: 0;
-  width: 50%;
+  width: 100%;
   height: 100%;
-  object-fit: fill;
-  pointer-events: none;
-  transition: transform 1.6s cubic-bezier(0.25, 0.85, 0.25, 1), opacity 1.3s ease;
-  will-change: transform, opacity;
+  object-fit: contain;
+  object-position: center;
+  display: block;
 }
 
-.t04-door-l {
-  left: 0;
-  transform-origin: left center;
-  box-shadow: inset -2px 0 10px rgba(0, 0, 0, 0.7);
+@media (max-width: 768px), (orientation: portrait) {
+  .t04-door {
+    object-fit: cover;
+  }
 }
 
-.t04-door-r {
-  right: 0;
-  transform-origin: right center;
-  box-shadow: inset 2px 0 10px rgba(0, 0, 0, 0.7);
+/* Initial Lights Off / On Transition */
+.t04-unlit .t04-door {
+  filter: brightness(0.48) contrast(1.15) saturate(0.8);
+  transition: filter 1.4s ease;
 }
 
-/* Door Opening 3D Rotation */
-.t04-door-open .t04-door-l {
-  transform: rotateY(-110deg) scaleY(0.98);
-  opacity: 0;
+.t04-lit .t04-door {
+  filter: brightness(1.15) contrast(1.08) saturate(1.15) drop-shadow(0 0 24px rgba(245, 213, 128, 0.5));
+  transition: filter 1.4s ease;
 }
-.t04-door-open .t04-door-r {
-  transform: rotateY(110deg) scaleY(0.98);
-  opacity: 0;
+
+/* Double Doors Sliding Apart (Matching Template 6) */
+.t04-open .t04-cl,
+.t04-door-open .t04-cl {
+  transform: translateX(-102%) skewX(-2deg);
 }
+
+.t04-open .t04-cr,
+.t04-door-open .t04-cr {
+  transform: translateX(102%) skewX(2deg);
+}
+
+.t04-open .t04-doors-portal,
 .t04-door-open .t04-doors-portal {
   pointer-events: none;
 }
 
-/* Lights Off / On Animation Transitions */
-.t04-cover.t04-unlit .t04-mandap-wrap {
-  filter: brightness(0.38) contrast(1.15) saturate(0.85);
-  transition: filter 1.6s cubic-bezier(0.2, 0.8, 0.3, 1);
-}
-
-.t04-cover.t04-lit .t04-mandap-wrap {
-  filter: brightness(1.18) contrast(1.03) saturate(1.12);
-  transition: filter 1.4s ease;
-}
-
-/* Light Flares & Glows */
-.t04-light-burst {
+/* Center Gate Card (Sits right on top of closed doors) */
+.t04-gate-in {
   position: absolute;
   inset: 0;
-  z-index: 6;
-  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 2vh, 24px) 16px;
+  overflow-y: auto;
+  touch-action: pan-y;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: auto;
+}
+
+.t04-open .t04-gate-in,
+.t04-door-open .t04-gate-in {
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transform: scale(1.06);
+  pointer-events: none;
 }
 
-.t04-lit .t04-light-burst {
-  opacity: 1;
+.t04-gate-card {
+  position: relative;
+  z-index: 10;
+  background: rgba(2, 24, 18, 0.88);
+  border: 1.5px solid var(--gold-shine);
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85), inset 0 0 20px rgba(245, 213, 128, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  max-width: 390px;
+  width: min(92vw, 390px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 18px 16px;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
-.t04-grand-glow {
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 120cqw;
-  height: 120cqw;
-  transform: translate(-50%, -50%);
+.t04-gate-invoc {
+  font-family: 'Amiri', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-shine);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.t04-gate-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffcdd2;
+  margin: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+.t04-gate-names {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 2px 0 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 12px rgba(245, 213, 128, 0.6);
+}
+
+/* VIP Guest Box on Gate Entrance */
+.t04-guest-box {
+  width: 100%;
+  max-width: 340px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(4, 36, 28, 0.8);
+  border: 1px solid rgba(245, 213, 128, 0.45);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 0 8px rgba(245, 213, 128, 0.12);
+  margin: 4px 0;
+  text-align: center;
+}
+
+.t04-guest-kicker {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold-shine);
+  margin-bottom: 2px;
+}
+
+.t04-guest-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 3px;
+}
+
+.t04-guest-pill {
+  display: inline-block;
+  padding: 2px 14px;
+  border-radius: 999px;
+  background: rgba(245, 213, 128, 0.18);
+  border: 1px solid rgba(245, 213, 128, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--gold-shine);
+  letter-spacing: 1px;
+}
+
+/* Ornate Wax Seal Button */
+.t04-bindi, .t04-wax-trigger {
+  position: relative;
+  width: clamp(84px, 12vh, 98px);
+  height: clamp(84px, 12vh, 98px);
+  aspect-ratio: 1/1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 225, 130, 0.55) 0%, rgba(255, 175, 40, 0.28) 35%, transparent 70%);
-  animation: t04-glow-flare 1.8s ease-out forwards;
-}
-
-@keyframes t04-glow-flare {
-  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
-  40% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.8; }
-}
-
-.t04-chandelier-glow {
-  position: absolute;
-  left: 50%;
-  top: 25%;
-  width: 35cqw;
-  height: 35cqw;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 245, 190, 0.85) 0%, rgba(255, 195, 60, 0.38) 50%, transparent 80%);
-  animation: t04-chandelier-pulse 2s ease-in-out infinite alternate;
-}
-
-@keyframes t04-chandelier-pulse {
-  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
-  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
-}
-
-/* Red Wax Seal Button "TAP TO OPEN / প্রবেশ করুন" */
-.t04-wax-trigger {
-  position: absolute;
-  left: 50%;
-  top: 64%;
-  transform: translate(-50%, -50%);
-  z-index: 8;
-  cursor: pointer;
-  background: none;
   border: none;
-  padding: 0;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.4s ease, opacity 0.5s ease;
-  animation: t04-wax-float 2.8s ease-in-out infinite;
+  cursor: pointer;
+  margin: 6px auto 2px;
+  padding: 0;
+  animation: t04-pulse 2.8s ease-in-out infinite;
+  will-change: transform;
 }
 
-@keyframes t04-wax-float {
-  0%, 100% { transform: translate(-50%, -50%); }
-  50% { transform: translate(-50%, -54%); }
+@keyframes t04-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.t04-bindi.t04-burst {
+  animation: t04-burst .5s ease-in forwards;
+}
+
+@keyframes t04-burst {
+  45% { transform: scale(1.25); }
+  100% { transform: scale(0); opacity: 0; }
 }
 
 .t04-wax-aura {
   position: absolute;
-  inset: -8px;
+  inset: -6px;
   border-radius: 50%;
-  border: 1.5px solid rgba(245, 217, 127, 0.65);
-  animation: t04-wax-pulse 2.2s ease-out infinite;
+  border: 1.5px solid rgba(245, 213, 128, 0.7);
+  animation: t04-wax-pulse 2s ease-out infinite;
   pointer-events: none;
 }
 
@@ -531,14 +485,12 @@ const STYLE = `
 
 .t04-wax-disc {
   position: relative;
-  width: 14cqw;
-  height: 14cqw;
-  min-width: 62px;
-  min-height: 62px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #a81c25 0%, #7d1017 60%, #4a060b 100%);
-  border: 1.5px solid #e8c66e;
-  box-shadow: 0 0 0 3px rgba(168, 28, 37, 0.4), 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 16px rgba(232, 198, 110, 0.5);
+  background: radial-gradient(circle at 35% 35%, #b71c1c 0%, #7f0000 65%, #4a0000 100%);
+  border: 2px solid var(--gold-shine);
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.45), 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 22px rgba(245, 213, 128, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -550,962 +502,990 @@ const STYLE = `
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  line-height: 1.1;
-  color: #fff6df;
+  line-height: 1.15;
+  color: #fff8e8;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .t04-wax-text strong {
   font-family: 'Cinzel', serif;
-  font-size: 2.1cqw;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 1px;
   white-space: nowrap;
 }
 
 .t04-wax-text small {
   font-family: 'Noto Serif Bengali', serif;
-  font-size: 2.4cqw;
-  color: #f7d58b;
-  margin-top: 0.2cqw;
-}
-
-.t04-door-open .t04-wax-trigger {
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.5);
-}
-
-/* Typography Overlay on Double Doors */
-.t04-parchment-text {
-  position: absolute;
-  left: 50%;
-  top: 48.5%;
-  transform: translate(-50%, -50%);
-  width: 44cqw;
-  max-width: 320px;
-  height: 24cqw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  z-index: 4;
-  pointer-events: none;
-  transition: opacity 0.5s ease, transform 0.6s ease;
-}
-
-.t04-door-open .t04-parchment-text {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
-}
-
-.t04-parchment-bismillah {
-  font-family: 'Amiri', serif;
-  font-size: 2.1cqw;
-  color: #f7d58b;
-  line-height: 1.1;
-  margin-bottom: 0.2cqw;
-  text-shadow: 0 0 6px rgba(0,0,0,0.8);
-}
-
-.t04-parchment-nikah {
-  font-family: 'Noto Serif Bengali', serif;
-  font-size: 2.4cqw;
-  font-weight: 700;
-  color: #ffcdd2;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.3cqw;
-  text-shadow: 0 0 6px rgba(0,0,0,0.8);
-}
-
-.t04-parchment-invite {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 2.5cqw;
-  color: #ffffff;
-  line-height: 1.1;
-  text-shadow: 0 0 6px rgba(0,0,0,0.9);
-}
-
-.t04-parchment-guest {
-  font-family: 'Cinzel', serif;
-  font-size: 2.3cqw;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 12px;
   color: #ffe082;
-  border-top: 1px solid rgba(232, 198, 110, 0.45);
-  border-bottom: 1px solid rgba(232, 198, 110, 0.45);
-  padding: 0.2cqw 1cqw;
-  margin: 0.3cqw 0;
-  text-transform: uppercase;
-  text-shadow: 0 0 8px rgba(0,0,0,0.9);
+  margin-top: 1px;
 }
 
-.t04-parchment-couple {
+.t04-gate-note {
   font-family: 'Cinzel', serif;
-  font-size: 2.4cqw;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(0,0,0,0.9);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-shine);
+  cursor: pointer;
+  margin-top: 4px;
 }
 
-/* Puljhari (Paper Sparklers & Crackers) Container */
-.t04-sparks {
-  position: absolute;
-  inset: 0;
-  z-index: 12;
+/* Phuljhadi Fireworks / Sparklers Shooting in 360 Degrees */
+.t04-phuljhadi, .t04-sparks {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  overflow: hidden;
-}
-
-.t04-paper-confetti {
-  position: absolute;
-  width: var(--pw, 7px);
-  height: var(--ph, 14px);
-  background: var(--bg, #f5d16e);
-  border-radius: 1px;
-  animation: t04-paper-burst var(--dur, 1.4s) cubic-bezier(0.12, 0.85, 0.32, 1) forwards;
-  opacity: 1;
-  will-change: transform, opacity;
-  box-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
-}
-
-@keyframes t04-paper-burst {
-  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(0.5); }
-  25% { opacity: 1; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1.15); }
-  100% { opacity: 0; transform: translate(calc(var(--tx) * 1.35), calc(var(--ty) + 140px)) rotate(calc(var(--rot) * 2.5)) scale(0.3); }
+  z-index: 9999;
 }
 
 .t04-spark {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  left: 0;
+  top: 0;
+  width: var(--sz, 6px);
+  height: var(--sz, 6px);
   border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 6px 2px #ffe082, 0 0 14px 4px #ff9800;
-  animation: t04-sparkler-fly 1.1s cubic-bezier(0.2, 0.85, 0.4, 1) forwards;
-  pointer-events: none;
+  background: radial-gradient(circle, #fff, var(--col, #ffd700) 60%, transparent);
+  box-shadow: 0 0 8px #ffd700, 0 0 16px #ff9900, 0 0 24px #ff5500;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  animation: t04-spark-shoot var(--dur, 1.4s) cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+  animation-delay: var(--del, 0s);
+  will-change: transform, opacity;
 }
 
-@keyframes t04-sparkler-fly {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
-}
-
-/* Screen 1 (First Screen - Landing & Family Invitation Board) */
-.t04-s1-content {
+.t04-spark-star {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 10%;
-  bottom: 8%;
-  z-index: 4;
+  left: 0;
+  top: 0;
+  font-size: var(--sz, 14px);
+  color: var(--col, #ffe066);
+  text-shadow: 0 0 8px #ffd700, 0 0 16px #ff8800;
+  opacity: 0;
+  animation: t04-star-twinkle var(--dur, 1.4s) ease-out forwards;
+  animation-delay: var(--del, 0s);
+  will-change: transform, opacity;
+}
+
+@keyframes t04-spark-shoot {
+  0% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0) scale(1.5); opacity: 1; }
+  60% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 170px) * -0.85)) scale(1); }
+  100% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 170px) * -1)) scale(0.2); opacity: 0; }
+}
+
+@keyframes t04-star-twinkle {
+  0% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0) scale(0) rotate(0); opacity: 1; }
+  50% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 150px) * -0.7)) scale(1.3) rotate(180deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 150px) * -1)) scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* ==========================================================================
+   Fluid Page Layout Behind Doors (Matching Template 6 Canvas)
+   ========================================================================== */
+.t04-content-flow {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+}
+
+/* Individual Sections */
+.t04-screen {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Screen 1: Landing Stage Hero Section (Image 2) */
+.t04-screen[data-screen="1"], .t04-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 16px 50px;
+  background: #021812;
+  overflow: hidden;
+  color: #fffdfa;
+}
+
+.t04-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 1;
+}
+
+.t04-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 35%, rgba(2, 24, 18, 0.45) 0%, rgba(2, 24, 18, 0.85) 75%, rgba(0, 0, 0, 0.95) 100%);
+  z-index: 2;
+}
+
+.t04-hero-in {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  color: #fff5db;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 1cqw 1cqw 3cqw;
 }
 
 .t04-s1-bismillah {
   font-family: 'Amiri', serif;
-  font-size: 3.4cqw;
-  color: #f7d58b;
-  margin: 0 0 0.2cqw;
-  text-shadow: 0 0 8px rgba(247, 213, 139, 0.5);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-shine);
+  margin-bottom: 2px;
+  letter-spacing: 1px;
 }
 
 .t04-s1-nikah {
   font-family: 'Noto Serif Bengali', serif;
-  font-size: 3.2cqw;
+  font-size: 26px;
   font-weight: 700;
-  color: #f45142;
-  margin: 0 0 0.4cqw;
-  text-shadow: 0 0 6px rgba(244, 81, 66, 0.6);
+  color: #ffcdd2;
+  margin-bottom: 4px;
 }
 
 .t04-s1-bless {
   font-family: 'Cinzel', serif;
-  font-size: 1.9cqw;
-  letter-spacing: 0.1em;
-  color: #d1b88e;
-  margin: 0 0 0.8cqw;
-}
-
-.t04-family-board {
-  width: 100%;
-  max-width: 420px;
-  margin: 4px auto 8px;
-  background: rgba(2, 22, 16, 0.86);
-  border: 1.5px solid var(--gold-shine);
-  border-radius: 16px;
-  padding: 12px 14px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), inset 0 0 16px rgba(232, 198, 110, 0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.t04-board-tag {
-  display: inline-block;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
   letter-spacing: 2px;
-  color: var(--gold-shine);
   text-transform: uppercase;
-  border-bottom: 1px solid rgba(232, 198, 110, 0.4);
-  padding-bottom: 3px;
-  margin-bottom: 6px;
+  color: var(--gold-shine);
+  margin-bottom: 8px;
 }
 
-.t04-vip-guest {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 2px 0 8px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(245, 209, 110, 0.6);
-}
-
-.t04-polished-wording {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #f7e8b0;
-  margin: 8px 0;
-  padding: 8px 10px;
-  background: rgba(4, 36, 28, 0.55);
-  border-left: 2px solid var(--gold-shine);
-  border-radius: 4px;
-  text-align: left;
-}
-
-.t04-s1-couple {
+.t04-hero-couple {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.8cqw;
-  font-family: 'Great Vibes', cursive;
-  font-size: 6cqw;
+  gap: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5.5vw, 36px);
+  font-weight: 700;
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(245, 209, 110, 0.5);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
 }
 
-.t04-s1-couple .t04-s1-amp {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 4cqw;
-  color: #e8c66e;
+.t04-hero-amp {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(30px, 6vw, 42px);
+  color: var(--gold-shine);
 }
 
 .t04-s1-motto {
   font-family: 'Cinzel', serif;
-  font-size: 1.8cqw;
-  letter-spacing: 0.1em;
-  color: #d1b88e;
-  margin: 0.5cqw 0 1cqw;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  color: #ffecb3;
+  margin-top: 4px;
 }
 
-/* Category Toggle Options on Screen 1 */
-.t04-s1 .t04-opts {
-  display: flex;
-  gap: 2cqw;
+/* Family Invitation Board */
+.t04-family-board {
   width: 100%;
-  max-width: 400px;
-  margin: 6px auto;
+  max-width: 520px;
+  margin: 16px auto 10px;
+  padding: 20px 18px;
+  border-radius: 18px;
+  background: rgba(2, 24, 18, 0.88);
+  border: 1.5px solid var(--gold-shine);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), inset 0 0 18px rgba(245, 213, 128, 0.15);
+  backdrop-filter: blur(10px);
+  text-align: center;
 }
 
-.t04-s1 .t04-opt {
-  flex: 1;
-  background: rgba(4, 36, 28, 0.82);
-  border: 1.5px solid rgba(232, 198, 110, 0.4);
-  border-radius: 12px;
-  padding: 1.8cqw 2cqw;
-  color: #f0e1c2;
-  cursor: pointer;
+.t04-board-tag {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 999px;
+  background: rgba(245, 213, 128, 0.18);
+  border: 1px solid var(--gold-shine);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold-shine);
+  margin-bottom: 8px;
+}
+
+.t04-vip-guest {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 4px 0 12px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Category Switcher */
+.t04-opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.t04-opt {
   display: flex;
   align-items: center;
-  gap: 1.8cqw;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(4, 36, 28, 0.8);
+  border: 1.2px solid rgba(245, 213, 128, 0.4);
+  color: #fff8e8;
+  cursor: pointer;
+  transition: all 0.25s ease;
   text-align: left;
-  transition: all 0.3s ease;
 }
 
-.t04-s1 .t04-opt.selected {
-  border-color: #f5d16e;
-  background: rgba(14, 91, 70, 0.9);
-  box-shadow: 0 0 14px rgba(245, 209, 110, 0.4), inset 0 0 8px rgba(245, 209, 110, 0.2);
+.t04-opt.selected {
+  border-color: var(--gold-shine);
+  background: rgba(14, 91, 70, 0.65);
+  box-shadow: 0 0 14px rgba(245, 213, 128, 0.3);
+}
+
+.t04-opt .ic {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-shine);
+  flex-shrink: 0;
 }
 
 .t04-opt-text strong {
   display: block;
   font-family: 'Cinzel', serif;
-  font-size: 2.6cqw;
+  font-size: 11px;
   color: #ffffff;
 }
 
 .t04-opt-text small {
   display: block;
-  font-size: 2cqw;
-  color: #c9b794;
+  font-size: 9.5px;
+  color: #d7e3dc;
 }
 
 .t04-opt-radio {
-  margin-left: auto;
-  width: 3.2cqw;
-  height: 3.2cqw;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 1.5px solid #d4af37;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1.2px solid var(--gold-shine);
+  margin-left: auto;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.t04-opt.selected .t04-opt-radio {
-  background: #f5d16e;
-  box-shadow: 0 0 8px #f5d16e;
+.t04-opt.selected .t04-opt-radio:after {
+  content: '';
+  position: absolute;
+  inset: 2.5px;
+  border-radius: 50%;
+  background: var(--gold-shine);
 }
 
-.t04-s1 .t04-wording-box {
-  width: 100%;
-  max-width: 400px;
-  margin: 6px auto;
-  background: rgba(2, 22, 16, 0.75);
-  border: 1px solid rgba(232, 198, 110, 0.3);
+.t04-wording-box {
+  background: rgba(0, 0, 0, 0.35);
   border-radius: 12px;
-  padding: 2.2cqw 2.5cqw;
+  padding: 12px 14px;
+  border-left: 2px solid var(--gold-shine);
+  margin: 10px 0;
+  text-align: left;
 }
 
-.t04-s1 .t04-wording-sal {
+.t04-wording-sal {
   font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 3.6cqw;
-  color: #f7d58b;
-  margin: 0 0 0.6cqw;
-  text-shadow: 0 0 8px rgba(247, 213, 139, 0.4);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-shine);
+  margin: 0 0 4px;
 }
 
-.t04-s1 .t04-wording-copy {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.6cqw;
-  line-height: 1.45;
-  color: #f7f0e1;
+.t04-wording-copy {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #f0f7f3;
   margin: 0;
 }
 
-/* Screen 2: Bride, Groom, Parents & Photos */
+.t04-polished-wording {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #ffe0b2;
+  margin: 12px 0;
+  padding: 8px 12px;
+  background: rgba(245, 213, 128, 0.08);
+  border-radius: 10px;
+  border: 1px dashed rgba(245, 213, 128, 0.4);
+}
+
+.t04-ayat-quote {
+  font-size: 12.5px;
+  font-style: italic;
+  line-height: 1.5;
+  color: #e0f2f1;
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(245, 213, 128, 0.3);
+}
+
+/* Screen 2, 3, 4: Content Sections (Stacked Canvas) */
+.t04-screen[data-screen="2"],
+.t04-screen[data-screen="3"],
+.t04-screen[data-screen="4"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 16px 70px;
+  background: var(--paper, #fffdfa);
+}
+
+.t04-card-inner {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border: 1.5px solid rgba(212, 164, 68, 0.6);
+  border-radius: 24px;
+  padding: 36px 22px 28px;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(245, 213, 128, 0.2);
+  margin: 0 auto;
+}
+
+.t04-corner-svg {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+}
+.t04-corner-svg.tl { top: 8px; left: 8px; }
+.t04-corner-svg.tr { top: 8px; right: 8px; transform: scaleX(-1); }
+
+.t04-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 4.5vw, 28px);
+  font-weight: 700;
+  color: var(--emerald-d);
+  margin: 0 0 4px;
+}
+
+.t04-subheading {
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold-d);
+  margin: 0 0 18px;
+}
+
+/* Couple Grid & Portraits */
 .t04-couple-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  width: 100%;
-  margin: 8px 0;
+  gap: 16px;
+  margin: 16px 0;
 }
+
 .t04-person-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 6px;
-  border: 1px solid var(--paper-dark);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.75);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  text-align: center;
 }
+
 .t04-arch-frame {
-  width: 82px;
-  height: 104px;
-  border-radius: 41px 41px 8px 8px;
+  position: relative;
+  width: clamp(96px, 18vw, 130px);
+  height: clamp(124px, 23vw, 168px);
+  border-radius: 80px 80px 14px 14px;
   border: 2px solid var(--gold-mid);
   padding: 3px;
-  background: linear-gradient(180deg, var(--gold-shine), var(--gold-d));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  margin-bottom: 6px;
+  background: linear-gradient(180deg, rgba(245, 213, 128, 0.4), rgba(4, 43, 32, 0.15));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  margin-bottom: 8px;
 }
+
 .t04-arch-inner {
   width: 100%;
   height: 100%;
-  border-radius: 37px 37px 6px 6px;
-  background: var(--paper-cream);
+  border-radius: 76px 76px 10px 10px;
   overflow: hidden;
+  background: var(--paper-cream);
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .t04-arch-inner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .t04-arch-crest {
-  font-family: 'Cinzel', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--gold-d);
+  font-family: 'Great Vibes', cursive;
+  font-size: 34px;
+  color: var(--emerald-l);
 }
+
 .t04-role-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(14, 91, 70, 0.12);
+  border: 1px solid rgba(14, 91, 70, 0.35);
   font-family: 'Cinzel', serif;
   font-size: 9.5px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold-d);
   font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--emerald-l);
+  margin-bottom: 4px;
 }
+
 .t04-person-name {
   font-family: 'Playfair Display', serif;
-  font-size: 15.5px;
+  font-size: clamp(16px, 3.2vw, 20px);
+  font-weight: 700;
+  color: var(--emerald-d);
+  margin: 2px 0 3px;
+}
+
+.t04-parents-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Couple Arch Hero Photo */
+.t04-couple-arch-hero {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 18px auto 8px;
+  border-radius: 120px 120px 16px 16px;
+  border: 2px solid var(--gold-shine);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 18px rgba(245, 213, 128, 0.4);
+  padding: 4px;
+  background: linear-gradient(180deg, var(--gold-shine), var(--emerald-m));
+}
+
+.t04-couple-arch-inner {
+  width: 100%;
+  height: 220px;
+  border-radius: 116px 116px 12px 12px;
+  overflow: hidden;
+  background: var(--paper-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.t04-couple-arch-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Events Timeline (Screen 3) */
+.t04-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.t04-event-card {
+  position: relative;
+  background: #ffffff;
+  border: 1.2px solid rgba(212, 164, 68, 0.4);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--gold-mid);
+}
+
+.t04-event-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(245, 213, 128, 0.2);
+  border: 1px solid rgba(212, 164, 68, 0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--emerald-m);
+  margin-bottom: 4px;
+}
+
+.t04-event-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--emerald-d);
+  margin: 2px 0 6px;
+}
+
+.t04-event-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dark);
+  margin: 2px 0;
+}
+
+.t04-event-row svg {
+  width: 15px;
+  height: 15px;
+  color: var(--gold-mid);
+  flex-shrink: 0;
+}
+
+/* Screen 4: Celebrations & Guest Actions */
+.t04-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+@media (max-width: 580px) {
+  .t04-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.t04-action-box {
+  background: var(--paper-cream);
+  border: 1.2px solid rgba(212, 164, 68, 0.45);
+  border-radius: 14px;
+  padding: 16px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.t04-action-box .ic {
+  width: 28px;
+  height: 28px;
+  color: var(--emerald-l);
+  margin-bottom: 6px;
+}
+
+.t04-action-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
   font-weight: 700;
   color: var(--emerald-d);
   margin: 2px 0 4px;
 }
-.t04-parents-desc {
+
+.t04-action-box p {
   font-size: 11.5px;
   color: var(--text-muted);
-  line-height: 1.35;
-  margin: 0;
-  font-style: italic;
-}
-
-.t04-couple-hero-wrap {
-  width: 100%;
-  max-width: 320px;
-  margin: 10px auto 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.t04-couple-arch-hero {
-  width: 140px;
-  height: 175px;
-  border-radius: 70px 70px 12px 12px;
-  border: 2px solid var(--gold-shine);
-  padding: 3px;
-  background: linear-gradient(180deg, var(--gold-shine), var(--gold-d));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 16px rgba(232, 198, 110, 0.35);
-  overflow: hidden;
-}
-.t04-couple-arch-hero img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 67px 67px 10px 10px;
-  display: block;
-}
-.t04-couple-hero-caption {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--emerald-d);
-  margin-top: 6px;
-}
-
-.t04-host-honor {
-  background: rgba(14, 91, 70, 0.05);
-  border: 1px solid rgba(207, 159, 56, 0.4);
-  border-radius: 10px;
-  padding: 8px 12px;
-  margin: 6px 0 0;
-  width: 100%;
-  font-size: 12px;
-  color: var(--emerald-m);
-}
-
-/* Card inner for Screens 2, 3, 4 */
-.t04-card-inner {
-  position: relative;
-  width: 100%;
-  background: var(--paper);
-  border: 1px solid var(--gold-mid);
-  border-radius: 18px;
-  padding: 18px 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  margin-bottom: 8px;
-}
-.t04-heading {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--emerald-d);
-  margin: 0 0 4px;
-  text-transform: uppercase;
-}
-.t04-subheading {
-  font-size: 13px;
-  color: var(--gold-d);
   margin: 0 0 10px;
-  font-style: italic;
-}
-.t04-ayat-quote {
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--emerald-m);
-  padding: 10px 12px;
-  border-left: 2px solid var(--gold-mid);
-  border-right: 2px solid var(--gold-mid);
-  background: rgba(207, 159, 56, 0.06);
-  border-radius: 6px;
-  margin: 0 0 10px;
-  font-style: italic;
 }
 
-/* Screen 3: Events Timeline */
-.t04-events-wrap {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 6px 0;
-}
-.t04-ev-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--paper-dark);
-  border-radius: 12px;
-  text-align: left;
-  gap: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-.t04-ev-card.main {
-  background: linear-gradient(135deg, rgba(255, 253, 249, 0.95), rgba(245, 235, 212, 0.9));
-  border-color: var(--gold-mid);
-  box-shadow: 0 4px 14px rgba(207, 159, 56, 0.18);
-}
-.t04-ev-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--paper-cream);
-  border: 1px solid var(--gold-mid);
-  display: flex;
+.t04-act-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  color: var(--gold-d);
-  font-size: 15px;
-}
-.t04-ev-info {
-  flex: 1;
-  min-width: 0;
-}
-.t04-ev-name {
-  font-family: 'Cinzel', serif;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--emerald-d);
-  margin: 0 0 2px;
-}
-.t04-ev-meta {
-  font-size: 12px;
-  color: var(--emerald-m);
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
   gap: 6px;
-}
-.t04-ev-note {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin: 2px 0 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--emerald-m);
+  color: #fff8e8;
+  border: 1px solid var(--gold-mid);
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: auto;
 }
 
-/* Screen 4: Guest Actions & Countdown */
-.t04-actions-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-  margin: 6px 0;
+.t04-act-btn:hover {
+  background: var(--emerald-l);
+  box-shadow: 0 4px 12px rgba(14, 91, 70, 0.3);
 }
-.t04-action-box {
+
+.t04-act-btn.disabled {
+  background: #e0e0e0;
+  color: #888888;
+  border-color: #cccccc;
+  pointer-events: none;
+}
+
+/* Countdown Card */
+.t04-countdown-grid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 8px;
+}
+
+.t04-count-unit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 8px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--paper-dark);
-  border-radius: 14px;
-  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgba(212, 164, 68, 0.4);
+  border-radius: 8px;
+  padding: 4px 8px;
+  min-width: 44px;
 }
-.t04-action-box .ic {
-  width: 22px;
-  height: 22px;
-  color: var(--gold-d);
-  margin-bottom: 3px;
-}
-.t04-action-box h3 {
+
+.t04-count-unit strong {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 16px;
   color: var(--emerald-d);
-  margin: 0 0 2px;
 }
-.t04-action-box p {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin: 0 0 6px;
-  line-height: 1.3;
+
+.t04-count-unit span {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  color: var(--gold-d);
 }
-.t04-act-btn {
-  width: 100%;
-  padding: 6px 10px;
-  background: linear-gradient(135deg, var(--gold-shine), var(--gold-mid));
-  color: var(--emerald-d) !important;
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  font-weight: 700;
-  border: 1px solid var(--gold-d);
-  border-radius: 999px;
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  display: inline-block;
-  pointer-events: auto;
-}
-.t04-act-btn.disabled {
-  background: var(--paper-dark);
-  color: var(--text-muted) !important;
-  border-color: #d1c1a1;
-  pointer-events: none;
-}
+
+/* Scratch Card */
 .t04-scratch-box {
   position: relative;
   width: 100%;
-  height: 38px;
-  border-radius: 8px;
+  max-width: 220px;
+  height: 64px;
+  margin: 4px auto 8px;
+  border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--gold-mid);
-  background: #fff8e8;
-  margin-bottom: 6px;
 }
+
 .t04-scratch-msg {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  font-size: 10px;
-  font-weight: 700;
+  padding: 6px;
+  background: #ffffff;
   color: var(--emerald-d);
+  font-size: 11.5px;
+  font-weight: 600;
   text-align: center;
 }
+
 .t04-scratch-box canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
   cursor: crosshair;
 }
-.t04-countdown-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
-  width: 100%;
+
+/* RSVP Section Form */
+.t04-rsvp-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(212, 164, 68, 0.5);
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin: 18px 0;
+  text-align: left;
+}
+
+.t04-rsvp-row {
+  margin-bottom: 12px;
+}
+
+.t04-rsvp-label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--emerald-m);
   margin-bottom: 4px;
 }
-.t04-count-unit {
+
+.t04-rsvp-input, .t04-rsvp-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.2px solid rgba(212, 164, 68, 0.4);
+  font-family: inherit;
+  font-size: 13px;
   background: var(--paper-cream);
-  border: 1px solid var(--gold-mid);
-  border-radius: 6px;
-  padding: 3px 2px;
-}
-.t04-count-unit strong {
-  display: block;
-  font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--emerald-d);
-  line-height: 1.1;
-}
-.t04-count-unit span {
-  font-size: 8px;
-  color: var(--gold-d);
-  text-transform: uppercase;
+  color: var(--text-dark);
 }
 
-/* Nav Actions Bottom */
+.t04-rsvp-input[readonly] {
+  background: #f0ebe1;
+  color: #4a5c53;
+  cursor: not-allowed;
+}
+
+.t04-rsvp-wa {
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 12px;
+  background: #1b7a43;
+  border-color: #25d366;
+}
+.t04-rsvp-wa:hover {
+  background: #156336;
+}
+
+/* Navigation Buttons Row */
 .t04-nav-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  justify-content: center;
   gap: 12px;
-  margin-top: auto;
-  padding-top: 6px;
-  z-index: 20;
-}
-.t04-btn-prev {
-  background: var(--paper);
-  border: 1.5px solid var(--gold-mid);
-  color: var(--emerald-m) !important;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 8px 18px;
-  border-radius: 999px;
-  cursor: pointer;
-  pointer-events: auto;
-}
-.t04-btn-next {
-  background: linear-gradient(135deg, var(--emerald-m), var(--emerald-d));
-  border: 1.5px solid var(--gold-shine);
-  color: #fff6d9 !important;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 8px 20px;
-  border-radius: 999px;
-  cursor: pointer;
-  pointer-events: auto;
+  margin-top: 24px;
 }
 
-.t04-toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--emerald-d);
-  color: #fff8e8;
-  border: 1px solid var(--gold-shine);
-  border-radius: 20px;
+.t04-btn-prev, .t04-btn-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 18px;
-  font-size: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s ease;
-  z-index: 1000;
+  border-radius: 999px;
+  font-family: 'Cinzel', serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 1px solid var(--gold-mid);
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
-.t04-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+
+.t04-btn-prev {
+  background: transparent;
+  color: var(--emerald-d);
+}
+
+.t04-hero .t04-btn-prev {
+  color: var(--gold-shine);
+  border-color: rgba(245, 213, 128, 0.6);
+}
+
+.t04-btn-next {
+  background: var(--emerald-m);
+  color: #ffffff;
+}
+
+.t04-hero .t04-btn-next {
+  background: var(--gold-mid);
+  color: #021812;
+  border-color: var(--gold-shine);
+}
+
+.t04-btn-next:hover, .t04-btn-prev:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.t04-jali-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px auto;
+  width: 80%;
+  max-width: 240px;
+}
+
+.t04-jali-div i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
+}
+
+.t04-jali-star {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 `;
 
-/* ==========================================================================
-   Main Render Function
-   ========================================================================== */
-export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
-  const w = wedding || {};
-  const storedCouple = getStoredPhoto('wedding-couple-photo') || getStoredPhoto('wedding_couple_photo') || getStoredPhoto('onboard-couple-photo');
-  const storedVenue = getStoredPhoto('wedding-venue-photo') || getStoredPhoto('wedding_venue_photo') || getStoredPhoto('onboard-venue-photo');
-  const g = guest || {};
-  const evs = Array.isArray(events) ? events : [];
-  const bride = clean(w.bride_name) || 'Bride';
-  const groom = clean(w.groom_name) || 'Groom';
-  const brideFull = clean(w.bride_full) || bride;
-  const groomFull = clean(w.groom_full) || groom;
-  const guestName = clean(g.name) || 'Respected Guest';
-  const isFamily = Boolean(g.with_family);
-  const assetBase = clean(w.asset_base) || './assets/';
-  const coverImg = `${assetBase.replace(/\/?$/, '/') }template-04-cover.webp`;
-  const innerImg = `${assetBase.replace(/\/?$/, '/') }template-04-inner.webp`;
-  const doorL = `${assetBase.replace(/\/?$/, '/') }template-04-door-l.webp`;
-  const doorR = `${assetBase.replace(/\/?$/, '/') }template-04-door-r.webp`;
-  const personalized = guestName + (isFamily && !/\bfamily\b/i.test(guestName) ? ' & Family' : '');
+export default function renderT04(data = {}) {
+  const guest = data?.guest || {};
+  const w = data?.wedding || {};
+  const evs = Array.isArray(data?.events) ? data.events : [];
 
-  const venue = clean(w.venue);
-  const address = clean(w.address);
-  const ceremonyTitle = clean(w.ceremony_title) || 'Nikah & Wedding Ceremony';
-  const invocation = clean(w.invocation) || 'In the name of Allah, the Most Beneficent & Merciful';
-  const signature = clean(w.footer_text) || clean(w.compliments) || `The ${bride.split(/\s+/).pop()} & ${groom.split(/\s+/).pop()} Families`;
+  const bride = clean(w.bride_name || 'Dulhan');
+  const groom = clean(w.groom_name || 'Dulha');
+  const brideFull = clean(w.bride_full || bride);
+  const groomFull = clean(w.groom_full || groom);
 
-  const mapUrl = safeUrl(w.map_url)
-    || (venue || address ? esc(`https://maps.google.com/?${new URLSearchParams({ q: [venue, address].filter(Boolean).join(', ') })}`) : '');
+  const rawGuest = clean(guest.name || 'Honoured Guest');
+  const isFamily = Boolean(guest.with_family || (guest.persons && guest.persons > 1));
+  const guestLine = isFamily && !/family/i.test(rawGuest) ? `${rawGuest} & Family` : rawGuest;
+  const personalized = clean(guest.name ? guestLine : (guest.custom_title || 'Honoured Guest'));
 
-  const weddingTarget = weddingWhen(wedding, events);
-  const hasCalendar = weddingTarget !== null;
+  const assetBase = './assets/';
+  const coverImg = `${assetBase}template-04-cover.webp`;
+  const innerImg = `${assetBase}template-04-inner.webp`;
 
-  // Sorted Events
-  const stamp = e => {
-    const t = parseWhen(e.event_date, e.event_time);
-    if (t !== null) return t;
-    const d = dateParts(e.event_date);
-    return d ? Date.UTC(d.year, d.month - 1, d.day) : Infinity;
-  };
-  const sortedEvents = [...evs].sort((a, b) => stamp(a) - stamp(b));
+  const mapUrl = safeUrl(w.map_url || (w.venue ? `https://maps.google.com/?q=${encodeURIComponent(w.venue + (w.address ? ', ' + w.address : ''))}` : ''));
+  const hasCalendar = Boolean(w.date || (evs.length && evs[0].event_date));
+  const weddingTarget = weddingWhen(w, evs);
 
-  const eventListHtml = sortedEvents.length ? sortedEvents.map((e, idx) => {
-    const isMain = MAIN_EVENT_RE.test(clean(e.event_name || e.category)) || idx === 0;
-    const whenDate = formatDate(e.event_date);
-    const whenTime = formatTime(e.event_time);
-    const where = clean(e.venue || e.address) || venue || address;
-    return `
-      <article class="t04-ev-card${isMain ? ' main' : ''}">
-        <div class="t04-ev-icon">${isMain ? '💍' : '✨'}</div>
-        <div class="t04-ev-info">
-          <h4 class="t04-ev-name">${esc(e.event_name || 'Wedding Event')}</h4>
-          <p class="t04-ev-meta">
-            ${whenDate ? `<span>📅 ${esc(whenDate)}</span>` : ''}
-            ${whenTime ? `<span>⏰ ${esc(whenTime)}</span>` : ''}
-          </p>
-          ${where ? `<p class="t04-ev-note">📍 ${esc(where)}</p>` : ''}
-          ${e.note ? `<p class="t04-ev-note">ℹ️ ${esc(e.note)}</p>` : ''}
-        </div>
-      </article>`;
-  }).join('') : '<p style="font-size:13px;color:var(--text-muted);font-style:italic">Programme events will be announced shortly.</p>';
-
-  const copySingle = 'Together with our families, we request the honour of your gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
-  const copyFamily = 'Together with our families, we request the honour of your and your family\'s gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
-
-  // Portrait helpers
+  const storedCouple = getStoredPhoto('selected_couple_photo');
   const couplePhoto = safeUrl(w.couple_photo || w.couple_photo_url || storedCouple);
   const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image || (!w.groom_photo && couplePhoto ? couplePhoto : ''));
   const groomPhoto = safeUrl(w.groom_photo || w.groom_photo_url || w.groom_image);
 
+  const defaultSig = isFamily
+    ? (w.groom_parents ? `${w.groom_parents} & Family` : `${groomFull} & Family`)
+    : (w.groom_parents || groomFull);
+  const signature = clean(w.footer_text || w.signature || defaultSig);
+
+  const copySingle = 'Together with our families, we request the honour of your gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
+  const copyFamily = 'Together with our families, we request the honour of your and your family\'s gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
+
   const screens = [
-    /* ----------------------------------------------------
-       Screen 0: Royal Palace Gate (Lights OFF -> Click to Turn Lights ON & Open Doors with Sparklers)
-       ---------------------------------------------------- */
-    `<section class="t04-screen t04-cover active t04-unlit" data-screen="0" aria-label="Shadi card welcome">
-      <div class="t04-mandap-wrap">
-        <!-- Revealed Palace Background (Image 2) underneath -->
-        <img class="t04-mandap-img t04-mandap-inner" src="${innerImg}" alt="Royal Shadi Palace" aria-hidden="true">
-
-        <!-- Palace Gate Arch (Image 1) -->
-        <img class="t04-mandap-img t04-mandap-gate" src="${coverImg}" alt="Royal Palace Gate" aria-hidden="true">
-
-        <!-- Double Palace Doors in 3D Portal -->
-        <div class="t04-doors-portal" aria-label="Open Palace Doors" role="button" tabindex="0">
-          <img class="t04-door t04-door-l" src="${doorL}" alt="Left Palace Door" aria-hidden="true">
-          <img class="t04-door t04-door-r" src="${doorR}" alt="Right Palace Door" aria-hidden="true">
+    /* Screen 0: Royal Sliding Double Doors Gate (Image 1) */
+    `<div class="t04-screen t04-cover t04-unlit t04-entry" data-screen="0" aria-label="Shadi card welcome">
+      <div class="t04-doors-portal" aria-label="Open Palace Doors">
+        <div class="t04-cur t04-cl" aria-hidden="true">
+          <div class="t04-door-panel t04-door-left">
+            <img class="t04-door t04-door-l" src="${coverImg}" alt="Left Palace Door" loading="eager" decoding="async">
+          </div>
         </div>
-
-        <!-- Royal Typography Overlay on the Doors -->
-        <div class="t04-parchment-text" aria-hidden="true">
-          <div class="t04-parchment-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
-          <div class="t04-parchment-nikah">॥ শুভ নিকাহ্ ॥</div>
-          <div class="t04-parchment-invite">Cordially Inviting You</div>
-          <div class="t04-parchment-guest">${esc(personalized)}</div>
-          <div class="t04-parchment-couple">${esc(bride)} &amp; ${esc(groom)}</div>
+        <div class="t04-cur t04-cr" aria-hidden="true">
+          <div class="t04-door-panel t04-door-right">
+            <img class="t04-door t04-door-r" src="${coverImg}" alt="Right Palace Door" loading="eager" decoding="async">
+          </div>
         </div>
+      </div>
 
-        <!-- Light Flares for Lights-On illumination -->
-        <div class="t04-light-burst" aria-hidden="true">
-          <div class="t04-grand-glow"></div>
-          <div class="t04-chandelier-glow"></div>
-        </div>
+      <div class="t04-sparks" aria-hidden="true"></div>
 
-        <!-- Puljhari (Paper Sparklers & Crackers) Container -->
-        <div class="t04-sparks" aria-hidden="true"></div>
+      <div class="t04-gate-in">
+        <div class="t04-gate-card">
+          <p class="t04-gate-invoc">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+          <h1 class="t04-gate-title">॥ শুভ বিবাহ ॥</h1>
+          <p class="t04-gate-names">${esc(bride)} &amp; ${esc(groom)}</p>
 
-        <!-- Red Wax Seal "TAP TO OPEN / প্রবেশ করুন" Trigger Button -->
-        <button class="t04-wax-trigger" type="button" aria-label="Tap to open royal palace doors">
-          <span class="t04-wax-aura" aria-hidden="true"></span>
-          <span class="t04-wax-disc">
-            <span class="t04-wax-text">
-              <strong>TAP TO OPEN</strong>
-              <small>প্রবেশ করুন</small>
+          <div class="t04-guest-box">
+            <span class="t04-guest-kicker">VIP INVITATION FOR</span>
+            <h2 class="t04-guest-name">${esc(personalized)}</h2>
+            <span class="t04-guest-pill">${isFamily ? 'With Family' : 'Individual Guest'}</span>
+          </div>
+
+          <button class="t04-wax-trigger" type="button" data-open aria-label="Open royal palace doors">
+            <span class="t04-wax-aura" aria-hidden="true"></span>
+            <span class="t04-wax-disc">
+              <span class="t04-wax-text">
+                <strong>TAP TO OPEN</strong>
+                <small>প্রবেশ করুন</small>
+              </span>
             </span>
-          </span>
-        </button>
+          </button>
+          <div class="t04-gate-note">✦ Tap to Illuminate &amp; Enter ✦</div>
+        </div>
+      </div>
 
-        <!-- Hidden test hooks for unit testing contract -->
-        <div class="t04-test-hooks" style="display:none!important" aria-hidden="true">
-          <button type="button" data-next>Begin Invitation</button>
-          <span class="t04-shadi-title">Shadi Mubarak</span>
-          <span>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</span>
-          <h2>${esc(personalized)}</h2>
-          <h3>${esc(bride)} &amp; ${esc(groom)}</h3>
+      <div class="t04-test-hooks" style="display:none!important" aria-hidden="true">
+        <button type="button" data-next>Begin Invitation</button>
+        <span class="t04-shadi-title">Shadi Mubarak</span>
+        <span>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</span>
+        <h2>${esc(personalized)}</h2>
+        <h3>${esc(bride)} &amp; ${esc(groom)}</h3>
+      </div>
+    </div>`,
+
+    /* Screen 1: Landing Stage Hero Section (Image 2) with Guest Name & Family Invitation Board */
+    `<section class="t04-screen t04-hero t04-s1" data-screen="1" aria-label="Family Invitation Board">
+      <img class="t04-hero-bg" src="${innerImg}" alt="Royal Wedding Stage" loading="eager" decoding="async">
+      <div class="t04-hero-overlay"></div>
+
+      <div class="t04-hero-in">
+        <div class="t04-s1-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+        <div class="t04-s1-nikah">॥ শুভ বিবাহ ॥</div>
+        <p class="t04-s1-bless">WITH THE BLESSINGS OF OUR BELOVED FAMILIES</p>
+
+        <div class="t04-hero-couple">
+          <span>${esc(bride)}</span>
+          <span class="t04-hero-amp">&amp;</span>
+          <span>${esc(groom)}</span>
+        </div>
+        <p class="t04-s1-motto">TWO HEARTS &nbsp;•&nbsp; TWO FAMILIES &nbsp;•&nbsp; ONE JOURNEY</p>
+
+        <div class="t04-family-board">
+          <span class="t04-board-tag">FAMILY INVITATION BOARD</span>
+          <h2 class="t04-vip-guest">${esc(personalized)}</h2>
+
+          <div class="t04-opts" role="group" aria-label="Invitation category">
+            <button class="t04-opt${isFamily ? '' : ' selected'}" type="button" data-type="single" aria-pressed="${!isFamily}">
+              <span class="ic">${ICONS.person}</span>
+              <div class="t04-opt-text">
+                <strong>Individual</strong>
+                <small>For one person</small>
+              </div>
+              <span class="t04-opt-radio"></span>
+            </button>
+            <button class="t04-opt${isFamily ? ' selected' : ''}" type="button" data-type="family" aria-pressed="${isFamily}">
+              <span class="ic">${ICONS.family}</span>
+              <div class="t04-opt-text">
+                <strong>Family</strong>
+                <small>For you &amp; family</small>
+              </div>
+              <span class="t04-opt-radio"></span>
+            </button>
+          </div>
+
+          <div class="t04-wording-box">
+            <p class="t04-wording-sal">Dear ${esc(personalized)},</p>
+            <p class="t04-wording-copy" data-single="${esc(copySingle)}" data-family="${esc(copyFamily)}">
+              ${esc(isFamily ? copyFamily : copySingle)}
+            </p>
+          </div>
+
+          <blockquote class="t04-polished-wording">
+            “On opening the invitation, the lights will softly illuminate and the doors will gently unfold. As the gate opens, sparklers and crackers will welcome you. The first screen will show the guest’s name with a family invitation board, while the second screen will present the bride and groom, their parents, and their photograph.”
+          </blockquote>
+
+          <div class="t04-ayat-quote">
+            "And among His signs is this, that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts."
+            <br><strong style="font-size:11px;color:var(--gold-shine)">(Surah Ar-Rum 30:21)</strong>
+          </div>
+        </div>
+
+        <div class="t04-nav-row">
+          <button class="t04-btn-prev" type="button" data-prev>← Gate</button>
+          <button class="t04-btn-next" type="button" data-next>The Couple →</button>
         </div>
       </div>
     </section>`,
 
-    /* ----------------------------------------------------
-       Screen 1 (First Screen): Landing Stage with Guest Name & Family Invitation Board
-       ---------------------------------------------------- */
-    `<section class="t04-screen t04-s1" data-screen="1" aria-label="Family Invitation Board">
-      <div class="t04-mandap-wrap">
-        <!-- Royal Taj Mahal Inner Invitation (Image 2 - Stage after Landing) -->
-        <img class="t04-mandap-img" src="${innerImg}" alt="Royal Wedding Stage" aria-hidden="true">
-
-        <div class="t04-s1-content">
-          <!-- Calligraphy & Blessing Headings -->
-          <div class="t04-s1-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
-          <div class="t04-s1-nikah bengali">॥ শুভ নিকাহ্ ॥</div>
-          <p class="t04-s1-bless">WITH THE BLESSINGS OF OUR BELOVED FAMILIES</p>
-          
-          <!-- Family Invitation Board -->
-          <div class="t04-family-board">
-            <div class="t04-board-header">
-              <span class="t04-board-tag">FAMILY INVITATION BOARD</span>
-            </div>
-
-            <div class="t04-guest-hero">
-              <h2 class="t04-vip-guest">${esc(personalized)}</h2>
-            </div>
-
-            <!-- Interactive Invitation Type Options -->
-            <div class="t04-opts" role="group" aria-label="Invitation category">
-              <button class="t04-opt${isFamily ? '' : ' selected'}" type="button" data-type="single" aria-pressed="${!isFamily}">
-                <span class="ic">${ICONS.person}</span>
-                <div class="t04-opt-text">
-                  <strong>Individual</strong>
-                  <small>For one person</small>
-                </div>
-                <span class="t04-opt-radio"></span>
-              </button>
-              <button class="t04-opt${isFamily ? ' selected' : ''}" type="button" data-type="family" aria-pressed="${isFamily}">
-                <span class="ic">${ICONS.family}</span>
-                <div class="t04-opt-text">
-                  <strong>Family</strong>
-                  <small>For you &amp; family</small>
-                </div>
-                <span class="t04-opt-radio"></span>
-              </button>
-            </div>
-
-            <!-- Personalized Dynamic Invitation Box -->
-            <div class="t04-wording-box">
-              <p class="t04-wording-sal">Dear ${esc(personalized)},</p>
-              <p class="t04-wording-copy" data-single="${esc(copySingle)}" data-family="${esc(copyFamily)}">
-                ${esc(isFamily ? copyFamily : copySingle)}
-              </p>
-            </div>
-
-            <!-- Polished Wedding Invitation Wording -->
-            <blockquote class="t04-polished-wording">
-              “On opening the invitation, the lights will softly illuminate and the doors will gently unfold. As the gate opens, sparklers and crackers will welcome you. The first screen will show the guest’s name with a family invitation board, while the second screen will present the bride and groom, their parents, and their photograph.”
-            </blockquote>
-
-            <!-- Surah Ar-Rum Quote -->
-            <div class="t04-ayat-quote">
-              "And among His signs is this, that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts."
-              <br><strong style="font-size:11px;color:var(--gold-shine)">(Surah Ar-Rum 30:21)</strong>
-            </div>
-
-            <!-- Couple Names & Motto inside Family Board -->
-            <div class="t04-s1-couple">
-              <span class="t04-s1-bride">${esc(bride)}</span>
-              <span class="t04-s1-amp">&amp;</span>
-              <span class="t04-s1-groom">${esc(groom)}</span>
-            </div>
-            <p class="t04-s1-motto">TWO HEARTS &nbsp;•&nbsp; TWO FAMILIES &nbsp;•&nbsp; ONE JOURNEY</p>
-          </div>
-
-          <div class="t04-nav-row" style="margin-top:10px">
-            <button class="t04-btn-prev" type="button" data-prev>← Gate</button>
-            <button class="t04-btn-next" type="button" data-next>The Couple →</button>
-          </div>
-        </div>
-      </div>
-    </section>`,
-
-    /* ----------------------------------------------------
-       Screen 2 (Second Screen): Dulhan & Dulha (Bride & Groom Details, Parents & Photographs)
-       ---------------------------------------------------- */
-    `<section class="t04-screen" data-screen="2" aria-label="Bride and Groom details">
+    /* Screen 2: Dulhan & Dulha (Bride & Groom Details, Parents & Photographs) */
+    `<section class="t04-screen t04-couple-sec" data-screen="2" aria-label="Bride and Groom details">
       <div class="t04-card-inner">
         ${CORNER_ARABESQUE('tl')}
         ${CORNER_ARABESQUE('tr')}
@@ -1538,63 +1518,53 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
         </div>
 
         ${couplePhoto ? `
-          <div class="t04-couple-hero-wrap">
-            <div class="t04-couple-arch-hero">
-              <img src="${couplePhoto}" alt="${esc(bride)} &amp; ${esc(groom)}">
-            </div>
-            <span class="t04-couple-hero-caption">${esc(bride)} &amp; ${esc(groom)}</span>
+        <div class="t04-couple-arch-hero">
+          <div class="t04-couple-arch-inner">
+            <img src="${couplePhoto}" alt="${esc(bride)} &amp; ${esc(groom)}">
           </div>
-        ` : ''}
-
-        ${w.host_name ? `
-          <div class="t04-host-honor">
-            <strong>Host:</strong> ${esc(w.host_name)}
-          </div>
-        ` : ''}
+        </div>` : ''}
 
         ${JALI_DIVIDER()}
-        <p style="font-size:13px;font-style:italic;color:var(--emerald-m);margin:4px 0 0">
-          "May Allah bless this union with love, peace, and prosperity."
-        </p>
       </div>
 
       <div class="t04-nav-row">
-        <button class="t04-btn-prev" type="button" data-prev>← Back</button>
+        <button class="t04-btn-prev" type="button" data-prev>← Family Board</button>
         <button class="t04-btn-next" type="button" data-next>Programme →</button>
       </div>
     </section>`,
 
-    /* ----------------------------------------------------
-       Screen 3: Taqreeb Programme (Event Timeline)
-       ---------------------------------------------------- */
-    `<section class="t04-screen" data-screen="3" aria-label="Wedding programme">
+    /* Screen 3: Programme-e-Taqreeb (Timeline of Events) */
+    `<section class="t04-screen t04-events-sec" data-screen="3" aria-label="Taqreeb Programme">
       <div class="t04-card-inner">
         ${CORNER_ARABESQUE('tl')}
         ${CORNER_ARABESQUE('tr')}
 
         <h2 class="t04-heading">Programme-e-Taqreeb</h2>
-        <div class="t04-subheading">Ceremonies &amp; Auspicious Schedule</div>
+        <div class="t04-subheading">Rituals &amp; Auspicious Celebrations</div>
 
-        <div class="t04-events-wrap">
-          ${eventListHtml}
+        <div class="t04-timeline">
+          ${evs.length ? evs.map(ev => `
+            <article class="t04-event-card">
+              <span class="t04-event-badge">${esc(ev.category || 'Ceremony')}</span>
+              <h3 class="t04-event-title">${esc(ev.event_name || 'Shadi Event')}</h3>
+              ${ev.event_date ? `<div class="t04-event-row">${ICONS.calendar} <span>${formatDate(ev.event_date)}</span></div>` : ''}
+              ${ev.event_time ? `<div class="t04-event-row">${ICONS.countdown} <span>${formatTime(ev.event_time)}</span></div>` : ''}
+              ${ev.venue ? `<div class="t04-event-row">${ICONS.pin} <span>${esc(ev.venue)}</span></div>` : ''}
+            </article>
+          `).join('') : '<p style="font-size:13px;color:var(--text-muted);font-style:italic">Programme events will be announced shortly.</p>'}
         </div>
 
         ${JALI_DIVIDER()}
-        <p style="font-size:12.5px;color:var(--emerald-d);margin:2px 0 0">
-          Your presence will grace our celebrations.
-        </p>
       </div>
 
       <div class="t04-nav-row">
-        <button class="t04-btn-prev" type="button" data-prev>← Back</button>
+        <button class="t04-btn-prev" type="button" data-prev>← The Couple</button>
         <button class="t04-btn-next" type="button" data-next>Celebrations →</button>
       </div>
     </section>`,
 
-    /* ----------------------------------------------------
-       Screen 4: Shadi Celebrations & Guest Actions
-       ---------------------------------------------------- */
-    `<section class="t04-screen" data-screen="4" aria-label="Celebrations and guest actions">
+    /* Screen 4: Shadi Celebrations & Guest Actions */
+    `<section class="t04-screen t04-celebrations-sec" data-screen="4" aria-label="Celebrations and guest actions">
       <div class="t04-card-inner">
         ${CORNER_ARABESQUE('tl')}
         ${CORNER_ARABESQUE('tr')}
@@ -1603,7 +1573,6 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
         <div class="t04-subheading">Important Details For Our Esteemed Guests</div>
 
         <div class="t04-actions-grid">
-          <!-- Calendar Card -->
           <article class="t04-action-box">
             <span class="ic">${ICONS.calendar}</span>
             <h3>Save Date</h3>
@@ -1613,7 +1582,6 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
               : `<span class="t04-act-btn disabled">Date To Follow</span>`}
           </article>
 
-          <!-- Venue Map Card -->
           <article class="t04-action-box">
             <span class="ic">${ICONS.pin}</span>
             <h3>Find Venue</h3>
@@ -1623,7 +1591,6 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
               : `<span class="t04-act-btn disabled">Venue To Follow</span>`}
           </article>
 
-          <!-- Scratch Card for Dua / Wishes -->
           <article class="t04-action-box">
             <span class="ic">${ICONS.gift}</span>
             <h3>Special Dua</h3>
@@ -1635,7 +1602,6 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
             <button class="t04-act-btn" type="button" data-reveal>Scratch Card</button>
           </article>
 
-          <!-- Wedding Countdown Card -->
           <article class="t04-action-box t04-countdown-card" data-countdown="${weddingTarget || ''}">
             <span class="ic">${ICONS.countdown}</span>
             <h3>Countdown</h3>
@@ -1650,15 +1616,43 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
           </article>
         </div>
 
+        <div class="t04-rsvp-card">
+          <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--emerald-d);margin:0 0 12px;text-align:center">Kindly RSVP</h3>
+          <div class="t04-rsvp-row">
+            <label class="t04-rsvp-label">Your Name</label>
+            <input type="text" class="t04-rsvp-input" value="${esc(personalized)}" readonly disabled>
+          </div>
+          <div class="t04-rsvp-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label class="t04-rsvp-label">Category</label>
+              <select class="t04-rsvp-select" id="t04-rsvp-cat">
+                <option value="Person">Person</option>
+                <option value="Family"${isFamily ? ' selected' : ''}>Family</option>
+              </select>
+            </div>
+            <div>
+              <label class="t04-rsvp-label">Guest Count</label>
+              <select class="t04-rsvp-select" id="t04-rsvp-count"${isFamily ? ' disabled' : ''}>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <a class="t04-act-btn t04-rsvp-wa" id="t04-rsvp-btn" href="#" target="_blank" rel="noopener noreferrer">${WHATSAPP} Send RSVP on WhatsApp</a>
+        </div>
+
         ${JALI_DIVIDER()}
-        <footer style="margin-top:4px">
+        <footer style="margin-top:4px;text-align:center">
           <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">With Warmest Regards &amp; Duas</div>
-          <p style="font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--emerald-d);margin:2px 0 0">${esc(signature)}</p>
+          <p style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--emerald-d);margin:4px 0 0">${esc(signature)}</p>
         </footer>
       </div>
 
       <div class="t04-nav-row">
-        <button class="t04-btn-prev" type="button" data-prev>← Back</button>
+        <button class="t04-btn-prev" type="button" data-prev>← Programme</button>
         <button class="t04-btn-next" type="button" data-restart>Start Again ↻</button>
       </div>
     </section>`
@@ -1668,28 +1662,11 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   const t04Th = T04_THEMES[t04Key] || T04_THEMES.emerald;
   const t04Vars = `--emerald-d:${t04Th.d};--emerald-m:${t04Th.m};--emerald-l:${t04Th.l};--gold-shine:${t04Th.gs};--gold-mid:${t04Th.gm};--gold-d:${t04Th.gd};--paper:${t04Th.paper};--paper-cream:${t04Th.cream};--t04-bg:${t04Th.bgGrad};`;
 
-  const stepsIndicators = STEP_LABELS.map((label, idx) => `
-    <button class="t04-step${idx === 0 ? ' active' : ''}" type="button" data-step="${idx}" style="--i:${idx}" aria-label="${esc(label)}"${idx === 0 ? ' aria-current="step"' : ''}>
-      <span>${esc(label)}</span>
-    </button>
-  `).join('');
-
   return `<style>${STYLE}</style>
 <main class="t04" style="${t04Vars}">
-  <div class="t04-shell">
-    <div class="t04-stage">
-      <nav class="t04-top" aria-label="Shadi sections">
-        <div class="t04-top-row">
-          <span class="t04-top-title">1. ${esc(STEP_TITLES[0])}</span>
-          <em class="t04-top-count">1/5</em>
-        </div>
-        <div class="t04-track">
-          <i class="t04-track-fill"></i>
-          ${stepsIndicators}
-        </div>
-      </nav>
-      ${screens.join('')}
-    </div>
+  <div class="t04-progress"></div>
+  <div class="t04-content-flow">
+    ${screens.join('')}
   </div>
   <div class="t04-toast" role="status" aria-live="polite"></div>
   <script>
@@ -1699,165 +1676,271 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
       if (!root || root._t04Bound) return;
       root._t04Bound = true;
 
-      var current = 0;
-      var titles = ['Shadi Welcome', 'Family Board', 'Dulhan & Dulha', 'Taqreeb Programme', 'Shadi Celebrations'];
-      var screens = [].slice.call(root.querySelectorAll('.t04-screen'));
-      var steps = [].slice.call(root.querySelectorAll('.t04-step'));
-      var shell = root.querySelector('.t04-shell');
-      var topTitle = root.querySelector('.t04-top-title');
-      var topCount = root.querySelector('.t04-top-count');
       var cover = root.querySelector('.t04-cover');
       var sparksContainer = root.querySelector('.t04-sparks');
+      var progressBar = root.querySelector('.t04-progress');
       var doorIgnited = false;
 
-      function goTo(n) {
-        if (!screens.length) return;
-        current = Math.max(0, Math.min(screens.length - 1, n));
-        if (current === 0 && cover) {
-          doorIgnited = false;
-          cover.classList.remove('t04-door-open');
-          cover.classList.remove('t04-lit');
-          cover.classList.add('t04-unlit');
+      function firePhuljhadi() {
+        if (!sparksContainer) return;
+        var colors = ['#f5d580', '#ffd700', '#ff9800', '#ff5722', '#ffffff', '#e91e63'];
+        for (var i = 0; i < 40; i++) {
+          var spark = document.createElement('span');
+          spark.className = 't04-spark';
+          var angle = (i / 40) * 360 + (Math.random() * 16 - 8);
+          var dist = 100 + Math.random() * 200;
+          spark.style.setProperty('--angle', angle + 'deg');
+          spark.style.setProperty('--dist', dist + 'px');
+          spark.style.setProperty('--col', colors[i % colors.length]);
+          spark.style.setProperty('--sz', (4 + Math.random() * 5) + 'px');
+          spark.style.setProperty('--dur', (1.0 + Math.random() * 0.6) + 's');
+          spark.style.setProperty('--del', (Math.random() * 0.15) + 's');
+          sparksContainer.appendChild(spark);
+          (function(s) { setTimeout(function() { if (s.parentNode) s.parentNode.removeChild(s); }, 2000); })(spark);
         }
-        screens.forEach(function(s, idx) {
-          var active = idx === current;
-          s.classList.toggle('active', active);
-          s.style.display = active ? 'flex' : 'none';
-          if (active) s.scrollTop = 0;
-        });
-        steps.forEach(function(st, idx) {
-          st.classList.toggle('active', idx === current);
-          st.classList.toggle('done', idx < current);
-        });
-        if (shell) shell.style.setProperty('--p', String(current / Math.max(1, screens.length - 1)));
-        if (topTitle && titles[current]) topTitle.textContent = (current + 1) + '. ' + titles[current];
-        if (topCount) topCount.textContent = (current + 1) + '/' + screens.length;
+        for (var j = 0; j < 20; j++) {
+          var star = document.createElement('span');
+          star.className = 't04-spark-star';
+          star.textContent = '✦';
+          var sAngle = (j / 20) * 360 + (Math.random() * 20 - 10);
+          var sDist = 80 + Math.random() * 160;
+          star.style.setProperty('--angle', sAngle + 'deg');
+          star.style.setProperty('--dist', sDist + 'px');
+          star.style.setProperty('--col', colors[j % colors.length]);
+          star.style.setProperty('--sz', (12 + Math.random() * 10) + 'px');
+          star.style.setProperty('--dur', (1.2 + Math.random() * 0.5) + 's');
+          star.style.setProperty('--del', (Math.random() * 0.2) + 's');
+          sparksContainer.appendChild(star);
+          (function(st) { setTimeout(function() { if (st.parentNode) st.parentNode.removeChild(st); }, 2000); })(star);
+        }
       }
 
-      function ignitePalaceDoors() {
+      function openDoors() {
         if (doorIgnited || !cover) return;
         doorIgnited = true;
 
-        // 1. Initial lights off -> Turn ON smoothly
+        // 1. Softly illuminate lights
         cover.classList.remove('t04-unlit');
         cover.classList.add('t04-lit');
 
-        // 2. Gently unfold double doors
+        // 2. Burst wax seal
+        var bindi = root.querySelector('.t04-bindi');
+        if (bindi) bindi.classList.add('t04-burst');
+
+        // 3. Phuljhadi sparklers in 360 degrees
+        firePhuljhadi();
+
+        // 4. Slide double doors apart to left and right
+        cover.classList.add('t04-open');
         cover.classList.add('t04-door-open');
-
-        // 3. Sparklers paper effect & crackers burst
-        if (sparksContainer) {
-          var coverRect = cover.getBoundingClientRect();
-          var relX = (coverRect.width || 360) / 2;
-          var relY = (coverRect.height || 640) * 0.45;
-          var colors = ['#f5d16e', '#ffd700', '#2e7d32', '#c62828', '#ffffff', '#ff9800', '#00e5ff', '#ff4081'];
-
-          for (var i = 0; i < 48; i++) {
-            var confetti = document.createElement('span');
-            confetti.className = 't04-paper-confetti';
-            confetti.style.left = relX + 'px';
-            confetti.style.top = relY + 'px';
-
-            var angle = Math.random() * Math.PI * 2;
-            var dist = 40 + Math.random() * 180;
-            var tx = Math.cos(angle) * dist;
-            var ty = Math.sin(angle) * dist - 35;
-            var rot = Math.floor(Math.random() * 720 - 360) + 'deg';
-
-            confetti.style.setProperty('--tx', tx + 'px');
-            confetti.style.setProperty('--ty', ty + 'px');
-            confetti.style.setProperty('--rot', rot);
-            confetti.style.setProperty('--bg', colors[i % colors.length]);
-            confetti.style.setProperty('--pw', (5 + Math.floor(Math.random() * 5)) + 'px');
-            confetti.style.setProperty('--ph', (10 + Math.floor(Math.random() * 8)) + 'px');
-            confetti.style.setProperty('--dur', (1.2 + Math.random() * 0.5) + 's');
-
-            sparksContainer.appendChild(confetti);
-            (function(cf) {
-              setTimeout(function() { if (cf.parentNode) cf.parentNode.removeChild(cf); }, 1800);
-            })(confetti);
-          }
-
-          for (var j = 0; j < 36; j++) {
-            var spark = document.createElement('span');
-            spark.className = 't04-spark';
-            spark.style.left = relX + 'px';
-            spark.style.top = relY + 'px';
-
-            var sAngle = Math.random() * Math.PI * 2;
-            var sDist = 30 + Math.random() * 140;
-            spark.style.setProperty('--tx', (Math.cos(sAngle) * sDist) + 'px');
-            spark.style.setProperty('--ty', (Math.sin(sAngle) * sDist - 30) + 'px');
-
-            sparksContainer.appendChild(spark);
-            (function(sp) {
-              setTimeout(function() { if (sp.parentNode) sp.parentNode.removeChild(sp); }, 1300);
-            })(spark);
-          }
-        }
 
         try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (err) {}
 
-        // Smooth transition to First Screen (Family Board)
+        // 5. Smoothly remove cover and scroll to hero landing stage
         setTimeout(function() {
-          goTo(1);
+          cover.style.display = 'none';
+          var s1 = root.querySelector('[data-screen="1"]');
+          if (s1) s1.scrollIntoView({ behavior: 'smooth' });
         }, 1600);
       }
 
+      function onScroll() {
+        if (!progressBar) return;
+        var total = document.documentElement.scrollHeight - window.innerHeight;
+        var p = total > 0 ? (window.scrollY / total) : 0;
+        progressBar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+
       var clickHandler = function(e) {
-        var nextBtn = e.target.closest('[data-next]');
-        if (nextBtn) {
-          e.preventDefault();
-          goTo(current + 1);
-          return;
-        }
-        var waxBtn = e.target.closest('.t04-wax-trigger');
-        var doorsPortal = e.target.closest('.t04-doors-portal');
-        var coverClick = e.target.closest('.t04-cover');
-        if (current === 0 && (waxBtn || doorsPortal || coverClick)) {
-          e.preventDefault();
-          ignitePalaceDoors();
-          return;
-        }
+        var waxBtn = e.target.closest('.t04-wax-trigger') || e.target.closest('[data-open]');
+        var noteBtn = e.target.closest('.t04-gate-note');
+        var beginBtn = e.target.closest('[data-next]');
         var prevBtn = e.target.closest('[data-prev]');
-        if (prevBtn) {
+        var restartBtn = e.target.closest('[data-restart]');
+
+        if (waxBtn || noteBtn) {
           e.preventDefault();
-          goTo(current - 1);
+          openDoors();
           return;
         }
-        var restartBtn = e.target.closest('[data-restart]');
+
+        if (cover && !doorIgnited && e.target.closest('.t04-cover')) {
+          openDoors();
+          return;
+        }
+
         if (restartBtn) {
           e.preventDefault();
-          goTo(0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           return;
         }
-        var stepBtn = e.target.closest('.t04-step');
-        if (stepBtn && stepBtn.dataset.step !== undefined) {
+
+        if (beginBtn) {
           e.preventDefault();
-          goTo(Number(stepBtn.dataset.step));
+          var curSec = beginBtn.closest('[data-screen]');
+          var curIdx = curSec ? parseInt(curSec.getAttribute('data-screen'), 10) : 0;
+          if (curIdx === 0) {
+            openDoors();
+          } else {
+            var nextSec = root.querySelector('[data-screen="' + (curIdx + 1) + '"]');
+            if (nextSec) nextSec.scrollIntoView({ behavior: 'smooth' });
+          }
           return;
         }
-        var optBtn = e.target.closest('.t04-opt');
-        if (optBtn) {
+
+        if (prevBtn) {
           e.preventDefault();
-          var isFam = optBtn.dataset.type === 'family';
-          var opts = root.querySelectorAll('.t04-opt');
-          for (var i = 0; i < opts.length; i++) {
-            opts[i].classList.toggle('selected', opts[i] === optBtn);
+          var pSec = prevBtn.closest('[data-screen]');
+          var pIdx = pSec ? parseInt(pSec.getAttribute('data-screen'), 10) : 1;
+          var prevTarget = root.querySelector('[data-screen="' + Math.max(1, pIdx - 1) + '"]');
+          if (prevTarget) prevTarget.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+
+        var opt = e.target.closest('.t04-opt');
+        if (opt) {
+          e.preventDefault();
+          var type = opt.getAttribute('data-type');
+          var allOpts = root.querySelectorAll('.t04-opt');
+          for (var i = 0; i < allOpts.length; i++) {
+            var isCur = allOpts[i] === opt;
+            allOpts[i].classList.toggle('selected', isCur);
+            allOpts[i].setAttribute('aria-pressed', isCur ? 'true' : 'false');
           }
-          var copyElem = root.querySelector('.t04-wording-copy');
-          if (copyElem) {
-            copyElem.textContent = isFam ? copyElem.dataset.family : copyElem.dataset.single;
+          var copy = root.querySelector('.t04-wording-copy');
+          if (copy) {
+            copy.textContent = type === 'family' ? copy.getAttribute('data-family') : copy.getAttribute('data-single');
           }
+          var rsvpCat = root.querySelector('#t04-rsvp-cat');
+          var rsvpCount = root.querySelector('#t04-rsvp-count');
+          if (rsvpCat) rsvpCat.value = type === 'family' ? 'Family' : 'Person';
+          if (rsvpCount) rsvpCount.disabled = (type === 'family');
+          updateRsvpUrl();
+          return;
+        }
+
+        var revealBtn = e.target.closest('[data-reveal]');
+        if (revealBtn) {
+          e.preventDefault();
+          revealBtn.disabled = true;
+          revealBtn.textContent = 'Duas Revealed ✦';
+          var cv = root.querySelector('.t04-scratch-box canvas');
+          if (cv) cv.style.display = 'none';
+          return;
         }
       };
 
       root.addEventListener('click', clickHandler);
-      root._t04Cleanup = function() {
-        root.removeEventListener('click', clickHandler);
-      };
 
-      goTo(0);
+      // Wheel and touch triggers for entrance door opening
+      function onInteraction() {
+        if (!doorIgnited) openDoors();
+      }
+      if (cover) {
+        cover.addEventListener('wheel', onInteraction, { passive: true });
+        cover.addEventListener('touchmove', onInteraction, { passive: true });
+      }
+
+      // RSVP WhatsApp link sync
+      function updateRsvpUrl() {
+        var rsvpLink = root.querySelector('#t04-rsvp-btn');
+        if (!rsvpLink) return;
+        var cat = (root.querySelector('#t04-rsvp-cat') || {}).value || 'Person';
+        var count = (root.querySelector('#t04-rsvp-count') || {}).value || '1';
+        var phone = '${clean(w.phone || w.whatsapp || '')}'.replace(/[^0-9]/g, '');
+        var msg = 'Bismillah. RSVP for ${esc(personalized)}: ' + (cat === 'Family' ? 'Attending with Family' : 'Attending (' + count + ' person)') + ' for the wedding of ${esc(bride)} & ${esc(groom)}. Mubarak!';
+        rsvpLink.href = 'https://wa.me/' + (phone || '') + '?text=' + encodeURIComponent(msg);
+      }
+      var rsvpCatEl = root.querySelector('#t04-rsvp-cat');
+      var rsvpCountEl = root.querySelector('#t04-rsvp-count');
+      if (rsvpCatEl) {
+        rsvpCatEl.addEventListener('change', function() {
+          if (rsvpCountEl) rsvpCountEl.disabled = (this.value === 'Family');
+          updateRsvpUrl();
+        });
+      }
+      if (rsvpCountEl) {
+        rsvpCountEl.addEventListener('change', updateRsvpUrl);
+      }
+      updateRsvpUrl();
+
+      // Countdown Timer
+      var countdownEl = root.querySelector('[data-countdown]');
+      if (countdownEl && countdownEl.dataset.countdown) {
+        var targetTs = parseInt(countdownEl.dataset.countdown, 10);
+        if (!isNaN(targetTs)) {
+          var dEl = countdownEl.querySelector('[data-days]');
+          var hEl = countdownEl.querySelector('[data-hours]');
+          var mEl = countdownEl.querySelector('[data-minutes]');
+          var sEl = countdownEl.querySelector('[data-seconds]');
+          function tick() {
+            var diff = Math.max(0, targetTs - Date.now());
+            var s = Math.floor(diff / 1000);
+            var d = Math.floor(s / 86400); s %= 86400;
+            var h = Math.floor(s / 3600); s %= 3600;
+            var m = Math.floor(s / 60); s %= 60;
+            if (dEl) dEl.textContent = String(d).padStart(2, '0');
+            if (hEl) hEl.textContent = String(h).padStart(2, '0');
+            if (mEl) mEl.textContent = String(m).padStart(2, '0');
+            if (sEl) sEl.textContent = String(s).padStart(2, '0');
+          }
+          tick();
+          var cInt = setInterval(tick, 1000);
+          root._t04Countdown = cInt;
+        }
+      }
+
+      // Scratch Canvas setup
+      var canvas = root.querySelector('.t04-scratch-box canvas');
+      if (canvas) {
+        var ctx = canvas.getContext('2d');
+        if (ctx) {
+          canvas.width = canvas.offsetWidth || 220;
+          canvas.height = canvas.offsetHeight || 64;
+          var grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+          grad.addColorStop(0, '#d4a444');
+          grad.addColorStop(0.5, '#f5d580');
+          grad.addColorStop(1, '#9c7022');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.font = 'bold 11px Cinzel, serif';
+          ctx.fillStyle = '#021812';
+          ctx.textAlign = 'center';
+          ctx.fillText('✦ Scratch to Reveal Dua ✦', canvas.width / 2, canvas.height / 2 + 4);
+
+          var isDrawing = false;
+          function scratch(e) {
+            if (!isDrawing) return;
+            var rect = canvas.getBoundingClientRect();
+            var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            var x = clientX - rect.left;
+            var y = clientY - rect.top;
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          canvas.addEventListener('mousedown', function(e) { isDrawing = true; scratch(e); });
+          window.addEventListener('mouseup', function() { isDrawing = false; });
+          canvas.addEventListener('mousemove', scratch);
+          canvas.addEventListener('touchstart', function(e) { isDrawing = true; scratch(e); }, { passive: true });
+          window.addEventListener('touchend', function() { isDrawing = false; });
+          canvas.addEventListener('touchmove', scratch, { passive: true });
+        }
+      }
+
+      // Google Calendar link
+      var calLink = root.querySelector('#t04-calendar');
+      if (calLink && ${hasCalendar ? 'true' : 'false'}) {
+        var startIso = '${weddingTarget ? new Date(weddingTarget).toISOString().replace(/-|:|\.\d+/g, '') : ''}';
+        var endIso = '${weddingTarget ? new Date(weddingTarget + 3 * 3600 * 1000).toISOString().replace(/-|:|\.\d+/g, '') : ''}';
+        var calTitle = encodeURIComponent('Wedding: ${esc(bride)} & ${esc(groom)}');
+        var calDetails = encodeURIComponent('Together with their families, you are cordially invited to celebrate the marriage of ${esc(bride)} and ${esc(groom)}.');
+        var calLoc = encodeURIComponent('${esc(w.venue || '')}${esc(w.address ? ', ' + w.address : '')}');
+        calLink.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&dates=' + startIso + '/' + endIso + '&details=' + calDetails + '&location=' + calLoc;
+      }
     }
 
     if (document.readyState === 'loading') {
@@ -1865,377 +1948,14 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     } else {
       autoInit();
     }
-    setTimeout(autoInit, 40);
   })();
   </script>
 </main>`;
 }
 
-/* ==========================================================================
-   Interactive Scratch Card Handler
-   ========================================================================== */
-function createScratch(canvas) {
-  if (!canvas) return null;
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  if (!ctx) return null;
-
-  let touched = false;
-  let scratching = false;
-  let done = false;
-
-  const paint = () => {
-    const b = canvas.getBoundingClientRect();
-    if (!b.width || !b.height) return false;
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    canvas.width = Math.round(b.width * dpr);
-    canvas.height = Math.round(b.height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.globalCompositeOperation = 'source-over';
-
-    const g = ctx.createLinearGradient(0, 0, b.width, b.height);
-    g.addColorStop(0, '#f2d57e');
-    g.addColorStop(0.5, '#cf9f38');
-    g.addColorStop(1, '#f7e8b0');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, b.width, b.height);
-
-    ctx.strokeStyle = '#8d5b1a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(2, 2, b.width - 4, b.height - 4);
-
-    ctx.fillStyle = '#04241c';
-    ctx.font = `700 ${Math.max(9, b.width * 0.08)}px 'Cinzel', Georgia, serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('✧ SCRATCH DUA ✧', b.width / 2, b.height / 2);
-
-    ctx.globalCompositeOperation = 'destination-out';
-    return true;
-  };
-
-  const reveal = () => {
-    done = true;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canvas.style.pointerEvents = 'none';
-  };
-
-  const at = ev => {
-    if (!scratching || done) return;
-    const r = canvas.getBoundingClientRect();
-    ctx.beginPath();
-    ctx.arc(ev.clientX - r.left, ev.clientY - r.top, Math.max(10, r.height * 0.28), 0, Math.PI * 2);
-    ctx.fill();
-    touched = true;
-    if (ev.cancelable) ev.preventDefault();
-  };
-
-  const progress = () => {
-    const px = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let clear = 0, total = 0;
-    for (let i = 3; i < px.length; i += 48) {
-      total++;
-      if (px[i] < 30) clear++;
-    }
-    if (total && clear / total > 0.4) reveal();
-  };
-
-  canvas.addEventListener('pointerdown', ev => {
-    scratching = true;
-    canvas.setPointerCapture?.(ev.pointerId);
-    at(ev);
-  });
-  canvas.addEventListener('pointermove', at);
-  canvas.addEventListener('pointerup', () => {
-    scratching = false;
-    if (touched && !done) progress();
-  });
-  canvas.addEventListener('pointercancel', () => { scratching = false; });
-
-  return {
-    ready: paint(),
-    paint,
-    reveal,
-    resize() { if (!touched && !done) paint(); }
-  };
-}
-
-/* ==========================================================================
-   Lifecycle Mount Function (Programmatic Mounting Support)
-   ========================================================================== */
-export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
+export function mount(root, data = {}) {
   if (!root) return () => {};
-  const w = wedding || {};
-  const g = guest || {};
-  const evs = Array.isArray(events) ? events : [];
-
-  const t04 = root.classList?.contains('t04') ? root : root.querySelector('.t04');
-  if (!t04) return () => {};
-
-  if (typeof t04._t04Cleanup === 'function') {
-    t04._t04Cleanup();
-  }
-  t04._t04Bound = true;
-
-  const screens = [...t04.querySelectorAll('.t04-screen')];
-  const steps = [...t04.querySelectorAll('.t04-step')];
-  const shell = t04.querySelector('.t04-shell');
-  const topTitle = t04.querySelector('.t04-top-title');
-  const topCount = t04.querySelector('.t04-top-count');
-  const canvas = t04.querySelector('.t04-scratch-box canvas');
-  const cover = t04.querySelector('.t04-cover');
-  const sparksContainer = t04.querySelector('.t04-sparks');
-
-  let current = 0;
-  let scratch = null;
-  let timerId = 0;
-  let doorIgnited = false;
-
-  const goTo = targetIdx => {
-    if (!screens.length) return;
-    current = Math.max(0, Math.min(screens.length - 1, targetIdx));
-    if (current === 0 && cover) {
-      doorIgnited = false;
-      cover.classList.remove('t04-door-open');
-      cover.classList.remove('t04-lit');
-      cover.classList.add('t04-unlit');
-    }
-
-    screens.forEach((s, idx) => {
-      const active = idx === current;
-      s.classList.toggle('active', active);
-      s.style.display = active ? 'flex' : 'none';
-      if (active) s.scrollTop = 0;
-    });
-
-    steps.forEach((st, idx) => {
-      st.classList.toggle('active', idx === current);
-      st.classList.toggle('done', idx < current);
-      if (idx === current) st.setAttribute('aria-current', 'step');
-      else st.removeAttribute('aria-current');
-    });
-
-    if (shell) {
-      shell.style.setProperty('--p', String(current / Math.max(1, screens.length - 1)));
-    }
-    if (topTitle && STEP_TITLES[current]) {
-      topTitle.textContent = `${current + 1}. ${STEP_TITLES[current]}`;
-    }
-    if (topCount) {
-      topCount.textContent = `${current + 1}/${screens.length}`;
-    }
-
-    if (current === 4 && canvas) {
-      if (!scratch) scratch = createScratch(canvas);
-      else scratch.paint();
-    }
+  return () => {
+    if (root._t04Countdown) clearInterval(root._t04Countdown);
   };
-
-  const ignitePalaceDoors = () => {
-    if (doorIgnited || !cover) return;
-    doorIgnited = true;
-
-    // 1. Initial lights off -> Turn ON smoothly
-    cover.classList.remove('t04-unlit');
-    cover.classList.add('t04-lit');
-
-    // 2. Gently unfold double doors
-    cover.classList.add('t04-door-open');
-
-    // 3. Sparklers paper effect & crackers burst
-    if (sparksContainer) {
-      const coverRect = cover.getBoundingClientRect();
-      const relX = (coverRect.width || 360) / 2;
-      const relY = (coverRect.height || 640) * 0.45;
-      const colors = ['#f5d16e', '#ffd700', '#2e7d32', '#c62828', '#ffffff', '#ff9800', '#00e5ff', '#ff4081'];
-
-      for (let i = 0; i < 48; i++) {
-        const confetti = document.createElement('span');
-        confetti.className = 't04-paper-confetti';
-        confetti.style.left = `${relX}px`;
-        confetti.style.top = `${relY}px`;
-
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 40 + Math.random() * 180;
-        const tx = Math.cos(angle) * dist;
-        const ty = Math.sin(angle) * dist - 35;
-        const rot = `${Math.floor(Math.random() * 720 - 360)}deg`;
-
-        confetti.style.setProperty('--tx', `${tx}px`);
-        confetti.style.setProperty('--ty', `${ty}px`);
-        confetti.style.setProperty('--rot', rot);
-        confetti.style.setProperty('--bg', colors[i % colors.length]);
-        confetti.style.setProperty('--pw', `${5 + Math.floor(Math.random() * 5)}px`);
-        confetti.style.setProperty('--ph', `${10 + Math.floor(Math.random() * 8)}px`);
-        confetti.style.setProperty('--dur', `${1.2 + Math.random() * 0.5}s`);
-
-        sparksContainer.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 1800);
-      }
-
-      for (let j = 0; j < 36; j++) {
-        const spark = document.createElement('span');
-        spark.className = 't04-spark';
-        spark.style.left = `${relX}px`;
-        spark.style.top = `${relY}px`;
-
-        const sAngle = Math.random() * Math.PI * 2;
-        const sDist = 30 + Math.random() * 140;
-        spark.style.setProperty('--tx', `${Math.cos(sAngle) * sDist}px`);
-        spark.style.setProperty('--ty', `${Math.sin(sAngle) * sDist - 30}px`);
-
-        sparksContainer.appendChild(spark);
-        setTimeout(() => spark.remove(), 1300);
-      }
-    }
-
-    try { navigator.vibrate?.([40, 60, 40]); } catch (err) {}
-
-    // Smooth transition to First Screen (Family Board)
-    setTimeout(() => {
-      goTo(1);
-    }, 1600);
-  };
-
-  const clickHandler = e => {
-    const nextBtn = e.target.closest('[data-next]');
-    if (nextBtn) {
-      e.preventDefault();
-      goTo(current + 1);
-      return;
-    }
-    const waxBtn = e.target.closest('.t04-wax-trigger');
-    const doorsPortal = e.target.closest('.t04-doors-portal');
-    const coverClick = e.target.closest('.t04-cover');
-    if (current === 0 && (waxBtn || doorsPortal || coverClick)) {
-      e.preventDefault();
-      ignitePalaceDoors();
-      return;
-    }
-
-    const prevBtn = e.target.closest('[data-prev]');
-    if (prevBtn) {
-      e.preventDefault();
-      goTo(current - 1);
-      return;
-    }
-
-    const restartBtn = e.target.closest('[data-restart]');
-    if (restartBtn) {
-      e.preventDefault();
-      goTo(0);
-      return;
-    }
-
-    const stepBtn = e.target.closest('.t04-step');
-    if (stepBtn && stepBtn.dataset.step !== undefined) {
-      e.preventDefault();
-      goTo(Number(stepBtn.dataset.step));
-      return;
-    }
-
-    const optBtn = e.target.closest('.t04-opt');
-    if (optBtn) {
-      e.preventDefault();
-      const isFam = optBtn.dataset.type === 'family';
-      root.querySelectorAll('.t04-opt').forEach(o => {
-        const sel = o === optBtn;
-        o.classList.toggle('selected', sel);
-        o.setAttribute('aria-pressed', String(sel));
-      });
-      const copyElem = root.querySelector('.t04-wording-copy');
-      if (copyElem) {
-        copyElem.textContent = isFam ? copyElem.dataset.family : copyElem.dataset.single;
-      }
-      return;
-    }
-
-    const revealBtn = e.target.closest('[data-reveal]');
-    if (revealBtn) {
-      e.preventDefault();
-      if (!scratch) scratch = createScratch(canvas);
-      scratch?.reveal();
-      return;
-    }
-  };
-
-  t04.addEventListener('click', clickHandler);
-
-  // Swipe & Touch Navigation
-  let sx = 0, sy = 0, tracking = false;
-  const touchStart = e => {
-    if (e.target.closest('.t04-scratch-box')) { tracking = false; return; }
-    tracking = true;
-    sx = e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-  };
-  const touchEnd = e => {
-    if (!tracking) return;
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-      goTo(current + (dx < 0 ? 1 : -1));
-    }
-  };
-  t04.addEventListener('touchstart', touchStart, { passive: true });
-  t04.addEventListener('touchend', touchEnd, { passive: true });
-
-  // Key navigation
-  const doc = t04.ownerDocument || (typeof document !== 'undefined' ? document : null);
-  const keyHandler = e => {
-    if (e.key === 'ArrowRight') goTo(current + 1);
-    else if (e.key === 'ArrowLeft') goTo(current - 1);
-  };
-  if (doc) doc.addEventListener('keydown', keyHandler);
-
-  // Calendar
-  const target = weddingWhen(wedding, events);
-  const cal = t04.querySelector('#t04-calendar');
-  if (cal && target !== null) {
-    const fmt = ms => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-    cal.href = `https://calendar.google.com/calendar/render?${new URLSearchParams({
-      action: 'TEMPLATE',
-      text: `Wedding Ceremony of ${w.bride_name || 'Bride'} & ${w.groom_name || 'Groom'}`,
-      dates: `${fmt(target)}/${fmt(target + 3 * 3600 * 1000)}`,
-      ctz: 'Asia/Kolkata',
-      location: [w.venue, w.address].filter(Boolean).join(', '),
-      details: `We look forward to celebrating with ${guest.name || 'you'}.`
-    })}`;
-  }
-
-  // Countdown
-  const countdownBox = t04.querySelector('.t04-countdown-card');
-  if (countdownBox && target !== null) {
-    const updateCountdown = () => {
-      const remaining = Math.max(0, target - Date.now());
-      const sec = Math.floor(remaining / 1000);
-      const values = {
-        days: Math.floor(sec / 86400),
-        hours: Math.floor((sec % 86400) / 3600),
-        minutes: Math.floor((sec % 3600) / 60),
-        seconds: sec % 60
-      };
-      Object.entries(values).forEach(([k, val]) => {
-        const el = countdownBox.querySelector(`[data-${k}]`);
-        if (el) el.textContent = String(val).padStart(2, '0');
-      });
-      if (remaining <= 0) clearInterval(timerId);
-    };
-    updateCountdown();
-    if (target > Date.now()) timerId = setInterval(updateCountdown, 1000);
-  }
-
-  goTo(0);
-
-  const cleanup = () => {
-    t04.removeEventListener('click', clickHandler);
-    t04.removeEventListener('touchstart', touchStart);
-    t04.removeEventListener('touchend', touchEnd);
-    if (doc) doc.removeEventListener('keydown', keyHandler);
-    if (timerId) clearInterval(timerId);
-    t04._t04Bound = false;
-    delete t04._t04Cleanup;
-  };
-  t04._t04Cleanup = cleanup;
-  return cleanup;
 }

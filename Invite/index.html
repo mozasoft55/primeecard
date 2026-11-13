@@ -572,7 +572,7 @@
             throw new Error('This invitation is configured with an unsupported design.');
           }
 
-          const fixedTemplates = ['template-02', 'template-04'];
+          const fixedTemplates = ['template-02'];
           const isFixed = fixedTemplates.includes(templateId);
           document.documentElement.classList.toggle('fixed-template', isFixed);
           document.body.classList.toggle('fixed-template', isFixed);
