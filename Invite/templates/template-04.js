@@ -39,8 +39,8 @@ const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'Ju
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const STEP_TITLES = ['Shadi Welcome', 'The Invitation', 'Dulhan & Dulha', 'Taqreeb Programme', 'Shadi Celebrations'];
-const STEP_LABELS = ['Welcome', 'Dawat', 'Couple', 'Events', 'Details'];
+const STEP_TITLES = ['Shadi Welcome', 'Family Board', 'Dulhan & Dulha', 'Taqreeb Programme', 'Shadi Celebrations'];
+const STEP_LABELS = ['Welcome', 'Family', 'Couple', 'Events', 'Details'];
 const MAIN_EVENT_RE = /nikah|walima|wedding|reception|shaadi|shadi|barat|baraat|ceremony/i;
 
 const pad = n => String(n).padStart(2, '0');
@@ -153,8 +153,6 @@ const CORNER_ARABESQUE = (pos = 'tl') => `<svg viewBox="0 0 60 60" class="t04-co
   <path d="M 2,56 C 14,44 26,30 36,16" stroke="var(--gold-d)" stroke-width="1" fill="none"/>
 </svg>`;
 
-// Islamic Jali Geometrical Motif Divider
-
 const T04_THEMES = {
   emerald: { d: '#04241c', m: '#073f30', l: '#0e5b46', gs: '#e8c66e', gm: '#cf9f38', gd: '#956f1f', paper: '#fffdf9', cream: '#faf3e4', bgGrad: 'radial-gradient(circle at 50% 12%, #073f30 0%, #04241c 65%, #02120e 100%)' },
   maroon: { d: '#2a070f', m: '#651122', l: '#8c1b32', gs: '#f5d580', gm: '#d4a444', gd: '#9c7022', paper: '#fffdfa', cream: '#faefe0', bgGrad: 'radial-gradient(circle at 50% 12%, #651122 0%, #2a070f 65%, #150307 100%)' },
@@ -221,7 +219,6 @@ const STYLE = `
   overflow: hidden;
 }
 
-/* Jali Lattice Background Watermark */
 .t04-stage {
   position: relative;
   width: 100%;
@@ -249,7 +246,7 @@ const STYLE = `
   backdrop-filter: blur(8px);
   border: 1px solid var(--gold-shine);
   border-radius: 999px;
-  padding: 6px 14px 6px;
+  padding: 6px 14px;
   box-shadow: 0 4px 15px rgba(3, 24, 18, 0.15);
 }
 .t04-top-row {
@@ -344,7 +341,7 @@ const STYLE = `
 }
 
 /* ==========================================================================
-   Page 1 (Screen 0) & Page 2 (Screen 1) — Emerald Royal Palace & Door Animation
+   Screen 0 & Screen 1: Royal Palace Gate & Stage Architecture
    ========================================================================== */
 .t04-cover, .t04-s1 {
   padding: 0 !important;
@@ -361,7 +358,7 @@ const STYLE = `
 .t04-mandap-wrap {
   position: relative !important;
   width: 100% !important;
-  aspect-ratio: 765/1024;
+  aspect-ratio: 958/1024;
   max-height: 100dvh;
   overflow: hidden;
   background: #02120d;
@@ -383,13 +380,17 @@ const STYLE = `
   z-index: 1;
 }
 
+.t04-mandap-gate {
+  z-index: 2;
+}
+
 /* Doors portal: exact inner arch opening */
 .t04-doors-portal {
   position: absolute;
-  left: 18.95%;
-  width: 62.22%;
-  top: 15.43%;
-  height: 69.53%;
+  left: 32.8%;
+  width: 34.4%;
+  top: 35.5%;
+  height: 55%;
   z-index: 3;
   perspective: 1200px;
   cursor: pointer;
@@ -402,7 +403,7 @@ const STYLE = `
   height: 100%;
   object-fit: fill;
   pointer-events: none;
-  transition: transform 1.5s cubic-bezier(0.25, 0.85, 0.25, 1), opacity 1.2s ease;
+  transition: transform 1.6s cubic-bezier(0.25, 0.85, 0.25, 1), opacity 1.3s ease;
   will-change: transform, opacity;
 }
 
@@ -420,38 +421,26 @@ const STYLE = `
 
 /* Door Opening 3D Rotation */
 .t04-door-open .t04-door-l {
-  transform: rotateY(-105deg) scaleY(0.98);
+  transform: rotateY(-110deg) scaleY(0.98);
   opacity: 0;
 }
 .t04-door-open .t04-door-r {
-  transform: rotateY(105deg) scaleY(0.98);
+  transform: rotateY(110deg) scaleY(0.98);
   opacity: 0;
 }
 .t04-door-open .t04-doors-portal {
   pointer-events: none;
 }
 
-/* Outer Frame Overlay (z-index 5, sits in front of doors) */
-.t04-mandap-frame {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center bottom !important;
-  z-index: 5;
-  pointer-events: none;
-}
-
-/* "starting m light off rhega..." Initial Unlit State */
+/* Lights Off / On Animation Transitions */
 .t04-cover.t04-unlit .t04-mandap-wrap {
-  filter: brightness(0.42) contrast(1.15) saturate(0.85);
+  filter: brightness(0.38) contrast(1.15) saturate(0.85);
   transition: filter 1.6s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
-/* "Door Open hote hi 2 sec delay then Light onanimation with Puljhari.." */
 .t04-cover.t04-lit .t04-mandap-wrap {
   filter: brightness(1.18) contrast(1.03) saturate(1.12);
+  transition: filter 1.4s ease;
 }
 
 /* Light Flares & Glows */
@@ -471,30 +460,30 @@ const STYLE = `
 .t04-grand-glow {
   position: absolute;
   left: 50%;
-  top: 35%;
+  top: 42%;
   width: 120cqw;
   height: 120cqw;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 225, 130, 0.5) 0%, rgba(255, 175, 40, 0.25) 35%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 225, 130, 0.55) 0%, rgba(255, 175, 40, 0.28) 35%, transparent 70%);
   animation: t04-glow-flare 1.8s ease-out forwards;
 }
 
 @keyframes t04-glow-flare {
   0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
   40% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.75; }
+  100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.8; }
 }
 
 .t04-chandelier-glow {
   position: absolute;
   left: 50%;
-  top: 6%;
-  width: 25cqw;
-  height: 25cqw;
+  top: 25%;
+  width: 35cqw;
+  height: 35cqw;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 245, 190, 0.8) 0%, rgba(255, 195, 60, 0.35) 50%, transparent 80%);
+  background: radial-gradient(circle, rgba(255, 245, 190, 0.85) 0%, rgba(255, 195, 60, 0.38) 50%, transparent 80%);
   animation: t04-chandelier-pulse 2s ease-in-out infinite alternate;
 }
 
@@ -503,7 +492,7 @@ const STYLE = `
   100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
-/* Red Wax Seal "TAP TO OPEN / প্রবেশ করুন" */
+/* Red Wax Seal Button "TAP TO OPEN / প্রবেশ করুন" */
 .t04-wax-trigger {
   position: absolute;
   left: 50%;
@@ -544,8 +533,8 @@ const STYLE = `
   position: relative;
   width: 14cqw;
   height: 14cqw;
-  min-width: 58px;
-  min-height: 58px;
+  min-width: 62px;
+  min-height: 62px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #a81c25 0%, #7d1017 60%, #4a060b 100%);
   border: 1.5px solid #e8c66e;
@@ -584,11 +573,10 @@ const STYLE = `
 .t04-door-open .t04-wax-trigger {
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -50%) scale(0.6);
+  transform: translate(-50%, -50%) scale(0.5);
 }
 
-
-/* Royal Parchment Typography Overlay on the Double Doors */
+/* Typography Overlay on Double Doors */
 .t04-parchment-text {
   position: absolute;
   left: 50%;
@@ -615,26 +603,29 @@ const STYLE = `
 .t04-parchment-bismillah {
   font-family: 'Amiri', serif;
   font-size: 2.1cqw;
-  color: #2b1f13;
+  color: #f7d58b;
   line-height: 1.1;
   margin-bottom: 0.2cqw;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
 }
 
 .t04-parchment-nikah {
   font-family: 'Noto Serif Bengali', serif;
   font-size: 2.4cqw;
   font-weight: 700;
-  color: #8b1820;
+  color: #ffcdd2;
   letter-spacing: 0.05em;
   margin-bottom: 0.3cqw;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
 }
 
 .t04-parchment-invite {
   font-family: 'Playfair Display', serif;
   font-style: italic;
   font-size: 2.5cqw;
-  color: #3b2c1e;
+  color: #ffffff;
   line-height: 1.1;
+  text-shadow: 0 0 6px rgba(0,0,0,0.9);
 }
 
 .t04-parchment-guest {
@@ -642,12 +633,13 @@ const STYLE = `
   font-size: 2.3cqw;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #173327;
-  border-top: 1px solid rgba(139, 107, 44, 0.35);
-  border-bottom: 1px solid rgba(139, 107, 44, 0.35);
+  color: #ffe082;
+  border-top: 1px solid rgba(232, 198, 110, 0.45);
+  border-bottom: 1px solid rgba(232, 198, 110, 0.45);
   padding: 0.2cqw 1cqw;
   margin: 0.3cqw 0;
   text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(0,0,0,0.9);
 }
 
 .t04-parchment-couple {
@@ -655,10 +647,11 @@ const STYLE = `
   font-size: 2.4cqw;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #2b1f13;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0,0,0,0.9);
 }
 
-/* Puljhari (Paper Sparkler & Confetti Fireworks) Particle Container */
+/* Puljhari (Paper Sparklers & Crackers) Container */
 .t04-sparks {
   position: absolute;
   inset: 0;
@@ -701,13 +694,13 @@ const STYLE = `
   100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
 }
 
-/* Page 2 (Screen 1) Inner Content Layout */
+/* Screen 1 (First Screen - Landing & Family Invitation Board) */
 .t04-s1-content {
   position: absolute;
-  left: 17%;
-  right: 17%;
-  top: 14%;
-  bottom: 12%;
+  left: 6%;
+  right: 6%;
+  top: 10%;
+  bottom: 8%;
   z-index: 4;
   display: flex;
   flex-direction: column;
@@ -745,30 +738,88 @@ const STYLE = `
   margin: 0 0 0.8cqw;
 }
 
-.t04-s1-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: 4.6cqw;
-  font-style: italic;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 0 0 0.2cqw;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+.t04-family-board {
+  width: 100%;
+  max-width: 420px;
+  margin: 4px auto 8px;
+  background: rgba(2, 22, 16, 0.86);
+  border: 1.5px solid var(--gold-shine);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), inset 0 0 16px rgba(232, 198, 110, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.t04-s1-choose-hint {
+.t04-board-tag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold-shine);
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(232, 198, 110, 0.4);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.t04-vip-guest {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 2px 0 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 12px rgba(245, 209, 110, 0.6);
+}
+
+.t04-polished-wording {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #f7e8b0;
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: rgba(4, 36, 28, 0.55);
+  border-left: 2px solid var(--gold-shine);
+  border-radius: 4px;
+  text-align: left;
+}
+
+.t04-s1-couple {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8cqw;
+  font-family: 'Great Vibes', cursive;
+  font-size: 6cqw;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(245, 209, 110, 0.5);
+}
+
+.t04-s1-couple .t04-s1-amp {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.8cqw;
-  color: #f7d58b;
-  margin: 0 0 1.5cqw;
+  font-style: italic;
+  font-size: 4cqw;
+  color: #e8c66e;
+}
+
+.t04-s1-motto {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8cqw;
+  letter-spacing: 0.1em;
+  color: #d1b88e;
+  margin: 0.5cqw 0 1cqw;
 }
 
 /* Category Toggle Options on Screen 1 */
 .t04-s1 .t04-opts {
   display: flex;
-  gap: 2.5cqw;
+  gap: 2cqw;
   width: 100%;
-  max-width: 440px;
-  margin: 0 auto 1.8cqw;
+  max-width: 400px;
+  margin: 6px auto;
 }
 
 .t04-s1 .t04-opt {
@@ -784,8 +835,6 @@ const STYLE = `
   gap: 1.8cqw;
   text-align: left;
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 
 .t04-s1 .t04-opt.selected {
@@ -825,14 +874,12 @@ const STYLE = `
 
 .t04-s1 .t04-wording-box {
   width: 100%;
-  max-width: 440px;
-  margin: 0 auto 1cqw;
+  max-width: 400px;
+  margin: 6px auto;
   background: rgba(2, 22, 16, 0.75);
   border: 1px solid rgba(232, 198, 110, 0.3);
   border-radius: 12px;
   padding: 2.2cqw 2.5cqw;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 
 .t04-s1 .t04-wording-sal {
@@ -840,7 +887,7 @@ const STYLE = `
   font-style: italic;
   font-size: 3.6cqw;
   color: #f7d58b;
-  margin: 0 0 0.8cqw;
+  margin: 0 0 0.6cqw;
   text-shadow: 0 0 8px rgba(247, 213, 139, 0.4);
 }
 
@@ -852,199 +899,124 @@ const STYLE = `
   margin: 0;
 }
 
-.t04-s1-divider {
-  font-size: 3.2cqw;
-  color: #e8c66e;
-  margin: 1cqw 0;
+/* Screen 2: Bride, Groom, Parents & Photos */
+.t04-couple-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  margin: 8px 0;
 }
-
-.t04-s1-couple {
+.t04-person-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 6px;
+  border: 1px solid var(--paper-dark);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.t04-arch-frame {
+  width: 82px;
+  height: 104px;
+  border-radius: 41px 41px 8px 8px;
+  border: 2px solid var(--gold-mid);
+  padding: 3px;
+  background: linear-gradient(180deg, var(--gold-shine), var(--gold-d));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 6px;
+}
+.t04-arch-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 37px 37px 6px 6px;
+  background: var(--paper-cream);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.8cqw;
-  font-family: 'Great Vibes', cursive;
-  font-size: 6cqw;
-  color: #ffffff;
-  text-shadow: 0 0 12px rgba(245, 209, 110, 0.5);
 }
-
-.t04-s1-couple .t04-s1-amp {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 4cqw;
-  color: #e8c66e;
-}
-
-.t04-s1-motto {
-  font-family: 'Cinzel', serif;
-  font-size: 1.8cqw;
-  letter-spacing: 0.1em;
-  color: #d1b88e;
-  margin: 0.5cqw 0 1.5cqw;
-}
-
-/* Screen 1 — The Regal Shadi Card Cover */
-.t04-cover {
-  padding: 56px 14px 16px;
-  background: linear-gradient(180deg, var(--paper) 0%, var(--paper-cream) 60%, var(--paper-dark) 100%);
-}
-.t04-cover-frame {
-  position: relative;
+.t04-arch-inner img {
   width: 100%;
-  margin: 0 auto 16px;
-  border: 2px solid var(--gold-mid);
-  border-radius: 20px;
-  padding: 16px 14px 16px;
-  background: rgba(255, 253, 249, 0.96);
-  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(207, 159, 56, 0.12);
+  height: 100%;
+  object-fit: cover;
+}
+.t04-arch-crest {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold-d);
+}
+.t04-role-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-d);
+  font-weight: 700;
+}
+.t04-person-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--emerald-d);
+  margin: 2px 0 4px;
+}
+.t04-parents-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin: 0;
+  font-style: italic;
+}
+
+.t04-couple-hero-wrap {
+  width: 100%;
+  max-width: 320px;
+  margin: 10px auto 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.t04-bismillah-svg {
-  width: min(280px, 86%);
-  height: auto;
-  margin: 0 auto 4px;
+.t04-couple-arch-hero {
+  width: 140px;
+  height: 175px;
+  border-radius: 70px 70px 12px 12px;
+  border: 2px solid var(--gold-shine);
+  padding: 3px;
+  background: linear-gradient(180deg, var(--gold-shine), var(--gold-d));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 16px rgba(232, 198, 110, 0.35);
+  overflow: hidden;
+}
+.t04-couple-arch-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 67px 67px 10px 10px;
   display: block;
 }
-.t04-subhanallah {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--gold-d);
-  text-transform: uppercase;
-  margin: 2px 0 6px;
-}
-.t04-blessing-text {
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--emerald-d);
-  margin: 0 0 4px;
-  font-style: italic;
-}
-.t04-dear-tag {
-  font-family: 'Cinzel', serif;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  color: var(--gold-d);
-  text-transform: uppercase;
-  margin: 6px 0 2px;
-}
-.t04-guest-badge {
-  background: linear-gradient(135deg, rgba(14, 91, 70, 0.08), rgba(207, 159, 56, 0.15));
-  border: 1px solid var(--gold-mid);
-  border-radius: 12px;
-  padding: 6px 16px;
-  margin: 4px 0 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-.t04-guest-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--emerald-d);
-  margin: 0;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-.t04-shadi-title {
-  font-family: 'Great Vibes', cursive;
-  font-size: 38px;
-  line-height: 1.1;
-  color: var(--emerald-m);
-  margin: 4px 0 0;
-  text-shadow: 0 1px 2px rgba(207, 159, 56, 0.4);
-}
-.t04-couple-hero {
-  font-family: 'Cinzel', serif;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--emerald-d);
-  margin: 4px 0 2px;
-}
-.t04-couple-hero span {
-  color: var(--gold-mid);
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 18px;
-}
-.t04-ceremony-name {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--gold-d);
-  text-transform: uppercase;
-  font-weight: 700;
-  margin: 4px 0 10px;
-}
-
-/* The Clickable Shadi Action Buttons */
-.t04-begin-btn {
-  background: linear-gradient(135deg, var(--emerald-m), var(--emerald-d));
-  color: #fff6d9 !important;
-  border: 1.5px solid var(--gold-shine);
-  box-shadow: 0 6px 18px rgba(4, 36, 28, 0.35), inset 0 1px rgba(255, 255, 255, 0.3);
+.t04-couple-hero-caption {
   font-family: 'Cinzel', serif;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  padding: 12px 28px;
-  border-radius: 999px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: transform 0.15s, box-shadow 0.15s;
-  text-transform: uppercase;
-  text-decoration: none;
-  position: relative;
-  z-index: 20;
-  pointer-events: auto;
-  user-select: none;
+  color: var(--emerald-d);
   margin-top: 6px;
 }
-.t04-begin-btn:hover {
-  box-shadow: 0 8px 24px rgba(4, 36, 28, 0.5), 0 0 12px var(--gold-shine);
-  transform: translateY(-1px);
-}
-.t04-begin-btn:active {
-  transform: translateY(1px) scale(0.98);
+
+.t04-host-honor {
+  background: rgba(14, 91, 70, 0.05);
+  border: 1px solid rgba(207, 159, 56, 0.4);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 6px 0 0;
+  width: 100%;
+  font-size: 12px;
+  color: var(--emerald-m);
 }
 
-/* Decorative Elements */
-.t04-jali-div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 75%;
-  margin: 6px auto;
-  gap: 8px;
-}
-.t04-jali-div i {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
-}
-.t04-jali-star {
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-.t04-corner-svg {
-  position: absolute;
-  width: 44px;
-  height: 44px;
-  pointer-events: none;
-}
-.t04-corner-svg.tl { top: 6px; left: 6px; }
-.t04-corner-svg.tr { top: 6px; right: 6px; transform: scaleX(-1); }
-.t04-corner-svg.bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
-.t04-corner-svg.br { bottom: 6px; right: 6px; transform: scale(-1, -1); }
-
-/* Screen Cards Inner Container */
+/* Card inner for Screens 2, 3, 4 */
 .t04-card-inner {
   position: relative;
   width: 100%;
@@ -1079,150 +1051,11 @@ const STYLE = `
   border-right: 2px solid var(--gold-mid);
   background: rgba(207, 159, 56, 0.06);
   border-radius: 6px;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   font-style: italic;
 }
-.t04-opts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 10px 0;
-  width: 100%;
-}
-.t04-opt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 8px;
-  border: 1.5px solid var(--paper-dark);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.75);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  pointer-events: auto;
-}
-.t04-opt .ic {
-  width: 24px;
-  height: 24px;
-  color: var(--emerald-m);
-  margin-bottom: 4px;
-}
-.t04-opt strong {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  color: var(--emerald-d);
-}
-.t04-opt small {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-.t04-opt.selected {
-  border-color: var(--gold-mid);
-  background: rgba(14, 91, 70, 0.08);
-  box-shadow: 0 0 0 1px var(--gold-shine);
-}
-.t04-opt.selected .ic { color: var(--gold-d); }
-.t04-wording-box {
-  text-align: left;
-  background: rgba(250, 243, 228, 0.75);
-  border: 1px dashed var(--gold-mid);
-  border-radius: 10px;
-  padding: 12px;
-  margin: 8px 0 0;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--text-dark);
-}
-.t04-wording-sal {
-  font-weight: 700;
-  color: var(--emerald-d);
-  margin: 0 0 6px;
-}
-.t04-wording-copy {
-  margin: 0;
-}
 
-/* Screen 3 — Couple & Parents */
-.t04-couple-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  width: 100%;
-  margin: 8px 0;
-}
-.t04-person-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 6px;
-  border: 1px solid var(--paper-dark);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.65);
-}
-.t04-arch-frame {
-  width: 76px;
-  height: 96px;
-  border-radius: 38px 38px 8px 8px;
-  border: 2px solid var(--gold-mid);
-  padding: 3px;
-  background: linear-gradient(180deg, var(--gold-shine), var(--gold-d));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  margin-bottom: 6px;
-}
-.t04-arch-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 34px 34px 6px 6px;
-  background: var(--paper-cream);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.t04-arch-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.t04-arch-crest {
-  font-family: 'Cinzel', serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--gold-d);
-}
-.t04-role-badge {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold-d);
-  font-weight: 700;
-}
-.t04-person-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--emerald-d);
-  margin: 2px 0 4px;
-}
-.t04-parents-desc {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.35;
-  margin: 0;
-}
-.t04-host-honor {
-  background: rgba(14, 91, 70, 0.05);
-  border: 1px solid rgba(207, 159, 56, 0.4);
-  border-radius: 10px;
-  padding: 8px 12px;
-  margin: 6px 0 0;
-  width: 100%;
-  font-size: 12px;
-  color: var(--emerald-m);
-}
-
-/* Screen 4 — Events Timeline */
+/* Screen 3: Events Timeline */
 .t04-events-wrap {
   width: 100%;
   display: flex;
@@ -1285,7 +1118,7 @@ const STYLE = `
   margin: 2px 0 0;
 }
 
-/* Screen 5 — Guest Actions & Countdown */
+/* Screen 4: Guest Actions & Countdown */
 .t04-actions-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1478,7 +1311,6 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   const assetBase = clean(w.asset_base) || './assets/';
   const coverImg = `${assetBase.replace(/\/?$/, '/') }template-04-cover.webp`;
   const innerImg = `${assetBase.replace(/\/?$/, '/') }template-04-inner.webp`;
-  const frameImg = `${assetBase.replace(/\/?$/, '/') }template-04-frame.webp`;
   const doorL = `${assetBase.replace(/\/?$/, '/') }template-04-door-l.webp`;
   const doorR = `${assetBase.replace(/\/?$/, '/') }template-04-door-r.webp`;
   const personalized = guestName + (isFamily && !/\bfamily\b/i.test(guestName) ? ' & Family' : '');
@@ -1528,25 +1360,29 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
   const copyFamily = 'Together with our families, we request the honour of your and your family\'s gracious presence to celebrate the auspicious marriage ceremony of our beloved children.';
 
   // Portrait helpers
-  const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image || w.couple_photo || storedCouple);
+  const couplePhoto = safeUrl(w.couple_photo || w.couple_photo_url || storedCouple);
+  const bridePhoto = safeUrl(w.bride_photo || w.bride_photo_url || w.bride_image || (!w.groom_photo && couplePhoto ? couplePhoto : ''));
   const groomPhoto = safeUrl(w.groom_photo || w.groom_photo_url || w.groom_image);
 
   const screens = [
     /* ----------------------------------------------------
-       Screen 1: Dawat-e-Khas (Royal Palace Door & Light On Welcome)
+       Screen 0: Royal Palace Gate (Lights OFF -> Click to Turn Lights ON & Open Doors with Sparklers)
        ---------------------------------------------------- */
-        `<section class="t04-screen t04-cover active t04-unlit" data-screen="0" aria-label="Shadi card welcome">
+    `<section class="t04-screen t04-cover active t04-unlit" data-screen="0" aria-label="Shadi card welcome">
       <div class="t04-mandap-wrap">
         <!-- Revealed Palace Background (Image 2) underneath -->
         <img class="t04-mandap-img t04-mandap-inner" src="${innerImg}" alt="Royal Shadi Palace" aria-hidden="true">
 
-        <!-- Double Palace Doors (Image 1 Doors) -->
+        <!-- Palace Gate Arch (Image 1) -->
+        <img class="t04-mandap-img t04-mandap-gate" src="${coverImg}" alt="Royal Palace Gate" aria-hidden="true">
+
+        <!-- Double Palace Doors in 3D Portal -->
         <div class="t04-doors-portal" aria-label="Open Palace Doors" role="button" tabindex="0">
           <img class="t04-door t04-door-l" src="${doorL}" alt="Left Palace Door" aria-hidden="true">
           <img class="t04-door t04-door-r" src="${doorR}" alt="Right Palace Door" aria-hidden="true">
         </div>
 
-        <!-- Royal Parchment Typography Overlay on the Doors -->
+        <!-- Royal Typography Overlay on the Doors -->
         <div class="t04-parchment-text" aria-hidden="true">
           <div class="t04-parchment-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
           <div class="t04-parchment-nikah">॥ শুভ নিকাহ্ ॥</div>
@@ -1555,16 +1391,13 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
           <div class="t04-parchment-couple">${esc(bride)} &amp; ${esc(groom)}</div>
         </div>
 
-        <!-- Outer Frame Overlay (Chandelier, Garlands, Lanterns, Side Pillars with Diyas, Bottom Flowers & Candles) -->
-        <img class="t04-mandap-frame" src="${frameImg}" alt="" aria-hidden="true" onerror="this.style.display='none'">
-
-        <!-- Light Flares for "Light On" animation -->
+        <!-- Light Flares for Lights-On illumination -->
         <div class="t04-light-burst" aria-hidden="true">
           <div class="t04-grand-glow"></div>
           <div class="t04-chandelier-glow"></div>
         </div>
 
-        <!-- Puljhari (Paper Sparkler & Confetti Fireworks) Particle Container -->
+        <!-- Puljhari (Paper Sparklers & Crackers) Container -->
         <div class="t04-sparks" aria-hidden="true"></div>
 
         <!-- Red Wax Seal "TAP TO OPEN / প্রবেশ করুন" Trigger Button -->
@@ -1590,68 +1423,79 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`,
 
     /* ----------------------------------------------------
-       Screen 2: Dawat-Nama & Selection (Image 2 - Taj Mahal Sacred Invitation)
+       Screen 1 (First Screen): Landing Stage with Guest Name & Family Invitation Board
        ---------------------------------------------------- */
-    `<section class="t04-screen t04-s1" data-screen="1" aria-label="Invitation message">
+    `<section class="t04-screen t04-s1" data-screen="1" aria-label="Family Invitation Board">
       <div class="t04-mandap-wrap">
-        <!-- Royal Taj Mahal Inner Invitation (Image 2) -->
-        <img class="t04-mandap-img" src="${innerImg}" alt="Royal Wedding Invitation" aria-hidden="true">
+        <!-- Royal Taj Mahal Inner Invitation (Image 2 - Stage after Landing) -->
+        <img class="t04-mandap-img" src="${innerImg}" alt="Royal Wedding Stage" aria-hidden="true">
 
         <div class="t04-s1-content">
           <!-- Calligraphy & Blessing Headings -->
-          <div class="t04-s1-bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+          <div class="t04-s1-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
           <div class="t04-s1-nikah bengali">॥ শুভ নিকাহ্ ॥</div>
           <p class="t04-s1-bless">WITH THE BLESSINGS OF OUR BELOVED FAMILIES</p>
           
-          <h2 class="t04-s1-heading">You Are Cordially Invited</h2>
-          <p class="t04-s1-choose-hint">Please select your invitation type</p>
+          <!-- Family Invitation Board -->
+          <div class="t04-family-board">
+            <div class="t04-board-header">
+              <span class="t04-board-tag">FAMILY INVITATION BOARD</span>
+            </div>
 
-          <!-- Interactive Invitation Type Options -->
-          <div class="t04-opts" role="group" aria-label="Invitation category">
-            <button class="t04-opt${isFamily ? '' : ' selected'}" type="button" data-type="single" aria-pressed="${!isFamily}">
-              <span class="ic">${ICONS.person}</span>
-              <div class="t04-opt-text">
-                <strong>Individual</strong>
-                <small>For one person</small>
-              </div>
-              <span class="t04-opt-radio"></span>
-            </button>
-            <button class="t04-opt${isFamily ? ' selected' : ''}" type="button" data-type="family" aria-pressed="${isFamily}">
-              <span class="ic">${ICONS.family}</span>
-              <div class="t04-opt-text">
-                <strong>Family</strong>
-                <small>For you and your family</small>
-              </div>
-              <span class="t04-opt-radio"></span>
-            </button>
+            <div class="t04-guest-hero">
+              <h2 class="t04-vip-guest">${esc(personalized)}</h2>
+            </div>
+
+            <!-- Interactive Invitation Type Options -->
+            <div class="t04-opts" role="group" aria-label="Invitation category">
+              <button class="t04-opt${isFamily ? '' : ' selected'}" type="button" data-type="single" aria-pressed="${!isFamily}">
+                <span class="ic">${ICONS.person}</span>
+                <div class="t04-opt-text">
+                  <strong>Individual</strong>
+                  <small>For one person</small>
+                </div>
+                <span class="t04-opt-radio"></span>
+              </button>
+              <button class="t04-opt${isFamily ? ' selected' : ''}" type="button" data-type="family" aria-pressed="${isFamily}">
+                <span class="ic">${ICONS.family}</span>
+                <div class="t04-opt-text">
+                  <strong>Family</strong>
+                  <small>For you &amp; family</small>
+                </div>
+                <span class="t04-opt-radio"></span>
+              </button>
+            </div>
+
+            <!-- Personalized Dynamic Invitation Box -->
+            <div class="t04-wording-box">
+              <p class="t04-wording-sal">Dear ${esc(personalized)},</p>
+              <p class="t04-wording-copy" data-single="${esc(copySingle)}" data-family="${esc(copyFamily)}">
+                ${esc(isFamily ? copyFamily : copySingle)}
+              </p>
+            </div>
+
+            <!-- Polished Wedding Invitation Wording -->
+            <blockquote class="t04-polished-wording">
+              “On opening the invitation, the lights will softly illuminate and the doors will gently unfold. As the gate opens, sparklers and crackers will welcome you. The first screen will show the guest’s name with a family invitation board, while the second screen will present the bride and groom, their parents, and their photograph.”
+            </blockquote>
+
+            <!-- Surah Ar-Rum Quote -->
+            <div class="t04-ayat-quote">
+              "And among His signs is this, that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts."
+              <br><strong style="font-size:11px;color:var(--gold-shine)">(Surah Ar-Rum 30:21)</strong>
+            </div>
+
+            <!-- Couple Names & Motto inside Family Board -->
+            <div class="t04-s1-couple">
+              <span class="t04-s1-bride">${esc(bride)}</span>
+              <span class="t04-s1-amp">&amp;</span>
+              <span class="t04-s1-groom">${esc(groom)}</span>
+            </div>
+            <p class="t04-s1-motto">TWO HEARTS &nbsp;•&nbsp; TWO FAMILIES &nbsp;•&nbsp; ONE JOURNEY</p>
           </div>
 
-          <!-- Personalized Dynamic Invitation Box -->
-          <div class="t04-wording-box">
-            <p class="t04-wording-sal">Dear ${esc(personalized)},</p>
-            <p class="t04-wording-copy" data-single="${esc(copySingle)}" data-family="${esc(copyFamily)}">
-              ${esc(isFamily ? copyFamily : copySingle)}
-            </p>
-          </div>
-
-          <div class="t04-s1-divider" aria-hidden="true">❖</div>
-
-          <!-- Couple Names & Motto -->
-          <div class="t04-s1-couple">
-            <span class="t04-s1-bride">${esc(bride)}</span>
-            <span class="t04-s1-amp">&amp;</span>
-            <span class="t04-s1-groom">${esc(groom)}</span>
-          </div>
-          <p class="t04-s1-motto">TWO HEARTS &nbsp;•&nbsp; TWO FAMILIES &nbsp;•&nbsp; ONE JOURNEY</p>
-
-          <!-- Surah Ar-Rum Quote (asserted in tests) -->
-          <div class="t04-ayat-quote">
-            "And among His signs is this, that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts."
-            <br><strong style="font-size:11px;color:var(--gold-shine)">(Surah Ar-Rum 30:21)</strong>
-          </div>
-
-          <div class="t04-nav-row" style="margin-top:12px">
-            <button class="t04-btn-prev" type="button" data-prev>← Back</button>
+          <div class="t04-nav-row" style="margin-top:10px">
+            <button class="t04-btn-prev" type="button" data-prev>← Gate</button>
             <button class="t04-btn-next" type="button" data-next>The Couple →</button>
           </div>
         </div>
@@ -1659,7 +1503,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`,
 
     /* ----------------------------------------------------
-       Screen 3: Dulhan & Dulha (Bride, Groom & Families)
+       Screen 2 (Second Screen): Dulhan & Dulha (Bride & Groom Details, Parents & Photographs)
        ---------------------------------------------------- */
     `<section class="t04-screen" data-screen="2" aria-label="Bride and Groom details">
       <div class="t04-card-inner">
@@ -1693,6 +1537,15 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
           </div>
         </div>
 
+        ${couplePhoto ? `
+          <div class="t04-couple-hero-wrap">
+            <div class="t04-couple-arch-hero">
+              <img src="${couplePhoto}" alt="${esc(bride)} &amp; ${esc(groom)}">
+            </div>
+            <span class="t04-couple-hero-caption">${esc(bride)} &amp; ${esc(groom)}</span>
+          </div>
+        ` : ''}
+
         ${w.host_name ? `
           <div class="t04-host-honor">
             <strong>Host:</strong> ${esc(w.host_name)}
@@ -1712,7 +1565,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`,
 
     /* ----------------------------------------------------
-       Screen 4: Taqreeb Programme (Event Timeline)
+       Screen 3: Taqreeb Programme (Event Timeline)
        ---------------------------------------------------- */
     `<section class="t04-screen" data-screen="3" aria-label="Wedding programme">
       <div class="t04-card-inner">
@@ -1739,7 +1592,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
     </section>`,
 
     /* ----------------------------------------------------
-       Screen 5: Shadi Celebrations & Guest Actions
+       Screen 4: Shadi Celebrations & Guest Actions
        ---------------------------------------------------- */
     `<section class="t04-screen" data-screen="4" aria-label="Celebrations and guest actions">
       <div class="t04-card-inner">
@@ -1847,12 +1700,15 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
       root._t04Bound = true;
 
       var current = 0;
-      var titles = ['Shadi Welcome', 'The Invitation', 'Dulhan & Dulha', 'Taqreeb Programme', 'Shadi Celebrations'];
+      var titles = ['Shadi Welcome', 'Family Board', 'Dulhan & Dulha', 'Taqreeb Programme', 'Shadi Celebrations'];
       var screens = [].slice.call(root.querySelectorAll('.t04-screen'));
       var steps = [].slice.call(root.querySelectorAll('.t04-step'));
       var shell = root.querySelector('.t04-shell');
       var topTitle = root.querySelector('.t04-top-title');
       var topCount = root.querySelector('.t04-top-count');
+      var cover = root.querySelector('.t04-cover');
+      var sparksContainer = root.querySelector('.t04-sparks');
+      var doorIgnited = false;
 
       function goTo(n) {
         if (!screens.length) return;
@@ -1878,29 +1734,22 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
         if (topCount) topCount.textContent = (current + 1) + '/' + screens.length;
       }
 
-                  var cover = root.querySelector('.t04-cover');
-      var sparksContainer = root.querySelector('.t04-sparks');
-      var doorIgnited = false;
-
       function ignitePalaceDoors() {
         if (doorIgnited || !cover) return;
         doorIgnited = true;
 
-        // 1. "starting m light off rhega, click krne k bd on hoga"
-        // Turn ON the lights immediately on click!
+        // 1. Initial lights off -> Turn ON smoothly
         cover.classList.remove('t04-unlit');
         cover.classList.add('t04-lit');
 
-        // 2. "Door open hoga"
-        // Swing open the double doors in 3D
+        // 2. Gently unfold double doors
         cover.classList.add('t04-door-open');
 
-        // 3. "phuljariya dena..."
-        // Explode festive Puljhari fireworks (paper confetti + sparklers)
+        // 3. Sparklers paper effect & crackers burst
         if (sparksContainer) {
           var coverRect = cover.getBoundingClientRect();
           var relX = (coverRect.width || 360) / 2;
-          var relY = (coverRect.height || 640) * 0.42;
+          var relY = (coverRect.height || 640) * 0.45;
           var colors = ['#f5d16e', '#ffd700', '#2e7d32', '#c62828', '#ffffff', '#ff9800', '#00e5ff', '#ff4081'];
 
           for (var i = 0; i < 48; i++) {
@@ -1949,7 +1798,7 @@ export default function render({ guest = {}, wedding = {}, events = [] } = {}) {
 
         try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (err) {}
 
-        // Smooth transition to Page 2 (Screen 1)
+        // Smooth transition to First Screen (Family Board)
         setTimeout(function() {
           goTo(1);
         }, 1600);
@@ -2119,12 +1968,10 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   const w = wedding || {};
   const g = guest || {};
   const evs = Array.isArray(events) ? events : [];
-  if (!root) return () => {};
 
   const t04 = root.classList?.contains('t04') ? root : root.querySelector('.t04');
   if (!t04) return () => {};
 
-  // Clean up any existing autoInit or previous mount listeners so clicks never fire twice
   if (typeof t04._t04Cleanup === 'function') {
     t04._t04Cleanup();
   }
@@ -2136,10 +1983,13 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
   const topTitle = t04.querySelector('.t04-top-title');
   const topCount = t04.querySelector('.t04-top-count');
   const canvas = t04.querySelector('.t04-scratch-box canvas');
+  const cover = t04.querySelector('.t04-cover');
+  const sparksContainer = t04.querySelector('.t04-sparks');
 
   let current = 0;
   let scratch = null;
   let timerId = 0;
+  let doorIgnited = false;
 
   const goTo = targetIdx => {
     if (!screens.length) return;
@@ -2181,29 +2031,22 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
     }
   };
 
-      const cover = t04.querySelector('.t04-cover');
-  const sparksContainer = t04.querySelector('.t04-sparks');
-  let doorIgnited = false;
-
   const ignitePalaceDoors = () => {
     if (doorIgnited || !cover) return;
     doorIgnited = true;
 
-    // 1. "starting m light off rhega, click krne k bd on hoga"
-    // Turn ON the lights immediately on click!
+    // 1. Initial lights off -> Turn ON smoothly
     cover.classList.remove('t04-unlit');
     cover.classList.add('t04-lit');
 
-    // 2. "Door open hoga"
-    // Swing open the double doors in 3D
+    // 2. Gently unfold double doors
     cover.classList.add('t04-door-open');
 
-    // 3. "phuljariya dena..."
-    // Explode festive Puljhari fireworks (paper confetti + sparklers)
+    // 3. Sparklers paper effect & crackers burst
     if (sparksContainer) {
       const coverRect = cover.getBoundingClientRect();
       const relX = (coverRect.width || 360) / 2;
-      const relY = (coverRect.height || 640) * 0.42;
+      const relY = (coverRect.height || 640) * 0.45;
       const colors = ['#f5d16e', '#ffd700', '#2e7d32', '#c62828', '#ffffff', '#ff9800', '#00e5ff', '#ff4081'];
 
       for (let i = 0; i < 48; i++) {
@@ -2248,7 +2091,7 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
 
     try { navigator.vibrate?.([40, 60, 40]); } catch (err) {}
 
-    // Smooth transition to Page 2 (Screen 1)
+    // Smooth transition to First Screen (Family Board)
     setTimeout(() => {
       goTo(1);
     }, 1600);
@@ -2382,7 +2225,6 @@ export function mount(root, { guest = {}, wedding = {}, events = [] } = {}) {
     if (target > Date.now()) timerId = setInterval(updateCountdown, 1000);
   }
 
-  // Start at Screen 0
   goTo(0);
 
   const cleanup = () => {
